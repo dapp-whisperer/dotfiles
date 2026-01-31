@@ -74,7 +74,7 @@ fi
 step "Installing packages from Brewfile..."
 
 if [[ -f "$DOTFILES_DIR/Brewfile" ]]; then
-    brew bundle install --file="$DOTFILES_DIR/Brewfile" --no-lock
+    brew bundle install --file="$DOTFILES_DIR/Brewfile" || true
 else
     warn "No Brewfile found, skipping..."
 fi
@@ -122,9 +122,14 @@ mkdir -p "$HOME/.config/zellij/layouts"
 for package in zsh git yazi zellij; do
     if [[ -d "$package" ]]; then
         info "Stowing $package..."
-        stow --verbose=1 --target="$HOME" --restow "$package" 2>&1 | grep -v "^BUG" || true
+        # Use --adopt to take ownership of existing files, then restore from git
+        stow --verbose=1 --target="$HOME" --adopt --restow "$package" 2>&1 | grep -v "^BUG" || true
     fi
 done
+
+# Restore any adopted files to dotfiles version
+info "Restoring dotfiles versions..."
+git -C "$DOTFILES_DIR" checkout -- . 2>/dev/null || true
 
 # ============================================
 # STEP 7: Install Yazi plugins
