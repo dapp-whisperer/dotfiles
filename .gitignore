@@ -1,0 +1,31 @@
+# Secrets - never commit
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.keystore
+credentials*
+secrets*
+*.secret
+.zshrc.local
+
+# SSH and cloud credentials
+id_rsa*
+id_ed25519*
+id_ecdsa*
+.ssh/
+.aws/
+.gcp/
+
+# Package manager tokens
+.npmrc
+.pypirc
+
+# Machine-specific
+.DS_Store
+
+# Yazi plugins (installed via ya pack)
+yazi/.config/yazi/plugins/

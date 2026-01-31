@@ -1,0 +1,14 @@
+[init]
+	defaultBranch = main
+
+[core]
+	editor = micro
+
+[alias]
+	st = status
+	co = checkout
+	br = branch
+	ci = commit
+
+[pull]
+	rebase = true

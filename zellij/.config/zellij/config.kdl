@@ -1,0 +1,33 @@
+theme "subtle"
+pane_frames false
+
+keybinds {
+    shared_except "locked" {
+        bind "Alt m" { ToggleFocusFullscreen; }
+    }
+}
+
+themes {
+    subtle {
+        fg "#a0a0a0"
+        bg "#2d2d2d"
+        black "#2d2d2d"
+        red "#f44747"
+        green "#608b4e"
+        yellow "#4a4a40"
+        blue "#569cd6"
+        magenta "#c586c0"
+        cyan "#4ec9b0"
+        white "#d4d4d4"
+        orange "#ce9178"
+
+        pane_frame {
+            fg "#333333"
+            bg "#2d2d2d"
+        }
+        focused_pane_frame {
+            fg "#333333"
+            bg "#2d2d2d"
+        }
+    }
+}

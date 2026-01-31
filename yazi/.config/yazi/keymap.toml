@@ -1,0 +1,4 @@
+[[mgr.prepend_keymap]]
+on   = "e"
+run  = '''shell 'glow -p "$@"' --block'''
+desc = "View with glow"
