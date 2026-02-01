@@ -1,4 +1,9 @@
 [[mgr.prepend_keymap]]
+on   = "<Enter>"
+run  = '''shell 'nvim "$@"; exec yazi' --block'''
+desc = "Edit in Neovim (returns to Yazi on quit)"
+
+[[mgr.prepend_keymap]]
 on   = "e"
 run  = '''shell 'glow -p "$@"' --block'''
 desc = "View with glow"

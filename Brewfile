@@ -7,7 +7,8 @@ tap "homebrew/bundle"
 brew "yazi"           # File manager
 brew "zellij"         # Terminal multiplexer
 brew "glow"           # Markdown renderer
-brew "micro"          # Text editor
+brew "neovim"         # Text editor (LazyVim)
+brew "lazygit"        # Git TUI (LazyVim integration)
 
 # CLI Utilities
 brew "git"
@@ -20,7 +21,8 @@ brew "stow"           # Symlink manager
 
 # Development
 brew "node"           # For npm packages
+brew "rustup-init"    # Rust toolchain manager
 
-# Optional: Fonts (uncomment if needed)
-# tap "homebrew/cask-fonts"
-# cask "font-jetbrains-mono-nerd-font"
+# Fonts (required for LazyVim icons)
+tap "homebrew/cask-fonts"
+cask "font-jetbrains-mono-nerd-font"

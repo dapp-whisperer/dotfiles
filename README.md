@@ -16,10 +16,11 @@ The script will prompt for your GitHub username.
 |------|---------|
 | **yazi** | Terminal file manager |
 | **zellij** | Terminal multiplexer |
+| **neovim** | Text editor (LazyVim) |
 | **glow** | Markdown renderer |
-| **micro** | Text editor |
 | **claude** | Claude Code CLI |
 | **codex** | OpenAI Codex CLI |
+| **rust** | Rust toolchain with rust-analyzer |
 
 ## Directory Structure
 
@@ -30,14 +31,31 @@ The script will prompt for your GitHub username.
 ├── zsh/.zshrc          # Shell config
 ├── git/.gitconfig      # Git config
 ├── yazi/.config/yazi/  # Yazi file manager
-└── zellij/.config/zellij/  # Zellij multiplexer
+├── zellij/.config/zellij/  # Zellij multiplexer
+└── nvim/.config/nvim/  # Neovim (LazyVim)
 ```
 
 ## Key Features
 
 - `dev` - Opens Yazi + Claude split layout in Zellij
+- `Enter` in Yazi - Edit file in Neovim (returns to Yazi on quit)
 - `e` in Yazi - View markdown with glow
 - `Alt+m` in Zellij - Toggle fullscreen pane
+- `Space` in Neovim - Leader key for commands
+
+## LazyVim Quick Reference
+
+| Key | Action |
+|-----|--------|
+| `Space f f` | Find files |
+| `Space s g` | Search in files (grep) |
+| `Space e` | File explorer |
+| `g d` | Go to definition |
+| `g r` | Go to references |
+| `K` | Hover documentation |
+| `Space c a` | Code actions |
+
+**First run note:** On first launch, Neovim downloads plugins (~30-60 seconds). Subsequent launches are instant.
 
 ## Secrets
 
