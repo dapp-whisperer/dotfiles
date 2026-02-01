@@ -28,6 +28,15 @@ OS=$(detect_os)
 info "Detected OS: $OS"
 
 # ============================================
+# STEP 0: Linux Prerequisites (before Homebrew)
+# ============================================
+if [[ "$OS" == "linux" ]]; then
+    step "Installing Linux prerequisites..."
+    sudo apt update
+    sudo apt install -y build-essential curl git
+fi
+
+# ============================================
 # STEP 1: Clone or update dotfiles
 # ============================================
 step "Setting up dotfiles repository..."

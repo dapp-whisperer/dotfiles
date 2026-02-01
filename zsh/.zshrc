@@ -1,8 +1,18 @@
 # Default editor
 export EDITOR="hx"
 
+# fd-find compatibility (Linuxbrew names it fd, but apt names it fdfind)
+command -v fd &>/dev/null || alias fd='fdfind'
+
 # Aliases
 alias dev='zellij --layout dev'
+
+# lsd aliases (https://github.com/lsd-rs/lsd)
+alias ls='lsd'
+alias l='lsd -l'
+alias la='lsd -a'
+alias lla='lsd -la'
+alias lt='lsd --tree'
 
 # DANGEROUS: These bypass security controls - use only when you trust the context
 alias UNSAFE_codex='codex --search --dangerously-bypass-approvals-and-sandbox'
