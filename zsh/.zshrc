@@ -1,3 +1,6 @@
+# Default editor
+export EDITOR="hx"
+
 # Aliases
 alias dev='zellij --layout dev'
 
