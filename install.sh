@@ -32,8 +32,13 @@ info "Detected OS: $OS"
 # ============================================
 if [[ "$OS" == "linux" ]]; then
     step "Installing Linux prerequisites..."
-    sudo apt update
-    sudo apt install -y build-essential curl git
+    if command -v apt &>/dev/null; then
+        sudo apt update
+        sudo apt install -y build-essential curl git file
+    else
+        warn "Non-Debian/Ubuntu system detected. Please install manually: build-essential (or gcc/make), curl, git, file"
+        warn "Then re-run this script."
+    fi
 fi
 
 # ============================================
@@ -228,6 +233,14 @@ command -v claude &>/dev/null && echo "  - claude (Claude Code CLI)"
 command -v codex &>/dev/null && echo "  - codex (OpenAI Codex CLI)"
 command -v glow &>/dev/null && echo "  - glow (markdown renderer)"
 command -v rustup &>/dev/null && echo "  - rust (via rustup with rust-analyzer)"
+
+if [[ "$OS" == "linux" ]]; then
+    echo ""
+    echo "Note: Nerd Fonts not auto-installed on Linux."
+    echo "For proper icons in LazyVim/lsd, install manually:"
+    echo "  https://www.nerdfonts.com/font-downloads"
+fi
+
 echo ""
 echo "Next steps:"
 echo "  1. Restart your terminal or run: source ~/.zshrc"
