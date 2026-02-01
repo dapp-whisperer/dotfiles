@@ -7,7 +7,8 @@ tap "homebrew/bundle"
 brew "yazi"           # File manager
 brew "zellij"         # Terminal multiplexer
 brew "glow"           # Markdown renderer
-brew "neovim"         # Text editor (LazyVim)
+brew "helix"          # Text editor (default)
+brew "neovim"         # Text editor (LazyVim, alternative)
 brew "lazygit"        # Git TUI (LazyVim integration)
 
 # CLI Utilities
