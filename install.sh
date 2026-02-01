@@ -115,11 +115,21 @@ step "Creating symlinks..."
 cd "$DOTFILES_DIR"
 
 # Create necessary directories first
-mkdir -p "$HOME/.config/yazi/scripts"
+mkdir -p "$HOME/.config/yazi"
 mkdir -p "$HOME/.config/zellij/layouts"
+mkdir -p "$HOME/.config/nvim"
+
+# Backup existing nvim config if it exists and is not a symlink
+if [ -d "$HOME/.config/nvim" ] && [ ! -L "$HOME/.config/nvim" ]; then
+    if [ "$(ls -A "$HOME/.config/nvim" 2>/dev/null)" ]; then
+        info "Backing up existing nvim config..."
+        mv "$HOME/.config/nvim" "$HOME/.config/nvim.backup.$(date +%Y%m%d%H%M%S)"
+        mkdir -p "$HOME/.config/nvim"
+    fi
+fi
 
 # Stow each package
-for package in zsh git yazi zellij; do
+for package in zsh git yazi zellij nvim; do
     if [[ -d "$package" ]]; then
         info "Stowing $package..."
         # Use --adopt to take ownership of existing files, then restore from git
@@ -143,7 +153,24 @@ else
 fi
 
 # ============================================
-# STEP 8: Setup Git identity (interactive)
+# STEP 8: Initialize Rust toolchain
+# ============================================
+step "Checking Rust toolchain..."
+
+if command -v rustup &>/dev/null; then
+    info "Rust toolchain already installed"
+elif command -v rustup-init &>/dev/null; then
+    info "Installing Rust toolchain..."
+    rustup-init -y --no-modify-path
+    source "$HOME/.cargo/env"
+    rustup component add rust-analyzer
+    info "Rust toolchain installed with rust-analyzer"
+else
+    warn "rustup-init not found, skipping Rust installation"
+fi
+
+# ============================================
+# STEP 9: Setup Git identity (interactive)
 # ============================================
 step "Checking Git configuration..."
 
@@ -159,7 +186,7 @@ else
 fi
 
 # ============================================
-# STEP 9: Create local secrets file if needed
+# STEP 10: Create local secrets file if needed
 # ============================================
 step "Checking local secrets file..."
 
@@ -185,14 +212,16 @@ echo ""
 echo "Installed tools:"
 command -v yazi &>/dev/null && echo "  - yazi (file manager)"
 command -v zellij &>/dev/null && echo "  - zellij (terminal multiplexer)"
+command -v nvim &>/dev/null && echo "  - neovim (text editor - LazyVim)"
 command -v claude &>/dev/null && echo "  - claude (Claude Code CLI)"
 command -v codex &>/dev/null && echo "  - codex (OpenAI Codex CLI)"
 command -v glow &>/dev/null && echo "  - glow (markdown renderer)"
-command -v micro &>/dev/null && echo "  - micro (text editor)"
+command -v rustup &>/dev/null && echo "  - rust (via rustup with rust-analyzer)"
 echo ""
 echo "Next steps:"
 echo "  1. Restart your terminal or run: source ~/.zshrc"
 echo "  2. Add API keys to ~/.zshrc.local"
 echo "  3. Run 'dev' to launch Yazi + Claude split view"
-echo "  4. Navigate to a .md file and press 'e' to view with glow"
+echo "  4. Press Enter on any file to edit in Neovim"
+echo "  5. First nvim launch downloads plugins (~30-60s)"
 echo ""
