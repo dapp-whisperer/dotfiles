@@ -2,7 +2,7 @@
 	defaultBranch = main
 
 [core]
-	editor = micro
+	editor = nvim
 
 [alias]
 	st = status
