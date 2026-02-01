@@ -117,6 +117,7 @@ cd "$DOTFILES_DIR"
 # Create necessary directories first
 mkdir -p "$HOME/.config/yazi"
 mkdir -p "$HOME/.config/zellij/layouts"
+mkdir -p "$HOME/.config/helix"
 mkdir -p "$HOME/.config/nvim"
 
 # Backup existing nvim config if it exists and is not a symlink
@@ -129,7 +130,7 @@ if [ -d "$HOME/.config/nvim" ] && [ ! -L "$HOME/.config/nvim" ]; then
 fi
 
 # Stow each package
-for package in zsh git yazi zellij nvim; do
+for package in zsh git yazi zellij helix nvim; do
     if [[ -d "$package" ]]; then
         info "Stowing $package..."
         # Use --adopt to take ownership of existing files, then restore from git
@@ -212,7 +213,8 @@ echo ""
 echo "Installed tools:"
 command -v yazi &>/dev/null && echo "  - yazi (file manager)"
 command -v zellij &>/dev/null && echo "  - zellij (terminal multiplexer)"
-command -v nvim &>/dev/null && echo "  - neovim (text editor - LazyVim)"
+command -v hx &>/dev/null && echo "  - helix (default editor)"
+command -v nvim &>/dev/null && echo "  - neovim (LazyVim, use 'nvim' to launch)"
 command -v claude &>/dev/null && echo "  - claude (Claude Code CLI)"
 command -v codex &>/dev/null && echo "  - codex (OpenAI Codex CLI)"
 command -v glow &>/dev/null && echo "  - glow (markdown renderer)"
@@ -222,6 +224,6 @@ echo "Next steps:"
 echo "  1. Restart your terminal or run: source ~/.zshrc"
 echo "  2. Add API keys to ~/.zshrc.local"
 echo "  3. Run 'dev' to launch Yazi + Claude split view"
-echo "  4. Press Enter on any file to edit in Neovim"
-echo "  5. First nvim launch downloads plugins (~30-60s)"
+echo "  4. Press Enter on any file to edit in Helix (floating pane)"
+echo "  5. Use 'nvim' directly for LazyVim (first launch downloads plugins)"
 echo ""
