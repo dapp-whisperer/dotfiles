@@ -17,6 +17,8 @@ brew "gh"             # GitHub CLI
 brew "ripgrep"        # Fast grep
 brew "fd"             # Fast find
 brew "fzf"            # Fuzzy finder
+brew "git-delta"      # Syntax-highlighted diffs
+brew "bat"            # Cat with syntax highlighting (delta themes)
 brew "jq"             # JSON processor
 brew "lsd"            # Modern ls
 brew "stow"           # Symlink manager
