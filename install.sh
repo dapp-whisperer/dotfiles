@@ -177,6 +177,17 @@ else
     info "Tokyo Night theme already installed"
 fi
 
+# macOS: LazyGit uses ~/Library/Application Support/lazygit instead of ~/.config/lazygit
+if [[ "$OS" == "macos" ]]; then
+    LAZYGIT_MACOS_DIR="$HOME/Library/Application Support/lazygit"
+    mkdir -p "$LAZYGIT_MACOS_DIR"
+    if [[ ! -L "$LAZYGIT_MACOS_DIR/config.yml" ]]; then
+        rm -f "$LAZYGIT_MACOS_DIR/config.yml"
+        ln -s "$DOTFILES_DIR/lazygit/.config/lazygit/config.yml" "$LAZYGIT_MACOS_DIR/config.yml"
+        info "Linked LazyGit config for macOS"
+    fi
+fi
+
 # ============================================
 # STEP 7: Install Yazi plugins
 # ============================================
