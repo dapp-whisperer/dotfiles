@@ -133,6 +133,8 @@ mkdir -p "$HOME/.config/yazi"
 mkdir -p "$HOME/.config/zellij/layouts"
 mkdir -p "$HOME/.config/helix"
 mkdir -p "$HOME/.config/nvim"
+mkdir -p "$HOME/.config/lazygit"
+mkdir -p "$HOME/.config/bat/themes"
 
 # Backup existing nvim config if it exists and is not a symlink
 if [ -d "$HOME/.config/nvim" ] && [ ! -L "$HOME/.config/nvim" ]; then
@@ -144,7 +146,7 @@ if [ -d "$HOME/.config/nvim" ] && [ ! -L "$HOME/.config/nvim" ]; then
 fi
 
 # Stow each package
-for package in zsh git yazi zellij helix nvim; do
+for package in zsh git yazi zellij helix nvim lazygit; do
     if [[ -d "$package" ]]; then
         info "Stowing $package..."
         # Use --adopt to take ownership of existing files, then restore from git
@@ -155,6 +157,36 @@ done
 # Restore any adopted files to dotfiles version
 info "Restoring dotfiles versions..."
 git -C "$DOTFILES_DIR" checkout -- . 2>/dev/null || true
+
+# ============================================
+# STEP 6.5: Install Delta theme
+# ============================================
+step "Installing Delta syntax theme..."
+
+TOKYONIGHT_THEME="$HOME/.config/bat/themes/tokyonight_night.tmTheme"
+if [[ ! -f "$TOKYONIGHT_THEME" ]]; then
+    info "Downloading Tokyo Night theme for Delta..."
+    curl -fsSL "https://raw.githubusercontent.com/folke/tokyonight.nvim/main/extras/sublime/tokyonight_night.tmTheme" \
+        -o "$TOKYONIGHT_THEME" || warn "Could not download Tokyo Night theme"
+
+    if command -v bat &>/dev/null; then
+        bat cache --build || warn "Could not rebuild bat cache"
+        info "Tokyo Night theme installed"
+    fi
+else
+    info "Tokyo Night theme already installed"
+fi
+
+# macOS: LazyGit uses ~/Library/Application Support/lazygit instead of ~/.config/lazygit
+if [[ "$OS" == "macos" ]]; then
+    LAZYGIT_MACOS_DIR="$HOME/Library/Application Support/lazygit"
+    mkdir -p "$LAZYGIT_MACOS_DIR"
+    if [[ ! -L "$LAZYGIT_MACOS_DIR/config.yml" ]]; then
+        rm -f "$LAZYGIT_MACOS_DIR/config.yml"
+        ln -s "$DOTFILES_DIR/lazygit/.config/lazygit/config.yml" "$LAZYGIT_MACOS_DIR/config.yml"
+        info "Linked LazyGit config for macOS"
+    fi
+fi
 
 # ============================================
 # STEP 7: Install Yazi plugins
@@ -232,6 +264,7 @@ command -v nvim &>/dev/null && echo "  - neovim (LazyVim, use 'nvim' to launch)"
 command -v claude &>/dev/null && echo "  - claude (Claude Code CLI)"
 command -v codex &>/dev/null && echo "  - codex (OpenAI Codex CLI)"
 command -v glow &>/dev/null && echo "  - glow (markdown renderer)"
+command -v delta &>/dev/null && echo "  - delta (syntax-highlighted diffs)"
 command -v rustup &>/dev/null && echo "  - rust (via rustup with rust-analyzer)"
 
 if [[ "$OS" == "linux" ]]; then
