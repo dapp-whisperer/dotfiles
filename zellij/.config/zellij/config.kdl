@@ -21,13 +21,29 @@ themes {
         white "#d4d4d4"
         orange "#ce9178"
 
-        pane_frame {
-            fg "#333333"
-            bg "#2d2d2d"
+        frame_unselected {
+            base 112 112 112
+            background 45 45 45
+            emphasis_0 112 112 112
+            emphasis_1 112 112 112
+            emphasis_2 112 112 112
+            emphasis_3 112 112 112
         }
-        focused_pane_frame {
-            fg "#333333"
-            bg "#2d2d2d"
+        frame_selected {
+            base 112 112 112
+            background 45 45 45
+            emphasis_0 112 112 112
+            emphasis_1 112 112 112
+            emphasis_2 112 112 112
+            emphasis_3 112 112 112
+        }
+        frame_highlight {
+            base 112 112 112
+            background 45 45 45
+            emphasis_0 112 112 112
+            emphasis_1 112 112 112
+            emphasis_2 112 112 112
+            emphasis_3 112 112 112
         }
     }
 }
