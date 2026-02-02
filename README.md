@@ -70,3 +70,26 @@ export GEMINI_API_KEY="your-key-here"
 ```bash
 cd ~/dotfiles && git pull && stow --restow */
 ```
+
+## Testing on Ubuntu
+
+Test the install script on a fresh Ubuntu environment using Docker:
+
+```bash
+# Start container (auto-builds if needed)
+./test-ubuntu.sh run
+
+# Connect to container
+./test-ubuntu.sh shell
+
+# Inside container, run install
+cd ~/dotfiles && bash install.sh
+```
+
+**Commands:**
+| Command | Action |
+|---------|--------|
+| `./test-ubuntu.sh run` | Start test container |
+| `./test-ubuntu.sh shell` | Connect to container |
+| `./test-ubuntu.sh stop` | Stop container |
+| `./test-ubuntu.sh clean` | Remove container and image |
