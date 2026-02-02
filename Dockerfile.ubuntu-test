@@ -1,0 +1,29 @@
+# Dockerfile.ubuntu-test
+FROM ubuntu:24.04
+
+# Avoid interactive prompts during apt install
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install minimal prerequisites (the install.sh will do the rest)
+RUN apt-get update && apt-get install -y \
+    sudo \
+    git \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create non-root user with sudo access
+ARG USERNAME=testuser
+ARG USER_UID=1001
+ARG USER_GID=$USER_UID
+
+RUN groupadd --gid $USER_GID $USERNAME \
+    && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
+    && echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/$USERNAME
+
+# Switch to non-root user
+USER $USERNAME
+WORKDIR /home/$USERNAME
+
+# Set up shell
+ENV SHELL=/bin/bash
+CMD ["/bin/bash"]

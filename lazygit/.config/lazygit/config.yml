@@ -1,0 +1,5 @@
+# lazygit/.config/lazygit/config.yml
+git:
+  pagers:
+    - colorArg: always
+      pager: delta --paging=never --side-by-side --syntax-theme=tokyonight_night
