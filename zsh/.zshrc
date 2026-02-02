@@ -17,6 +17,7 @@ alias lt='lsd --tree'
 # DANGEROUS: These bypass security controls - use only when you trust the context
 alias UNSAFE_codex='codex --search --dangerously-bypass-approvals-and-sandbox'
 alias UNSAFE_claude='claude --dangerously-skip-permissions'
+alias clod='claude --dangerously-skip-permissions'
 
 # Load local secrets if they exist (API keys, etc.)
 [[ -f "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
