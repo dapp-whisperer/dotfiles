@@ -4,6 +4,7 @@ pane_frames false
 keybinds {
     shared_except "locked" {
         bind "Alt m" { ToggleFocusFullscreen; }
+        unbind "Alt Left" "Alt Down" "Alt Up" "Alt Right"
     }
 }
 
