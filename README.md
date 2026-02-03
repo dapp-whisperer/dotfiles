@@ -5,7 +5,7 @@ Personal terminal environment configuration.
 ## Quick Install
 
 ```bash
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/dotfiles/main/install.sh)"
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/dapp-whisperer/dotfiles/main/install.sh)"
 ```
 
 The script will prompt for your GitHub username.
