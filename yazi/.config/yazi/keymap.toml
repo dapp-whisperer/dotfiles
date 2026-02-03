@@ -5,5 +5,5 @@ desc = "Open in floating pane (90%)"
 
 [[mgr.prepend_keymap]]
 on   = "e"
-run  = '''shell 'glow -p "$@"' --block'''
+run  = '''shell 'glow -p -w 80 "$@"' --block'''
 desc = "View with glow"

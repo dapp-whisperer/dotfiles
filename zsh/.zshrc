@@ -32,3 +32,6 @@ fi
 # Local environment
 export PATH="$HOME/.local/bin:$PATH"
 [[ -f "$HOME/.local/bin/env" ]] && . "$HOME/.local/bin/env"
+
+# opencode
+export PATH=/Users/dev/.opencode/bin:$PATH
