@@ -1,7 +1,7 @@
 layout {
     pane split_direction="vertical" {
-        pane size="50%" command="yazi" borderless=true
-        pane size="50%" command="claude" borderless=true {
+        pane size="55%" command="yazi" borderless=true
+        pane size="45%" command="claude" borderless=true {
             args "--dangerously-skip-permissions"
             focus true
         }
