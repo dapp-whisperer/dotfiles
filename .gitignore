@@ -27,6 +27,7 @@ id_ecdsa*
 
 # Machine-specific
 .DS_Store
+docs/
 
 # Yazi plugins (installed via ya pack)
 yazi/.config/yazi/plugins/
