@@ -86,6 +86,17 @@ Test the install script on a fresh Ubuntu environment using Docker:
 cd ~/dotfiles && bash install.sh
 ```
 
+Non-interactive mode (CI/Docker):
+
+```bash
+GITHUB_USERNAME=yourname GIT_NAME="Your Name" GIT_EMAIL="you@example.com" ./install.sh --non-interactive
+```
+
+Linux PATH notes:
+If Homebrew was installed, add it to your shell:
+`eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"`
+If Claude Code was installed, ensure `~/.local/bin` is on your PATH.
+
 **Commands:**
 | Command | Action |
 |---------|--------|

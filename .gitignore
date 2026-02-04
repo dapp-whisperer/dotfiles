@@ -31,3 +31,6 @@ docs/
 
 # Yazi plugins (installed via ya pack)
 yazi/.config/yazi/plugins/
+
+# Local plans
+docs/plans/
