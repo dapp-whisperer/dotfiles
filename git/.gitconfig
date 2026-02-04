@@ -27,6 +27,6 @@
 [pull]
 	rebase = true
 
-[user]
-	name = dapp-whisperer
-	email = dapp-whisperer@pm.me
+[include]
+	path = ~/.gitconfig.local
+

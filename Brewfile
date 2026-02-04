@@ -5,6 +5,8 @@ tap "homebrew/bundle"
 
 # Terminal Environment
 brew "yazi"           # File manager
+brew "chafa"          # Terminal image previewer (yazi)
+brew "resvg"          # SVG renderer (yazi)
 brew "zellij"         # Terminal multiplexer
 brew "glow"           # Markdown renderer
 brew "helix"          # Text editor (default)
@@ -17,6 +19,7 @@ brew "gh"             # GitHub CLI
 brew "ripgrep"        # Fast grep
 brew "fd"             # Fast find
 brew "fzf"            # Fuzzy finder
+brew "zoxide"         # Smart cd with frecency
 brew "git-delta"      # Syntax-highlighted diffs
 brew "bat"            # Cat with syntax highlighting (delta themes)
 brew "jq"             # JSON processor

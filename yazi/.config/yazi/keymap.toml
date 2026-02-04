@@ -1,4 +1,9 @@
 [[mgr.prepend_keymap]]
+on   = "T"
+run  = '''shell 'bash ~/.config/yazi/scripts/open-typora.sh "$@"' '''
+desc = "Open in Typora"
+
+[[mgr.prepend_keymap]]
 on   = "<Enter>"
 run  = '''shell 'bash ~/.config/yazi/scripts/open-editor.sh "$@"' --block'''
 desc = "Open in floating pane (90%)"

@@ -11,6 +11,7 @@ credentials*
 secrets*
 *.secret
 .zshrc.local
+.gitconfig.local
 
 # SSH and cloud credentials
 id_rsa*
