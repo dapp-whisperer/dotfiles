@@ -1,5 +1,6 @@
 # Dockerfile.ubuntu-test
-FROM ubuntu:24.04
+ARG UBUNTU_VERSION=24.04
+FROM ubuntu:${UBUNTU_VERSION}
 
 # Avoid interactive prompts during apt install
 ENV DEBIAN_FRONTEND=noninteractive

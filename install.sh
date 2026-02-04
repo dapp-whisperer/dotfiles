@@ -12,8 +12,43 @@ info()  { echo -e "${GREEN}[INFO]${NC} $1"; }
 warn()  { echo -e "${YELLOW}[WARN]${NC} $1"; }
 error() { echo -e "${RED}[ERROR]${NC} $1"; exit 1; }
 step()  { echo -e "${BLUE}[STEP]${NC} $1"; }
+usage() {
+    cat << 'EOF'
+Usage: ./install.sh [--non-interactive] [--help]
+
+Options:
+  --non-interactive   Disable prompts. Requires env vars for missing inputs.
+  --help              Show this help and exit.
+
+Environment variables (non-interactive):
+  GITHUB_USERNAME  Used when cloning dotfiles.
+  GIT_NAME         Used for git identity setup.
+  GIT_EMAIL        Used for git identity setup.
+EOF
+}
 
 DOTFILES_DIR="${HOME}/dotfiles"
+BREW_FAILED="false"
+NONINTERACTIVE="false"
+if [[ "${DOTFILES_NON_INTERACTIVE:-}" == "1" ]]; then
+    NONINTERACTIVE="true"
+fi
+
+for arg in "$@"; do
+    case "$arg" in
+        --non-interactive)
+            NONINTERACTIVE="true"
+            ;;
+        -h|--help)
+            usage
+            exit 0
+            ;;
+    esac
+done
+
+if [[ ! -t 0 ]]; then
+    NONINTERACTIVE="true"
+fi
 
 # Detect OS
 detect_os() {
@@ -32,9 +67,9 @@ info "Detected OS: $OS"
 # ============================================
 if [[ "$OS" == "linux" ]]; then
     step "Installing Linux prerequisites..."
-    if command -v apt &>/dev/null; then
-        sudo apt update
-        sudo apt install -y build-essential curl git file
+    if command -v apt-get &>/dev/null; then
+        sudo apt-get update
+        sudo apt-get install -y build-essential procps curl git file
     else
         warn "Non-Debian/Ubuntu system detected. Please install manually: build-essential (or gcc/make), curl, git, file"
         warn "Then re-run this script."
@@ -48,10 +83,20 @@ step "Setting up dotfiles repository..."
 
 if [[ -d "$DOTFILES_DIR" ]]; then
     info "Dotfiles exist, pulling latest..."
-    git -C "$DOTFILES_DIR" pull --rebase || warn "Could not pull (maybe no remote set)"
+    if git -C "$DOTFILES_DIR" diff --quiet && git -C "$DOTFILES_DIR" diff --cached --quiet; then
+        git -C "$DOTFILES_DIR" pull --rebase || warn "Could not pull (maybe no remote set)"
+    else
+        warn "Local changes detected; skipping git pull"
+    fi
 else
     echo ""
-    read -p "Enter your GitHub username: " github_username
+    github_username="${GITHUB_USERNAME:-}"
+    if [[ -z "$github_username" && "$NONINTERACTIVE" == "true" ]]; then
+        error "GitHub username required in non-interactive mode. Set GITHUB_USERNAME and re-run."
+    fi
+    if [[ -z "$github_username" ]]; then
+        read -p "Enter your GitHub username: " github_username
+    fi
     if [[ -z "$github_username" ]]; then
         error "GitHub username is required"
     fi
@@ -71,8 +116,17 @@ step "Checking Homebrew..."
 if command -v brew &>/dev/null; then
     info "Homebrew already installed"
 else
-    info "Installing Homebrew..."
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    if [[ "$OS" == "linux" && -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
+        info "Homebrew already installed (linuxbrew path detected)"
+    else
+        info "Installing Homebrew..."
+        if GIT_CONFIG_GLOBAL=/dev/null GIT_CONFIG_SYSTEM=/dev/null /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; then
+            info "Homebrew installed"
+        else
+            warn "Homebrew install failed"
+            BREW_FAILED="true"
+        fi
+    fi
 fi
 
 # Add Homebrew to PATH for this session
@@ -82,15 +136,83 @@ else
     eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)" 2>/dev/null || true
 fi
 
+if ! command -v brew &>/dev/null; then
+    BREW_FAILED="true"
+fi
+
 # ============================================
 # STEP 3: Install packages from Brewfile
 # ============================================
 step "Installing packages from Brewfile..."
 
 if [[ -f "$DOTFILES_DIR/Brewfile" ]]; then
-    brew bundle install --file="$DOTFILES_DIR/Brewfile" || true
+    if command -v brew &>/dev/null; then
+        if ! GIT_CONFIG_GLOBAL=/dev/null GIT_CONFIG_SYSTEM=/dev/null brew bundle --file="$DOTFILES_DIR/Brewfile"; then
+            warn "Brew bundle failed"
+            BREW_FAILED="true"
+        fi
+    else
+        warn "brew command not found"
+        BREW_FAILED="true"
+    fi
 else
     warn "No Brewfile found, skipping..."
+fi
+
+# ============================================
+# STEP 3.5: Linux fallback to APT if brew failed
+# ============================================
+if [[ "$OS" == "linux" && "$BREW_FAILED" == "true" ]]; then
+    step "Homebrew failed; falling back to APT..."
+    if command -v apt-get &>/dev/null; then
+        sudo apt-get update
+
+        # Install packages individually to avoid aborting on missing packages
+        APT_PACKAGES=(
+            git
+            gh
+            ripgrep
+            fd-find
+            fzf
+            git-delta
+            bat
+            jq
+            lsd
+            stow
+            nodejs
+            npm
+            neovim
+            helix
+            lazygit
+            zellij
+            yazi
+            glow
+            rustup
+        )
+
+        for pkg in "${APT_PACKAGES[@]}"; do
+            if apt-cache show "$pkg" >/dev/null 2>&1; then
+                if sudo apt-get install -y "$pkg"; then
+                    info "Installed $pkg"
+                else
+                    warn "Could not install $pkg via APT"
+                fi
+            else
+                warn "Package not available in APT: $pkg"
+            fi
+        done
+
+        # Common Ubuntu binary name compatibility
+        sudo mkdir -p /usr/local/bin
+        if command -v batcat &>/dev/null && ! command -v bat &>/dev/null; then
+            sudo ln -sf "$(command -v batcat)" /usr/local/bin/bat || true
+        fi
+        if command -v fdfind &>/dev/null && ! command -v fd &>/dev/null; then
+            sudo ln -sf "$(command -v fdfind)" /usr/local/bin/fd || true
+        fi
+    else
+        warn "APT not available. Please install packages manually."
+    fi
 fi
 
 # ============================================
@@ -156,7 +278,11 @@ done
 
 # Restore any adopted files to dotfiles version
 info "Restoring dotfiles versions..."
-git -C "$DOTFILES_DIR" checkout -- . 2>/dev/null || true
+if git -C "$DOTFILES_DIR" diff --quiet && git -C "$DOTFILES_DIR" diff --cached --quiet; then
+    git -C "$DOTFILES_DIR" checkout -- . 2>/dev/null || true
+else
+    warn "Local changes detected; skipping git checkout"
+fi
 
 # ============================================
 # STEP 6.5: Install Delta theme
@@ -222,12 +348,22 @@ fi
 step "Checking Git configuration..."
 
 if ! git config --global user.name &>/dev/null; then
-    echo ""
-    read -p "Enter your Git name: " git_name
-    read -p "Enter your Git email: " git_email
-    git config --global user.name "$git_name"
-    git config --global user.email "$git_email"
-    info "Git identity configured"
+    if [[ "$NONINTERACTIVE" == "true" ]]; then
+        warn "Non-interactive shell detected; skipping git identity setup"
+    else
+        echo ""
+        git_name="${GIT_NAME:-}"
+        git_email="${GIT_EMAIL:-}"
+        if [[ -z "$git_name" ]]; then
+            read -p "Enter your Git name: " git_name
+        fi
+        if [[ -z "$git_email" ]]; then
+            read -p "Enter your Git email: " git_email
+        fi
+        git config --global user.name "$git_name"
+        git config --global user.email "$git_email"
+        info "Git identity configured"
+    fi
 else
     info "Git identity already configured: $(git config --global user.name)"
 fi
