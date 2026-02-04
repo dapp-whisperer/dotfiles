@@ -1,6 +1,9 @@
 # Default editor
 export EDITOR="hx"
 
+# Force yazi to use Kitty graphics protocol (for Ghostty)
+export YAZI_ADAPTER="kgp"
+
 # fd-find compatibility (Linuxbrew names it fd, but apt names it fdfind)
 command -v fd &>/dev/null || alias fd='fdfind'
 
@@ -28,6 +31,9 @@ if [[ -f /opt/homebrew/bin/brew ]]; then
 elif [[ -f /home/linuxbrew/.linuxbrew/bin/brew ]]; then
     eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
+
+# Zoxide (smart cd)
+command -v zoxide &>/dev/null && eval "$(zoxide init zsh)"
 
 # Local environment
 export PATH="$HOME/.local/bin:$PATH"

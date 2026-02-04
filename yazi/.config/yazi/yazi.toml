@@ -7,11 +7,18 @@ show_hidden = true
 edit = [
     { run = 'bash ~/.config/yazi/scripts/open-editor.sh "$@"', desc = "Edit file", block = true },
 ]
+open = [
+    { run = 'bash ~/.config/yazi/scripts/open-default.sh "$@"', desc = "Open with default app" },
+]
+typora = [
+    { run = 'bash ~/.config/yazi/scripts/open-typora.sh "$@"', desc = "Open in Typora" },
+]
 
 [open]
 rules = [
-    { url = "*.md", use = ["edit"] },
-    { url = "*.markdown", use = ["edit"] },
+    { url = "*.pdf", use = ["open"] },
+    { url = "*.md", use = ["edit", "typora"] },
+    { url = "*.markdown", use = ["edit", "typora"] },
     { mime = "text/*", use = ["edit"] },
     { mime = "application/json", use = ["edit"] },
     { mime = "*/javascript", use = ["edit"] },
