@@ -257,6 +257,7 @@ mkdir -p "$HOME/.config/helix"
 mkdir -p "$HOME/.config/nvim"
 mkdir -p "$HOME/.config/lazygit"
 mkdir -p "$HOME/.config/bat/themes"
+mkdir -p "$HOME/.config/tmux"
 
 # Backup existing nvim config if it exists and is not a symlink
 if [ -d "$HOME/.config/nvim" ] && [ ! -L "$HOME/.config/nvim" ]; then
@@ -268,7 +269,7 @@ if [ -d "$HOME/.config/nvim" ] && [ ! -L "$HOME/.config/nvim" ]; then
 fi
 
 # Stow each package
-for package in zsh git yazi zellij helix nvim lazygit; do
+for package in zsh git yazi zellij helix nvim lazygit tmux; do
     if [[ -d "$package" ]]; then
         info "Stowing $package..."
         # Use --adopt to take ownership of existing files, then restore from git
