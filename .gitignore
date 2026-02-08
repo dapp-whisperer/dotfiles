@@ -27,10 +27,13 @@ id_ecdsa*
 
 # Machine-specific
 .DS_Store
-docs/
+
+# Documentation (keep solutions/)
+docs/plans/
 
 # Yazi plugins (installed via ya pack)
 yazi/.config/yazi/plugins/
 
-# Local plans
-docs/plans/
+# Tmux plugins (installed via TPM)
+tmux/.config/tmux/plugins/
+
