@@ -9,6 +9,7 @@ command -v fd &>/dev/null || alias fd='fdfind'
 
 # Aliases
 alias dev='zellij --layout dev'
+alias devt='tmux new-session -d -s devt "yazi" \; split-window -h -l 45% "claude --dangerously-skip-permissions" \; attach-session -t devt'
 
 # lsd aliases (https://github.com/lsd-rs/lsd)
 alias ls='lsd'
@@ -41,3 +42,4 @@ export PATH="$HOME/.local/bin:$PATH"
 
 # opencode
 export PATH=/Users/dev/.opencode/bin:$PATH
+export PATH="/Users/dev/code/codex/.local/bin:$PATH"
