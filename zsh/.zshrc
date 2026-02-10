@@ -9,7 +9,7 @@ command -v fd &>/dev/null || alias fd='fdfind'
 
 # Aliases
 alias dev='zellij --layout dev'
-alias devt='tmux new-session -d -s devt "yazi" \; split-window -h -l 45% "claude --dangerously-skip-permissions" \; attach-session -t devt'
+alias devt='tmux has-session -t devt 2>/dev/null && tmux attach-session -t devt || tmux new-session -d -s devt "yazi" \; split-window -h -l 45% "claude --dangerously-skip-permissions" \; attach-session -t devt'
 
 # lsd aliases (https://github.com/lsd-rs/lsd)
 alias ls='lsd'
