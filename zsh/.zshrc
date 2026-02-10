@@ -18,6 +18,9 @@ alias la='lsd -a'
 alias lla='lsd -la'
 alias lt='lsd --tree'
 
+# fzf: select file and copy absolute path to clipboard
+fz() { fzf --bind 'enter:become(realpath {})' | pbcopy; }
+
 # DANGEROUS: These bypass security controls - use only when you trust the context
 alias UNSAFE_codex='codex --search --dangerously-bypass-approvals-and-sandbox'
 alias UNSAFE_claude='claude --dangerously-skip-permissions'
