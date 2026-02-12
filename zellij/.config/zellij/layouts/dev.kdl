@@ -1,12 +1,17 @@
 layout {
-    pane split_direction="vertical" {
-        pane size="55%" command="yazi" borderless=true
-        pane size="45%" command="claude" borderless=true {
-            args "--dangerously-skip-permissions"
-            focus true
+    default_tab_template {
+        children
+        pane size=1 borderless=true {
+            plugin location="zellij:tab-bar"
         }
     }
-    pane size=2 borderless=true {
-        plugin location="zellij:status-bar"
+    tab name="dev" {
+        pane split_direction="vertical" {
+            pane size="55%" command="yazi" borderless=true
+            pane size="45%" command="claude" borderless=true {
+                args "--dangerously-skip-permissions"
+                focus true
+            }
+        }
     }
 }
