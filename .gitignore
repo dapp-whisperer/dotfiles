@@ -30,10 +30,14 @@ id_ecdsa*
 
 # Documentation (keep solutions/)
 docs/plans/
+docs/brainstorms/
 
 # Yazi plugins (installed via ya pack)
 yazi/.config/yazi/plugins/
 
 # Tmux plugins (installed via TPM)
 tmux/.config/tmux/plugins/
+
+# Review todos (local workflow)
+todos/
 

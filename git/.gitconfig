@@ -8,12 +8,14 @@
 [interactive]
 	diffFilter = delta --color-only
 
+[include]
+	path = ~/.config/delta/catppuccin.gitconfig
+
 [delta]
-	side-by-side = true
 	line-numbers = false
-	syntax-theme = tokyonight_night
 	dark = true
 	navigate = true
+	features = catppuccin-mocha
 
 [merge]
 	conflictStyle = zdiff3
@@ -29,4 +31,3 @@
 
 [include]
 	path = ~/.gitconfig.local
-

@@ -29,4 +29,4 @@ gui:
 git:
   pagers:
     - colorArg: always
-      pager: delta --paging=never --syntax-theme=catppuccin-mocha
+      pager: delta --paging=never --features=catppuccin-mocha

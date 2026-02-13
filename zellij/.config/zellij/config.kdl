@@ -1,4 +1,4 @@
-theme "subtle"
+theme "catppuccin-mocha"
 pane_frames false
 
 keybinds {
@@ -71,42 +71,17 @@ keybinds {
 }
 
 themes {
-    subtle {
-        fg "#a0a0a0"
-        bg "#2d2d2d"
-        black "#2d2d2d"
-        red "#f44747"
-        green "#608b4e"
-        yellow "#4a4a40"
-        blue "#569cd6"
-        magenta "#c586c0"
-        cyan "#4ec9b0"
-        white "#d4d4d4"
-        orange "#ce9178"
-
-        frame_unselected {
-            base 112 112 112
-            background 45 45 45
-            emphasis_0 112 112 112
-            emphasis_1 112 112 112
-            emphasis_2 112 112 112
-            emphasis_3 112 112 112
-        }
-        frame_selected {
-            base 112 112 112
-            background 45 45 45
-            emphasis_0 112 112 112
-            emphasis_1 112 112 112
-            emphasis_2 112 112 112
-            emphasis_3 112 112 112
-        }
-        frame_highlight {
-            base 112 112 112
-            background 45 45 45
-            emphasis_0 112 112 112
-            emphasis_1 112 112 112
-            emphasis_2 112 112 112
-            emphasis_3 112 112 112
-        }
+    catppuccin-mocha {
+        bg "#585b70"
+        fg "#cdd6f4"
+        red "#f38ba8"
+        green "#a6e3a1"
+        blue "#89b4fa"
+        yellow "#f9e2af"
+        magenta "#f5c2e7"
+        orange "#fab387"
+        cyan "#89dceb"
+        black "#181825"
+        white "#cdd6f4"
     }
 }

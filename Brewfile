@@ -10,6 +10,8 @@ brew "helix"          # Text editor (default)
 brew "neovim"         # Text editor (LazyVim, alternative)
 brew "lazygit"        # Git TUI (LazyVim integration)
 brew "micro"          # Text editor (simple)
+brew "tmux"           # Terminal multiplexer
+brew "btop"           # System/resource monitor
 
 # CLI Utilities
 brew "git"
@@ -27,6 +29,9 @@ brew "stow"           # Symlink manager
 # Development
 brew "node"           # For npm packages
 brew "rustup-init"    # Rust toolchain manager
+
+# Applications (macOS only)
+cask "ghostty" if OS.mac?
 
 # Fonts (macOS only - casks don't work on Linux)
 tap "homebrew/cask-fonts" if OS.mac?

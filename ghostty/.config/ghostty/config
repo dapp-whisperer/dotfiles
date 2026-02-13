@@ -1,0 +1,5 @@
+theme = "Catppuccin Mocha"
+background-opacity = 0.99
+
+# Yazi image preview support
+image-storage-limit = 320000000

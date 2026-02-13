@@ -14,9 +14,18 @@ The script will prompt for your GitHub username.
 
 | Tool | Purpose |
 |------|---------|
-| **yazi** | Terminal file manager |
-| **zellij** | Terminal multiplexer |
+| **git** | Version control with delta diffs |
+| **helix** | Text editor (default) |
 | **neovim** | Text editor (LazyVim) |
+| **tmux** | Terminal multiplexer |
+| **zellij** | Terminal multiplexer (alternative) |
+| **yazi** | Terminal file manager |
+| **lazygit** | Git TUI |
+| **ghostty** | Terminal emulator |
+| **gitui** | Git TUI (alternative) |
+| **btop** | System monitor |
+| **delta** | Syntax-highlighted diffs |
+| **bat** | Cat with syntax highlighting |
 | **glow** | Markdown renderer |
 | **claude** | Claude Code CLI |
 | **codex** | OpenAI Codex CLI |
@@ -26,17 +35,24 @@ The script will prompt for your GitHub username.
 
 ```
 ~/dotfiles/
-├── install.sh          # Bootstrap script
-├── Brewfile            # Homebrew packages
-├── zsh/.zshrc          # Shell config
-├── git/.gitconfig      # Git config
-├── yazi/.config/yazi/  # Yazi file manager
+├── install.sh              # Bootstrap script
+├── Brewfile                # Homebrew packages
+├── zsh/.zshrc              # Shell config
+├── git/.gitconfig          # Git config
+├── yazi/.config/yazi/      # Yazi file manager
 ├── zellij/.config/zellij/  # Zellij multiplexer
-└── nvim/.config/nvim/  # Neovim (LazyVim)
+├── nvim/.config/nvim/      # Neovim (LazyVim)
+├── helix/.config/helix/    # Helix editor
+├── tmux/.config/tmux/      # Tmux multiplexer
+├── lazygit/.config/lazygit/ # LazyGit
+├── ghostty/.config/ghostty/ # Ghostty terminal
+├── gitui/.config/gitui/    # GitUI
+└── btop/.config/btop/      # btop system monitor
 ```
 
 ## Key Features
 
+- **Theme:** Catppuccin Mocha across all tools
 - `dev` - Opens Yazi + Claude split layout in Zellij
 - `Enter` in Yazi - Edit file in Neovim (returns to Yazi on quit)
 - `e` in Yazi - View markdown with glow

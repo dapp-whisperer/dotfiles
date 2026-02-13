@@ -257,7 +257,11 @@ mkdir -p "$HOME/.config/helix"
 mkdir -p "$HOME/.config/nvim"
 mkdir -p "$HOME/.config/lazygit"
 mkdir -p "$HOME/.config/bat/themes"
+mkdir -p "$HOME/.config/delta"
 mkdir -p "$HOME/.config/tmux"
+mkdir -p "$HOME/.config/ghostty"
+mkdir -p "$HOME/.config/gitui"
+mkdir -p "$HOME/.config/btop/themes"
 
 # Backup existing nvim config if it exists and is not a symlink
 if [ -d "$HOME/.config/nvim" ] && [ ! -L "$HOME/.config/nvim" ]; then
@@ -269,7 +273,7 @@ if [ -d "$HOME/.config/nvim" ] && [ ! -L "$HOME/.config/nvim" ]; then
 fi
 
 # Stow each package
-for package in zsh git yazi zellij helix nvim lazygit tmux; do
+for package in zsh git yazi zellij helix nvim lazygit tmux ghostty gitui btop; do
     if [[ -d "$package" ]]; then
         info "Stowing $package..."
         # Use --adopt to take ownership of existing files, then restore from git
@@ -286,22 +290,33 @@ else
 fi
 
 # ============================================
-# STEP 6.5: Install Delta theme
+# STEP 6.5: Install Bat/Delta theme (Catppuccin Mocha)
 # ============================================
-step "Installing Delta syntax theme..."
+step "Installing Catppuccin Mocha syntax theme..."
 
-TOKYONIGHT_THEME="$HOME/.config/bat/themes/tokyonight_night.tmTheme"
-if [[ ! -f "$TOKYONIGHT_THEME" ]]; then
-    info "Downloading Tokyo Night theme for Delta..."
-    curl -fsSL "https://raw.githubusercontent.com/folke/tokyonight.nvim/main/extras/sublime/tokyonight_night.tmTheme" \
-        -o "$TOKYONIGHT_THEME" || warn "Could not download Tokyo Night theme"
+CATPPUCCIN_THEME="$HOME/.config/bat/themes/Catppuccin Mocha.tmTheme"
+if [[ ! -f "$CATPPUCCIN_THEME" ]]; then
+    info "Downloading Catppuccin Mocha theme for Bat/Delta..."
+    curl -fsSL "https://github.com/catppuccin/bat/raw/main/themes/Catppuccin%20Mocha.tmTheme" \
+        -o "$CATPPUCCIN_THEME" || warn "Could not download Catppuccin Mocha theme"
 
     if command -v bat &>/dev/null; then
         bat cache --build || warn "Could not rebuild bat cache"
-        info "Tokyo Night theme installed"
+        info "Catppuccin Mocha theme installed"
     fi
 else
-    info "Tokyo Night theme already installed"
+    info "Catppuccin Mocha theme already installed"
+fi
+
+# Download Catppuccin delta theme
+DELTA_THEME="$HOME/.config/delta/catppuccin.gitconfig"
+if [[ ! -f "$DELTA_THEME" ]]; then
+    info "Downloading Catppuccin delta theme..."
+    mkdir -p "$HOME/.config/delta"
+    curl -fsSL "https://github.com/catppuccin/delta/raw/main/catppuccin.gitconfig" \
+        -o "$DELTA_THEME" || warn "Could not download Catppuccin delta theme"
+else
+    info "Catppuccin delta theme already installed"
 fi
 
 # macOS: LazyGit uses ~/Library/Application Support/lazygit instead of ~/.config/lazygit
@@ -344,29 +359,90 @@ else
 fi
 
 # ============================================
-# STEP 9: Setup Git identity (interactive)
+# STEP 9: Setup local Git config (~/.gitconfig.local)
 # ============================================
-step "Checking Git configuration..."
+step "Checking local Git config..."
 
-if ! git config --global user.name &>/dev/null; then
-    if [[ "$NONINTERACTIVE" == "true" ]]; then
-        warn "Non-interactive shell detected; skipping git identity setup"
-    else
-        echo ""
-        git_name="${GIT_NAME:-}"
-        git_email="${GIT_EMAIL:-}"
-        if [[ -z "$git_name" ]]; then
-            read -p "Enter your Git name: " git_name
-        fi
-        if [[ -z "$git_email" ]]; then
-            read -p "Enter your Git email: " git_email
-        fi
-        git config --global user.name "$git_name"
-        git config --global user.email "$git_email"
-        info "Git identity configured"
-    fi
+GITCONFIG_LOCAL="$HOME/.gitconfig.local"
+if [[ ! -f "$GITCONFIG_LOCAL" ]]; then
+    cat > "$GITCONFIG_LOCAL" << 'EOF'
+# Machine-specific git config - DO NOT COMMIT
+EOF
+    info "Created ~/.gitconfig.local"
+fi
+
+# --- Git identity ---
+local_git_name="$(git config --file "$GITCONFIG_LOCAL" --get user.name || true)"
+local_git_email="$(git config --file "$GITCONFIG_LOCAL" --get user.email || true)"
+
+if [[ -n "$local_git_name" && -n "$local_git_email" ]]; then
+    info "Git identity already configured in ~/.gitconfig.local"
 else
-    info "Git identity already configured: $(git config --global user.name)"
+    git_name="${GIT_NAME:-$local_git_name}"
+    git_email="${GIT_EMAIL:-$local_git_email}"
+
+    if [[ -z "$git_name" || -z "$git_email" ]]; then
+        if [[ "$NONINTERACTIVE" == "true" ]]; then
+            warn "Non-interactive mode: set GIT_NAME and GIT_EMAIL to configure git identity"
+        else
+            echo ""
+            if [[ -z "$git_name" ]]; then
+                read -p "Enter your Git name: " git_name
+            fi
+            if [[ -z "$git_email" ]]; then
+                read -p "Enter your Git email: " git_email
+            fi
+        fi
+    fi
+
+    if [[ -n "$git_name" && -n "$git_email" ]]; then
+        git config --file "$GITCONFIG_LOCAL" user.name "$git_name"
+        git config --file "$GITCONFIG_LOCAL" user.email "$git_email"
+        info "Configured git identity in ~/.gitconfig.local"
+    fi
+fi
+
+# --- Commit signing ---
+local_signing_key="$(git config --file "$GITCONFIG_LOCAL" --get user.signingkey || true)"
+local_signing_pref="$(git config --file "$GITCONFIG_LOCAL" --get commit.gpgsign || true)"
+
+if [[ -n "$local_signing_key" ]]; then
+    info "Git commit signing key already configured in ~/.gitconfig.local"
+elif [[ -n "$local_signing_pref" ]]; then
+    info "Git commit signing preference already set in ~/.gitconfig.local"
+else
+    effective_signing_key="$(git config --get user.signingkey || true)"
+    if [[ -n "$effective_signing_key" ]]; then
+        info "Git signing key already configured"
+    else
+        ssh_signing_key=""
+        for candidate in "$HOME"/.ssh/*.pub; do
+            if [[ ! -e "$candidate" ]]; then
+                continue
+            fi
+            case "$(basename "$candidate")" in
+                known_hosts*|authorized_keys|*.cert.pub)
+                    continue
+                    ;;
+            esac
+            if [[ -f "$candidate" ]]; then
+                ssh_signing_key="$candidate"
+                break
+            fi
+        done
+
+        if [[ -n "$ssh_signing_key" ]]; then
+            git config --file "$GITCONFIG_LOCAL" gpg.format ssh
+            git config --file "$GITCONFIG_LOCAL" user.signingkey "$ssh_signing_key"
+            info "Configured Git commit signing with SSH key: $ssh_signing_key"
+        elif command -v gpg >/dev/null 2>&1 && gpg --list-secret-keys --with-colons 2>/dev/null | grep -q '^sec'; then
+            info "Detected existing GPG secret key; leaving commit signing enabled"
+        else
+            git config --file "$GITCONFIG_LOCAL" commit.gpgsign false
+            warn "No Git signing key detected; set commit.gpgsign=false in ~/.gitconfig.local"
+            warn "Configure user.signingkey later and remove the local commit.gpgsign override to re-enable signing"
+        fi
+    fi
 fi
 
 # ============================================
