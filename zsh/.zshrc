@@ -26,6 +26,11 @@ alias UNSAFE_codex='codex --search --dangerously-bypass-approvals-and-sandbox'
 alias UNSAFE_claude='claude --dangerously-skip-permissions'
 alias clod='claude --dangerously-skip-permissions'
 
+# Always use inline mode for Codex so output remains in terminal scrollback.
+codex() {
+    command codex --no-alt-screen "$@"
+}
+
 # Load local secrets if they exist (API keys, etc.)
 [[ -f "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
 
@@ -44,5 +49,5 @@ export PATH="$HOME/.local/bin:$PATH"
 [[ -f "$HOME/.local/bin/env" ]] && . "$HOME/.local/bin/env"
 
 # opencode
-export PATH=/Users/dev/.opencode/bin:$PATH
-export PATH="/Users/dev/code/codex/.local/bin:$PATH"
+export PATH="$HOME/.opencode/bin:$PATH"
+export PATH="$HOME/code/codex/.local/bin:$PATH"
