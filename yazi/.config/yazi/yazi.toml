@@ -1,6 +1,10 @@
 [[plugin.prepend_previewers]]
 url = "*.md"
-run = 'piper -- bash ~/.config/yazi/scripts/preview-markdown.sh "$1" $w'
+run = 'faster-piper --rely-on-preloader'
+
+[[plugin.prepend_preloaders]]
+url = "*.md"
+run = 'faster-piper -- CLICOLOR_FORCE=1 glow -w=$w -s=dark "$1"'
 
 [mgr]
 ratio = [1, 1, 4]
