@@ -4,6 +4,7 @@
 brew "yazi"           # File manager
 brew "chafa"          # Terminal image previewer (yazi)
 brew "resvg"          # SVG renderer (yazi)
+brew "lowdown"        # Markdown renderer (yazi preview)
 brew "zellij"         # Terminal multiplexer
 brew "glow"           # Markdown renderer
 brew "helix"          # Text editor (default)

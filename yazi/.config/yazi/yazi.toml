@@ -1,3 +1,7 @@
+[[plugin.prepend_previewers]]
+url = "*.md"
+run = 'piper -- bash ~/.config/yazi/scripts/preview-markdown.sh "$1" $w'
+
 [mgr]
 ratio = [1, 1, 4]
 
