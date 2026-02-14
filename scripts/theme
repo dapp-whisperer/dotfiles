@@ -165,7 +165,19 @@ for sock in "${XDG_RUNTIME_DIR:-/tmp}"/nvim-*.sock /tmp/nvim-*/0 ; do
     [[ -S "$sock" ]] && nvim --server "$sock" --remote-send ":colorscheme ${NVIM_NAME}<CR>" 2>/dev/null || true
 done
 
-# Ghostty, Zellij, Helix, btop: auto-reload on config file change (inode-preserving writes trigger this)
+# Ghostty: file watching doesn't trigger through stow symlinks on macOS,
+# so we use AppleScript to invoke the "Reload Configuration" menu action.
+if pgrep -q ghostty 2>/dev/null; then
+    osascript -e '
+        tell application "System Events"
+            tell process "ghostty"
+                click menu item "Reload Configuration" of menu 1 of menu bar item "Ghostty" of menu bar 1
+            end tell
+        end tell
+    ' 2>/dev/null || true
+fi
+
+# Zellij, Helix: auto-reload on config file change (inode-preserving writes trigger this)
 
 # Write current LAST (signals complete application)
 echo "$THEME" > "$CURRENT_FILE"
@@ -173,6 +185,6 @@ echo "$THEME" > "$CURRENT_FILE"
 # Print summary
 echo "Switched to: $DISPLAY_NAME"
 echo ""
-echo "Auto-reloaded: Ghostty, Zellij, Helix, btop, bat"
-echo "Restart needed: lazygit, gitui, yazi"
+echo "Auto-reloaded: Ghostty, Zellij, Helix, Neovim, bat"
+echo "Restart needed: btop, lazygit, gitui, yazi"
 echo "New shell needed: fzf"

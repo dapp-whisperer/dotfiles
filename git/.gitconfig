@@ -15,7 +15,7 @@
 	line-numbers = false
 	dark = true
 	navigate = true
-	features = catppuccin-mocha
+	features = tokyonight-night
 
 [merge]
 	conflictStyle = zdiff3

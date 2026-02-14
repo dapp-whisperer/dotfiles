@@ -1,4 +1,4 @@
-theme "catppuccin-mocha"
+theme "tokyonight-night"
 pane_frames false
 scrollback_lines_to_serialize 50000
 scroll_buffer_size 50000
