@@ -253,11 +253,13 @@ cd "$DOTFILES_DIR"
 # Create necessary directories first
 mkdir -p "$HOME/.config/yazi"
 mkdir -p "$HOME/.config/zellij/layouts"
+mkdir -p "$HOME/.config/zellij/themes"
 mkdir -p "$HOME/.config/helix"
 mkdir -p "$HOME/.config/nvim"
 mkdir -p "$HOME/.config/lazygit"
 mkdir -p "$HOME/.config/bat/themes"
 mkdir -p "$HOME/.config/delta"
+mkdir -p "$HOME/.config/fzf"
 mkdir -p "$HOME/.config/tmux"
 mkdir -p "$HOME/.config/ghostty"
 mkdir -p "$HOME/.config/gitui"
@@ -273,7 +275,7 @@ if [ -d "$HOME/.config/nvim" ] && [ ! -L "$HOME/.config/nvim" ]; then
 fi
 
 # Stow each package
-for package in zsh git yazi zellij helix nvim lazygit tmux ghostty gitui btop; do
+for package in zsh git yazi zellij helix nvim lazygit tmux ghostty gitui btop bat; do
     if [[ -d "$package" ]]; then
         info "Stowing $package..."
         # Use --adopt to take ownership of existing files, then restore from git
@@ -287,36 +289,6 @@ if git -C "$DOTFILES_DIR" diff --quiet && git -C "$DOTFILES_DIR" diff --cached -
     git -C "$DOTFILES_DIR" checkout -- . 2>/dev/null || true
 else
     warn "Local changes detected; skipping git checkout"
-fi
-
-# ============================================
-# STEP 6.5: Install Bat/Delta theme (Catppuccin Mocha)
-# ============================================
-step "Installing Catppuccin Mocha syntax theme..."
-
-CATPPUCCIN_THEME="$HOME/.config/bat/themes/Catppuccin Mocha.tmTheme"
-if [[ ! -f "$CATPPUCCIN_THEME" ]]; then
-    info "Downloading Catppuccin Mocha theme for Bat/Delta..."
-    curl -fsSL "https://github.com/catppuccin/bat/raw/main/themes/Catppuccin%20Mocha.tmTheme" \
-        -o "$CATPPUCCIN_THEME" || warn "Could not download Catppuccin Mocha theme"
-
-    if command -v bat &>/dev/null; then
-        bat cache --build || warn "Could not rebuild bat cache"
-        info "Catppuccin Mocha theme installed"
-    fi
-else
-    info "Catppuccin Mocha theme already installed"
-fi
-
-# Download Catppuccin delta theme
-DELTA_THEME="$HOME/.config/delta/catppuccin.gitconfig"
-if [[ ! -f "$DELTA_THEME" ]]; then
-    info "Downloading Catppuccin delta theme..."
-    mkdir -p "$HOME/.config/delta"
-    curl -fsSL "https://github.com/catppuccin/delta/raw/main/catppuccin.gitconfig" \
-        -o "$DELTA_THEME" || warn "Could not download Catppuccin delta theme"
-else
-    info "Catppuccin delta theme already installed"
 fi
 
 # macOS: LazyGit uses ~/Library/Application Support/lazygit instead of ~/.config/lazygit
@@ -459,6 +431,20 @@ EOF
     info "Created ~/.zshrc.local - add your API keys there"
 else
     info "~/.zshrc.local already exists"
+fi
+
+# ============================================
+# STEP 10.5: Restore active theme
+# ============================================
+step "Restoring theme..."
+
+if [[ -f "$DOTFILES_DIR/themes/current" ]]; then
+    ACTIVE_THEME="$(cat "$DOTFILES_DIR/themes/current" | tr -d '[:space:]')"
+    if [[ -n "$ACTIVE_THEME" && -d "$DOTFILES_DIR/themes/$ACTIVE_THEME" ]]; then
+        "$DOTFILES_DIR/scripts/theme" "$ACTIVE_THEME" || warn "Could not restore theme '$ACTIVE_THEME'"
+    fi
+else
+    info "No saved theme found, skipping"
 fi
 
 # ============================================

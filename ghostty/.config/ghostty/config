@@ -1,5 +1,23 @@
+# Theme
 theme = "Catppuccin Mocha"
-background-opacity = 0.99
+background-opacity = 0.92
+
+# Font
+font-family = IoskeleyMono
+
+# Shell integration (auto-detects zsh/fish/bash 4+)
+shell-integration = detect
+
+# Option key as Alt (for terminal apps like vim)
+macos-option-as-alt = true
+
+# Quick Terminal drop-down (requires Accessibility permission)
+keybind = global:cmd+grave_accent=toggle_quick_terminal
+quick-terminal-position = top
+quick-terminal-screen = mouse
+
+# Bell notifications (sound + title indicator, no dock bounce)
+bell-features = title
 
 # Yazi image preview support
 image-storage-limit = 320000000

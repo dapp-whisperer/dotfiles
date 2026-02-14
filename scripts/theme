@@ -1,0 +1,136 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+DOTFILES="$HOME/dotfiles"
+THEMES_DIR="$DOTFILES/themes"
+CURRENT_FILE="$THEMES_DIR/current"
+
+# ── Helpers ──────────────────────────────────────────────────────────
+
+die() { echo "Error: $1" >&2; exit 1; }
+
+list_themes() {
+    for d in "$THEMES_DIR"/*/; do
+        [[ -f "$d/manifest.toml" ]] && basename "$d"
+    done
+}
+
+# Parse a key from manifest.toml (grep-based, no external deps)
+manifest_get() {
+    local file="$1" key="$2"
+    grep "^${key} = " "$file" | head -1 | sed 's/^[^=]*= *"\(.*\)"/\1/'
+}
+
+# ── No args: show status ────────────────────────────────────────────
+
+if [[ $# -eq 0 ]]; then
+    current="(none)"
+    if [[ -f "$CURRENT_FILE" ]]; then
+        current="$(cat "$CURRENT_FILE" | tr -d '[:space:]')"
+    fi
+    echo "Current theme: $current"
+    echo ""
+    echo "Available themes:"
+    for t in $(list_themes); do
+        marker="  "
+        [[ "$t" == "$current" ]] && marker="* "
+        name=$(manifest_get "$THEMES_DIR/$t/manifest.toml" "name")
+        echo "  ${marker}${t}  ($name)"
+    done
+    exit 0
+fi
+
+# ── Switch theme ────────────────────────────────────────────────────
+
+THEME="$1"
+THEME_DIR="$THEMES_DIR/$THEME"
+
+# 1. Validate
+[[ -d "$THEME_DIR" ]] || die "Theme '$THEME' not found. Run 'theme' to list available themes."
+[[ -f "$THEME_DIR/manifest.toml" ]] || die "Theme '$THEME' is missing manifest.toml"
+
+# 2. Parse manifest
+MANIFEST="$THEME_DIR/manifest.toml"
+DISPLAY_NAME=$(manifest_get "$MANIFEST" "name")
+VARIANT=$(manifest_get "$MANIFEST" "variant")
+GHOSTTY_NAME=$(manifest_get "$MANIFEST" "ghostty")
+HELIX_NAME=$(manifest_get "$MANIFEST" "helix")
+ZELLIJ_NAME=$(manifest_get "$MANIFEST" "zellij")
+BTOP_NAME=$(manifest_get "$MANIFEST" "btop")
+NVIM_NAME=$(manifest_get "$MANIFEST" "neovim")
+DELTA_FEAT=$(manifest_get "$MANIFEST" "delta-feature")
+BAT_NAME=$(manifest_get "$MANIFEST" "bat-theme")
+
+# 3. Sed replacements on stow source files (positional patterns)
+sed -i '' "s/^theme = \".*\"/theme = \"${GHOSTTY_NAME}\"/" \
+    "$DOTFILES/ghostty/.config/ghostty/config"
+
+sed -i '' "s/^theme = \".*\"/theme = \"${HELIX_NAME}\"/" \
+    "$DOTFILES/helix/.config/helix/config.toml"
+
+sed -i '' "s/^theme \".*\"/theme \"${ZELLIJ_NAME}\"/" \
+    "$DOTFILES/zellij/.config/zellij/config.kdl"
+
+sed -i '' "s/^color_theme = \".*\"/color_theme = \"${BTOP_NAME}\"/" \
+    "$DOTFILES/btop/.config/btop/btop.conf"
+
+sed -i '' "s/colorscheme = \".*\"/colorscheme = \"${NVIM_NAME}\"/" \
+    "$DOTFILES/nvim/.config/nvim/lua/plugins/colorscheme.lua"
+
+sed -i '' "s/^	features = .*/	features = ${DELTA_FEAT}/" \
+    "$DOTFILES/git/.gitconfig"
+
+sed -i '' "s/^--theme=\".*\"/--theme=\"${BAT_NAME}\"/" \
+    "$DOTFILES/bat/.config/bat/config"
+
+# Yazi glow flag: variant-aware (dark/light)
+sed -i '' "s/-s=[a-z]*/-s=${VARIANT}/" \
+    "$DOTFILES/yazi/.config/yazi/yazi.toml"
+
+# 4. Full file replacements (stow source files)
+cp "$THEME_DIR/gitui-theme.ron" "$DOTFILES/gitui/.config/gitui/theme.ron"
+cp "$THEME_DIR/lazygit-config.yml" "$DOTFILES/lazygit/.config/lazygit/config.yml"
+
+if [[ -f "$THEME_DIR/zellij-colors.kdl" ]]; then
+    mkdir -p "$DOTFILES/zellij/.config/zellij/themes"
+    cp "$THEME_DIR/zellij-colors.kdl" "$DOTFILES/zellij/.config/zellij/themes/${ZELLIJ_NAME}.kdl"
+fi
+
+if [[ -f "$THEME_DIR/btop.theme" ]]; then
+    mkdir -p "$DOTFILES/btop/.config/btop/themes"
+    cp "$THEME_DIR/btop.theme" "$DOTFILES/btop/.config/btop/themes/${BTOP_NAME}.theme"
+fi
+
+if [[ -f "$THEME_DIR/yazi-theme.toml" ]]; then
+    cp "$THEME_DIR/yazi-theme.toml" "$DOTFILES/yazi/.config/yazi/theme.toml"
+fi
+
+# 5. Copy to non-stow destinations
+mkdir -p "$HOME/.config/delta"
+cp "$THEME_DIR/delta.gitconfig" "$HOME/.config/delta/theme.gitconfig"
+
+mkdir -p "$HOME/.config/fzf"
+cp "$THEME_DIR/fzf-theme.sh" "$HOME/.config/fzf/theme.sh"
+
+mkdir -p "$HOME/.config/bat/themes"
+cp "$THEME_DIR/bat.tmTheme" "$HOME/.config/bat/themes/"
+
+# 7. Live reloads (best-effort, non-fatal)
+bat cache --build 2>/dev/null || true
+
+# Try Neovim RPC reload
+for sock in "${XDG_RUNTIME_DIR:-/tmp}"/nvim-*.sock /tmp/nvim-*/0 ; do
+    [[ -S "$sock" ]] && nvim --server "$sock" --remote-send ":colorscheme ${NVIM_NAME}<CR>" 2>/dev/null || true
+done
+
+# Ghostty, Zellij, Helix, btop: auto-reload on config file change
+
+# 8. Write current LAST (signals complete application)
+echo "$THEME" > "$CURRENT_FILE"
+
+# 9. Print summary
+echo "Switched to: $DISPLAY_NAME"
+echo ""
+echo "Auto-reloaded: Ghostty, Zellij, Helix, btop, bat"
+echo "Restart needed: lazygit, gitui, yazi"
+echo "New shell needed: fzf"

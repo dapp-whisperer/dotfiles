@@ -1,0 +1,12 @@
+[meta]
+name = "Catppuccin Mocha"
+variant = "dark"
+
+[named]
+ghostty = "Catppuccin Mocha"
+helix = "catppuccin_mocha"
+zellij = "catppuccin-mocha"
+btop = "catppuccin_mocha"
+neovim = "catppuccin-mocha"
+delta-feature = "catppuccin-mocha"
+bat-theme = "Catppuccin Mocha"

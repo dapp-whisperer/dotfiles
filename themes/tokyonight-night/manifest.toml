@@ -1,0 +1,12 @@
+[meta]
+name = "Tokyo Night"
+variant = "dark"
+
+[named]
+ghostty = "TokyoNight Night"
+helix = "tokyonight_night"
+zellij = "tokyonight-night"
+btop = "tokyonight_night"
+neovim = "tokyonight-night"
+delta-feature = "tokyonight-night"
+bat-theme = "tokyonight_night"
