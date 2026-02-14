@@ -274,6 +274,15 @@ if [ -d "$HOME/.config/nvim" ] && [ ! -L "$HOME/.config/nvim" ]; then
     fi
 fi
 
+# Generate theme-managed files before stow (so symlink targets exist)
+SAVED_THEME="catppuccin-mocha"
+[[ -f "$DOTFILES_DIR/themes/current" ]] && SAVED_THEME="$(tr -d '[:space:]' < "$DOTFILES_DIR/themes/current")"
+SAVED_THEME_DIR="$DOTFILES_DIR/themes/$SAVED_THEME"
+if [[ -d "$SAVED_THEME_DIR" ]]; then
+    cat "$DOTFILES_DIR/lazygit/base-config.yml" "$SAVED_THEME_DIR/lazygit-theme.yml" \
+        > "$DOTFILES_DIR/lazygit/.config/lazygit/config.yml" 2>/dev/null || true
+fi
+
 # Stow each package
 for package in zsh git yazi zellij helix nvim lazygit tmux ghostty gitui btop bat; do
     if [[ -d "$package" ]]; then
@@ -439,7 +448,7 @@ fi
 step "Restoring theme..."
 
 if [[ -f "$DOTFILES_DIR/themes/current" ]]; then
-    ACTIVE_THEME="$(cat "$DOTFILES_DIR/themes/current" | tr -d '[:space:]')"
+    ACTIVE_THEME="$(tr -d '[:space:]' < "$DOTFILES_DIR/themes/current")"
     if [[ -n "$ACTIVE_THEME" && -d "$DOTFILES_DIR/themes/$ACTIVE_THEME" ]]; then
         "$DOTFILES_DIR/scripts/theme" "$ACTIVE_THEME" || warn "Could not restore theme '$ACTIVE_THEME'"
     fi

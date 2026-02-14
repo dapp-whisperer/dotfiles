@@ -15,19 +15,29 @@ list_themes() {
     done
 }
 
-# Parse a key from manifest.toml (grep-based, no external deps)
+# Parse a key from manifest (grep -F for literal match, [^"]* for non-greedy)
 manifest_get() {
     local file="$1" key="$2"
-    grep "^${key} = " "$file" | head -1 | sed 's/^[^=]*= *"\(.*\)"/\1/'
+    grep -F "${key} = " "$file" | head -1 | sed 's/^[^=]*= *"\([^"]*\)"/\1/'
+}
+
+# Validate that a value contains only safe characters (alphanumeric, spaces, hyphens, underscores, dots)
+validate_value() {
+    local val="$1" label="$2"
+    [[ "$val" =~ ^[a-zA-Z0-9_.\ -]+$ ]] || die "Invalid manifest value for '$label': $val"
+}
+
+# Sed helper for common key = "value" pattern
+replace_quoted() {
+    local key="$1" value="$2" file="$3"
+    sed -i '' "s/^${key} = \".*\"/${key} = \"${value}\"/" "$file"
 }
 
 # ── No args: show status ────────────────────────────────────────────
 
 if [[ $# -eq 0 ]]; then
     current="(none)"
-    if [[ -f "$CURRENT_FILE" ]]; then
-        current="$(cat "$CURRENT_FILE" | tr -d '[:space:]')"
-    fi
+    [[ -f "$CURRENT_FILE" ]] && current="$(tr -d '[:space:]' < "$CURRENT_FILE")"
     echo "Current theme: $current"
     echo ""
     echo "Available themes:"
@@ -43,13 +53,15 @@ fi
 # ── Switch theme ────────────────────────────────────────────────────
 
 THEME="$1"
+[[ "$THEME" =~ ^[a-zA-Z0-9_-]+$ ]] || die "Invalid theme name (only alphanumeric, hyphens, underscores allowed)"
+
 THEME_DIR="$THEMES_DIR/$THEME"
 
-# 1. Validate
+# Validate theme exists
 [[ -d "$THEME_DIR" ]] || die "Theme '$THEME' not found. Run 'theme' to list available themes."
 [[ -f "$THEME_DIR/manifest.toml" ]] || die "Theme '$THEME' is missing manifest.toml"
 
-# 2. Parse manifest
+# Parse manifest
 MANIFEST="$THEME_DIR/manifest.toml"
 DISPLAY_NAME=$(manifest_get "$MANIFEST" "name")
 VARIANT=$(manifest_get "$MANIFEST" "variant")
@@ -58,21 +70,27 @@ HELIX_NAME=$(manifest_get "$MANIFEST" "helix")
 ZELLIJ_NAME=$(manifest_get "$MANIFEST" "zellij")
 BTOP_NAME=$(manifest_get "$MANIFEST" "btop")
 NVIM_NAME=$(manifest_get "$MANIFEST" "neovim")
-DELTA_FEAT=$(manifest_get "$MANIFEST" "delta-feature")
-BAT_NAME=$(manifest_get "$MANIFEST" "bat-theme")
+DELTA_FEAT=$(manifest_get "$MANIFEST" "delta")
+BAT_NAME=$(manifest_get "$MANIFEST" "bat")
 
-# 3. Sed replacements on stow source files (positional patterns)
-sed -i '' "s/^theme = \".*\"/theme = \"${GHOSTTY_NAME}\"/" \
-    "$DOTFILES/ghostty/.config/ghostty/config"
+# Validate all parsed values
+validate_value "$DISPLAY_NAME" "name"
+validate_value "$VARIANT" "variant"
+validate_value "$GHOSTTY_NAME" "ghostty"
+validate_value "$HELIX_NAME" "helix"
+validate_value "$ZELLIJ_NAME" "zellij"
+validate_value "$BTOP_NAME" "btop"
+validate_value "$NVIM_NAME" "neovim"
+validate_value "$DELTA_FEAT" "delta"
+validate_value "$BAT_NAME" "bat"
 
-sed -i '' "s/^theme = \".*\"/theme = \"${HELIX_NAME}\"/" \
-    "$DOTFILES/helix/.config/helix/config.toml"
+# Sed replacements on stow source files (positional patterns)
+replace_quoted "theme" "$GHOSTTY_NAME" "$DOTFILES/ghostty/.config/ghostty/config"
+replace_quoted "theme" "$HELIX_NAME" "$DOTFILES/helix/.config/helix/config.toml"
+replace_quoted "color_theme" "$BTOP_NAME" "$DOTFILES/btop/.config/btop/btop.conf"
 
 sed -i '' "s/^theme \".*\"/theme \"${ZELLIJ_NAME}\"/" \
     "$DOTFILES/zellij/.config/zellij/config.kdl"
-
-sed -i '' "s/^color_theme = \".*\"/color_theme = \"${BTOP_NAME}\"/" \
-    "$DOTFILES/btop/.config/btop/btop.conf"
 
 sed -i '' "s/colorscheme = \".*\"/colorscheme = \"${NVIM_NAME}\"/" \
     "$DOTFILES/nvim/.config/nvim/lua/plugins/colorscheme.lua"
@@ -87,9 +105,12 @@ sed -i '' "s/^--theme=\".*\"/--theme=\"${BAT_NAME}\"/" \
 sed -i '' "s/-s=[a-z]*/-s=${VARIANT}/" \
     "$DOTFILES/yazi/.config/yazi/yazi.toml"
 
-# 4. Full file replacements (stow source files)
+# Full file replacements (stow source files)
 cp "$THEME_DIR/gitui-theme.ron" "$DOTFILES/gitui/.config/gitui/theme.ron"
-cp "$THEME_DIR/lazygit-config.yml" "$DOTFILES/lazygit/.config/lazygit/config.yml"
+
+# LazyGit: concatenate base behavioral config + theme color overlay
+cat "$DOTFILES/lazygit/base-config.yml" "$THEME_DIR/lazygit-theme.yml" \
+    > "$DOTFILES/lazygit/.config/lazygit/config.yml"
 
 if [[ -f "$THEME_DIR/zellij-colors.kdl" ]]; then
     mkdir -p "$DOTFILES/zellij/.config/zellij/themes"
@@ -105,7 +126,7 @@ if [[ -f "$THEME_DIR/yazi-theme.toml" ]]; then
     cp "$THEME_DIR/yazi-theme.toml" "$DOTFILES/yazi/.config/yazi/theme.toml"
 fi
 
-# 5. Copy to non-stow destinations
+# Copy to non-stow destinations
 mkdir -p "$HOME/.config/delta"
 cp "$THEME_DIR/delta.gitconfig" "$HOME/.config/delta/theme.gitconfig"
 
@@ -115,20 +136,20 @@ cp "$THEME_DIR/fzf-theme.sh" "$HOME/.config/fzf/theme.sh"
 mkdir -p "$HOME/.config/bat/themes"
 cp "$THEME_DIR/bat.tmTheme" "$HOME/.config/bat/themes/"
 
-# 7. Live reloads (best-effort, non-fatal)
+# Live reloads (best-effort, non-fatal)
 bat cache --build 2>/dev/null || true
 
-# Try Neovim RPC reload
+# Neovim RPC reload
 for sock in "${XDG_RUNTIME_DIR:-/tmp}"/nvim-*.sock /tmp/nvim-*/0 ; do
     [[ -S "$sock" ]] && nvim --server "$sock" --remote-send ":colorscheme ${NVIM_NAME}<CR>" 2>/dev/null || true
 done
 
 # Ghostty, Zellij, Helix, btop: auto-reload on config file change
 
-# 8. Write current LAST (signals complete application)
+# Write current LAST (signals complete application)
 echo "$THEME" > "$CURRENT_FILE"
 
-# 9. Print summary
+# Print summary
 echo "Switched to: $DISPLAY_NAME"
 echo ""
 echo "Auto-reloaded: Ghostty, Zellij, Helix, btop, bat"
