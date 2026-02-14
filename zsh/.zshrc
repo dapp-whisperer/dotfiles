@@ -51,3 +51,9 @@ export PATH="$HOME/.local/bin:$PATH"
 # opencode
 export PATH="$HOME/.opencode/bin:$PATH"
 export PATH="$HOME/code/codex/.local/bin:$PATH"
+
+# Theme: fzf colors + BAT_THEME (managed by `theme` command)
+[[ -f "$HOME/.config/fzf/theme.sh" ]] && source "$HOME/.config/fzf/theme.sh"
+
+# Dotfiles scripts
+export PATH="$HOME/dotfiles/scripts:$PATH"

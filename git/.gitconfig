@@ -9,13 +9,13 @@
 	diffFilter = delta --color-only
 
 [include]
-	path = ~/.config/delta/catppuccin.gitconfig
+	path = ~/.config/delta/theme.gitconfig
 
 [delta]
 	line-numbers = false
 	dark = true
 	navigate = true
-	features = catppuccin-mocha
+	features = tokyonight-night
 
 [merge]
 	conflictStyle = zdiff3
