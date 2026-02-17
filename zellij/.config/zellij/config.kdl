@@ -1,10 +1,13 @@
 theme "catppuccin-mocha"
 pane_frames false
+scroll_buffer_size 200000
+scrollback_editor "/opt/homebrew/bin/hx"
 
 keybinds {
     shared_except "locked" {
         bind "Alt m" { ToggleFocusFullscreen; }
         bind "Alt y" { Run "yazi" { floating true; }; }
+        unbind "Alt f"
         unbind "Alt Left" "Alt Down" "Alt Up" "Alt Right"
     }
     tmux {
@@ -25,7 +28,7 @@ keybinds {
         // Pane actions
         bind "x" { CloseFocus; SwitchToMode "Normal"; }
         bind "z" { ToggleFocusFullscreen; SwitchToMode "Normal"; }
-        bind "f" { ToggleFocusFullscreen; SwitchToMode "Normal"; }
+        bind "f" { ToggleFloatingPanes; SwitchToMode "Normal"; }
         bind "w" { ToggleFloatingPanes; SwitchToMode "Normal"; }
         bind "o" { FocusNextPane; }
 
@@ -54,6 +57,7 @@ keybinds {
 
         // Scroll / search
         bind "[" { SwitchToMode "Scroll"; }
+        bind "e" { EditScrollback; SwitchToMode "Normal"; }
 
         // Sub-mode access
         bind "m" { SwitchToMode "Move"; }
