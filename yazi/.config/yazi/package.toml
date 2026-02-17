@@ -8,5 +8,7 @@ use = "alberti42/faster-piper"
 rev = "8b794bf"
 hash = "fac71f8ce9447ad509b5aad9e0d8c694"
 
-[flavor]
-deps = []
+[[flavor.deps]]
+use = "yazi-rs/flavors:catppuccin-mocha"
+rev = "4c57537"
+hash = "8eabb4e88096f10905a6df62cfaadbf4"
