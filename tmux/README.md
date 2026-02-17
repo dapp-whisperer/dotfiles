@@ -42,8 +42,8 @@ Prefix is `Ctrl+B` (default).
 
 | Key | Action |
 |-----|--------|
-| `prefix+h` | Split pane horizontally |
-| `prefix+v` | Split pane vertically |
+| `prefix+h` | Split pane right (horizontal layout) |
+| `prefix+v` | Split pane below (vertical layout) |
 | `prefix+r` | Reload config |
 | `prefix+z` | Toggle pane zoom |
 | `prefix+[` | Enter copy mode (vi keys: `h/j/k/l`, `v` select, `y` yank) |
@@ -101,7 +101,6 @@ tmux
 
 ## Dependencies
 
-All installed via Brewfile:
-- `fzf` (tmux-fzf-url, sessionx)
-- `zoxide` (sessionx zoxide mode)
-- `rustc` (tmux-thumbs compilation)
+- `fzf` (tmux-fzf-url, sessionx) — Brewfile
+- `zoxide` (sessionx zoxide mode) — Brewfile
+- `rust` (tmux-thumbs compilation) — Brewfile via `rustup-init`, initialized by install.sh
