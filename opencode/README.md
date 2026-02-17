@@ -38,6 +38,29 @@ stow --simulate --verbose=1 opencode
 - Home paths are symlinks, so edits in either location affect the same content
 - Keep machine-local artifacts out of this package (for example `node_modules/`)
 
+## Local-Only Overrides
+
+Keep personal MCP servers out of git by creating a local override file:
+
+```json
+{
+  "mcp": {
+    "linear": {
+      "type": "remote",
+      "url": "https://mcp.linear.app/mcp",
+      "enabled": true
+    }
+  }
+}
+```
+
+Write this file at either path:
+
+- `~/.config/opencode/opencode.local.json`
+- `~/dotfiles/.local/opencode/opencode.local.json`
+
+`zsh/.zshrc` checks `~/.config/opencode/opencode.local.json` first, then falls back to `~/dotfiles/.local/opencode/opencode.local.json`, and exports `OPENCODE_CONFIG` when one exists.
+
 ## Theme Notes
 
 - Default theme is `catppuccin-mocha-glass`

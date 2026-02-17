@@ -46,6 +46,7 @@ Prefix is `Ctrl+B` (default).
 | `prefix+v` | Split pane below (vertical layout) |
 | `prefix+r` | Reload config |
 | `prefix+D` | Detach tmux client |
+| `prefix+x` | Kill pane (no confirmation prompt) |
 | `prefix+z` | Toggle pane zoom |
 | `prefix+[` | Enter copy mode (vi keys: `h/j/k/l`, `v` select, `y` yank) |
 | `prefix+Space` | Tmux-thumbs: text hint overlay for copying |
@@ -93,6 +94,7 @@ This is because the `#{E:}` format strings reference variables that catppuccin d
 - Windows auto-renumber on close
 - Activity monitoring with visual alerts
 - Floax scratch session pre-warmed on startup for instant toggle
+- Mouse drag selection copies to clipboard
 
 ## First Run
 

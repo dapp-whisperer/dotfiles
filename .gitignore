@@ -41,3 +41,5 @@ tmux/.config/tmux/plugins/
 # Review todos (local workflow)
 todos/
 
+# Local machine-only overrides
+.local/opencode/

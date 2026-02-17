@@ -22,9 +22,9 @@ alias lt='lsd --tree'
 fz() { fzf --bind 'enter:become(realpath {})' | pbcopy; }
 
 # DANGEROUS: These bypass security controls - use only when you trust the context
-alias UNSAFE_codex='codex --search --dangerously-bypass-approvals-and-sandbox'
-alias UNSAFE_claude='claude --dangerously-skip-permissions'
+alias codexr='codex --search --dangerously-bypass-approvals-and-sandbox'
 alias clod='claude --dangerously-skip-permissions'
+alias cx='claude --dangerously-skip-permissions'
 
 # Always use inline mode for Codex so output remains in terminal scrollback.
 codex() {
@@ -33,6 +33,11 @@ codex() {
 
 # Load local secrets if they exist (API keys, etc.)
 [[ -f "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
+
+# OpenCode local override (private, machine-specific)
+OPENCODE_LOCAL_CONFIG="$HOME/.config/opencode/opencode.local.json"
+[[ -f "$OPENCODE_LOCAL_CONFIG" ]] || OPENCODE_LOCAL_CONFIG="$HOME/dotfiles/.local/opencode/opencode.local.json"
+[[ -f "$OPENCODE_LOCAL_CONFIG" ]] && export OPENCODE_CONFIG="$OPENCODE_LOCAL_CONFIG"
 
 # Homebrew
 if [[ -f /opt/homebrew/bin/brew ]]; then
