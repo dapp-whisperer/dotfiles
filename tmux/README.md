@@ -45,6 +45,7 @@ Prefix is `Ctrl+B` (default).
 | `prefix+h` | Split pane right (horizontal layout) |
 | `prefix+v` | Split pane below (vertical layout) |
 | `prefix+r` | Reload config |
+| `prefix+D` | Detach tmux client |
 | `prefix+z` | Toggle pane zoom |
 | `prefix+[` | Enter copy mode (vi keys: `h/j/k/l`, `v` select, `y` yank) |
 | `prefix+Space` | Tmux-thumbs: text hint overlay for copying |
@@ -84,19 +85,31 @@ This is because the `#{E:}` format strings reference variables that catppuccin d
 - OSC 52 clipboard
 - Extended keys (Shift+Enter, Ctrl+J passthrough)
 
+## General Behavior
+
+- Mouse enabled (scroll, select panes, resize)
+- Scrollback buffer: 1,000,000 lines
+- Windows and panes numbered from 1 (not 0)
+- Windows auto-renumber on close
+- Activity monitoring with visual alerts
+- Floax scratch session pre-warmed on startup for instant toggle
+
 ## First Run
 
 ```bash
 # 1. Clone TPM (if not already installed)
 git clone https://github.com/tmux-plugins/tpm ~/.config/tmux/plugins/tpm
 
-# 2. Start tmux
+# 2. Start tmux (status bar will be unstyled until plugins install)
 tmux
 
 # 3. Install plugins
 # Press prefix+I (Ctrl+B then Shift+I)
 
-# 4. First prefix+Space triggers tmux-thumbs Rust compilation (~30s)
+# 4. Reload config to ensure clean state
+# Press prefix+r
+
+# 5. First prefix+Space triggers tmux-thumbs Rust compilation (~30s)
 ```
 
 ## Dependencies
