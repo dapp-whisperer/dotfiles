@@ -12,26 +12,29 @@ The script will prompt for your GitHub username.
 
 ## What's Included
 
-| Tool | Purpose |
-|------|---------|
-| **git** | Version control with delta diffs |
-| **helix** | Text editor (default) |
-| **neovim** | Text editor (LazyVim) |
-| **tmux** | Terminal multiplexer |
-| **zellij** | Terminal multiplexer (alternative) |
-| **yazi** | Terminal file manager |
-| **lazygit** | Git TUI |
-| **ghostty** | Terminal emulator |
-| **gitui** | Git TUI (alternative) |
-| **btop** | System monitor |
-| **delta** | Syntax-highlighted diffs |
-| **bat** | Cat with syntax highlighting |
-| **glow** | Markdown renderer |
-| **claude** | Claude Code CLI |
-| **codex** | OpenAI Codex CLI |
-| **rust** | Rust toolchain with rust-analyzer |
+| Tool         | Purpose                            |
+| ------------ | ---------------------------------- |
+| **git**      | Version control with delta diffs   |
+| **helix**    | Text editor (default)              |
+| **neovim**   | Text editor (LazyVim)              |
+| **tmux**     | Terminal multiplexer               |
+| **zellij**   | Terminal multiplexer (alternative) |
+| **yazi**     | Terminal file manager              |
+| **lazygit**  | Git TUI                            |
+| **ghostty**  | Terminal emulator                  |
+| **gitui**    | Git TUI (alternative)              |
+| **btop**     | System monitor                     |
+| **delta**    | Syntax-highlighted diffs           |
+| **bat**      | Cat with syntax highlighting       |
+| **glow**     | Markdown renderer                  |
+| **claude**   | Claude Code CLI                    |
+| **codex**    | OpenAI Codex CLI                   |
+| **opencode** | OpenCode CLI + custom theme        |
+| **rust**     | Rust toolchain with rust-analyzer  |
 
 ## Directory Structure
+
+OpenCode details: see `opencode/README.md`.
 
 ```
 ~/dotfiles/
@@ -47,12 +50,14 @@ The script will prompt for your GitHub username.
 ├── lazygit/.config/lazygit/ # LazyGit
 ├── ghostty/.config/ghostty/ # Ghostty terminal
 ├── gitui/.config/gitui/    # GitUI
-└── btop/.config/btop/      # btop system monitor
+├── btop/.config/btop/      # btop system monitor
+└── opencode/.config/opencode/ # OpenCode config, themes, agents, skills
 ```
 
 ## Key Features
 
 - **Theme:** Catppuccin Mocha across all tools
+- **OpenCode setup:** `catppuccin-mocha-glass` theme + versioned `agents/` and `skills/`
 - `dev` - Opens Yazi + Claude split layout in Zellij
 - `Enter` in Yazi - Edit file in Neovim (returns to Yazi on quit)
 - `e` in Yazi - View markdown with glow
@@ -61,15 +66,15 @@ The script will prompt for your GitHub username.
 
 ## LazyVim Quick Reference
 
-| Key | Action |
-|-----|--------|
-| `Space f f` | Find files |
+| Key         | Action                 |
+| ----------- | ---------------------- |
+| `Space f f` | Find files             |
 | `Space s g` | Search in files (grep) |
-| `Space e` | File explorer |
-| `g d` | Go to definition |
-| `g r` | Go to references |
-| `K` | Hover documentation |
-| `Space c a` | Code actions |
+| `Space e`   | File explorer          |
+| `g d`       | Go to definition       |
+| `g r`       | Go to references       |
+| `K`         | Hover documentation    |
+| `Space c a` | Code actions           |
 
 **First run note:** On first launch, Neovim downloads plugins (~30-60 seconds). Subsequent launches are instant.
 
