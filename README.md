@@ -17,7 +17,7 @@ The script will prompt for your GitHub username.
 | **git**      | Version control with delta diffs   |
 | **helix**    | Text editor (default)              |
 | **neovim**   | Text editor (LazyVim)              |
-| **tmux**     | Terminal multiplexer               |
+| **tmux**     | Terminal multiplexer ([details](tmux/README.md)) |
 | **zellij**   | Terminal multiplexer (alternative) |
 | **yazi**     | Terminal file manager              |
 | **lazygit**  | Git TUI                            |
@@ -34,7 +34,7 @@ The script will prompt for your GitHub username.
 
 ## Directory Structure
 
-OpenCode details: see `opencode/README.md`.
+Tool details: see [tmux/README.md](tmux/README.md), [opencode/README.md](opencode/README.md).
 
 ```
 ~/dotfiles/
