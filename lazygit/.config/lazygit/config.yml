@@ -27,6 +27,6 @@ gui:
   authorColors:
     "*": "#b4befe"
 git:
-  paging:
-    colorArg: always
-    pager: delta --paging=never --features=catppuccin-mocha
+  pagers:
+    - colorArg: always
+      pager: delta --paging=never --features=catppuccin-mocha
