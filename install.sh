@@ -273,7 +273,7 @@ if [ -d "$HOME/.config/nvim" ] && [ ! -L "$HOME/.config/nvim" ]; then
 fi
 
 # Stow each package
-for package in zsh git yazi zellij helix nvim lazygit tmux ghostty gitui btop; do
+for package in zsh git yazi zellij helix nvim lazygit delta tmux ghostty gitui btop; do
     if [[ -d "$package" ]]; then
         info "Stowing $package..."
         # Use --adopt to take ownership of existing files, then restore from git
@@ -308,16 +308,6 @@ else
     info "Catppuccin Mocha theme already installed"
 fi
 
-# Download Catppuccin delta theme
-DELTA_THEME="$HOME/.config/delta/catppuccin.gitconfig"
-if [[ ! -f "$DELTA_THEME" ]]; then
-    info "Downloading Catppuccin delta theme..."
-    mkdir -p "$HOME/.config/delta"
-    curl -fsSL "https://github.com/catppuccin/delta/raw/main/catppuccin.gitconfig" \
-        -o "$DELTA_THEME" || warn "Could not download Catppuccin delta theme"
-else
-    info "Catppuccin delta theme already installed"
-fi
 
 # macOS: LazyGit uses ~/Library/Application Support/lazygit instead of ~/.config/lazygit
 if [[ "$OS" == "macos" ]]; then
