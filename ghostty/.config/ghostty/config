@@ -1,23 +1,23 @@
-# Theme
-theme = "TokyoNight Night"
-background-opacity = 0.92
-
-# Font
-font-family = IoskeleyMono
-
-# Shell integration (auto-detects zsh/fish/bash 4+)
-shell-integration = detect
-
-# Option key as Alt (for terminal apps like vim)
-macos-option-as-alt = true
-
-# Quick Terminal drop-down (requires Accessibility permission)
-keybind = global:cmd+grave_accent=toggle_quick_terminal
-quick-terminal-position = top
-quick-terminal-screen = mouse
-
-# Bell notifications (sound + title indicator, no dock bounce)
-bell-features = title
+theme = "Catppuccin Mocha"
+font-family = "JetBrains Mono"
+background-opacity = 0.95
+background-blur-radius = 20
 
 # Yazi image preview support
 image-storage-limit = 320000000
+
+# tmux-style keybindings (leader: ctrl+space)
+# Splits
+keybind = ctrl+space>r=new_split:right
+keybind = ctrl+space>d=new_split:down
+keybind = ctrl+space>z=toggle_split_zoom
+keybind = ctrl+space>x=close_surface
+# Split navigation
+keybind = ctrl+space>h=goto_split:left
+keybind = ctrl+space>j=goto_split:down
+keybind = ctrl+space>k=goto_split:up
+keybind = ctrl+space>l=goto_split:right
+# Tabs
+keybind = ctrl+space>c=new_tab
+keybind = ctrl+space>n=next_tab
+keybind = ctrl+space>p=previous_tab

@@ -1,5 +1,4 @@
--- Enable Rust language support via LazyVim extra
--- This provides rust-analyzer LSP, treesitter highlighting, and debugging
-return {
-  { import = "lazyvim.plugins.extras.lang.rust" },
-}
+-- Rust language customizations
+-- The lazyvim.plugins.extras.lang.rust extra is imported in config/lazy.lua
+-- Add any additional Rust plugin overrides here
+return {}

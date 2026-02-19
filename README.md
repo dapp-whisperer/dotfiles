@@ -12,26 +12,29 @@ The script will prompt for your GitHub username.
 
 ## What's Included
 
-| Tool | Purpose |
-|------|---------|
-| **git** | Version control with delta diffs |
-| **helix** | Text editor (default) |
-| **neovim** | Text editor (LazyVim) |
-| **tmux** | Terminal multiplexer |
-| **zellij** | Terminal multiplexer (alternative) |
-| **yazi** | Terminal file manager |
-| **lazygit** | Git TUI |
-| **ghostty** | Terminal emulator |
-| **gitui** | Git TUI (alternative) |
-| **btop** | System monitor |
-| **delta** | Syntax-highlighted diffs |
-| **bat** | Cat with syntax highlighting |
-| **glow** | Markdown renderer |
-| **claude** | Claude Code CLI |
-| **codex** | OpenAI Codex CLI |
-| **rust** | Rust toolchain with rust-analyzer |
+| Tool         | Purpose                            |
+| ------------ | ---------------------------------- |
+| **git**      | Version control with delta diffs   |
+| **helix**    | Text editor (default)              |
+| **neovim**   | Text editor (LazyVim)              |
+| **tmux**     | Terminal multiplexer ([details](tmux/README.md)) |
+| **zellij**   | Terminal multiplexer (alternative) |
+| **yazi**     | Terminal file manager              |
+| **lazygit**  | Git TUI                            |
+| **ghostty**  | Terminal emulator                  |
+| **gitui**    | Git TUI (alternative)              |
+| **btop**     | System monitor                     |
+| **delta**    | Syntax-highlighted diffs           |
+| **bat**      | Cat with syntax highlighting       |
+| **glow**     | Markdown renderer                  |
+| **claude**   | Claude Code CLI                    |
+| **codex**    | OpenAI Codex CLI                   |
+| **opencode** | OpenCode CLI + custom theme        |
+| **rust**     | Rust toolchain with rust-analyzer  |
 
 ## Directory Structure
+
+Tool details: see [tmux/README.md](tmux/README.md), [opencode/README.md](opencode/README.md).
 
 ```
 ~/dotfiles/
@@ -47,29 +50,31 @@ The script will prompt for your GitHub username.
 ├── lazygit/.config/lazygit/ # LazyGit
 ├── ghostty/.config/ghostty/ # Ghostty terminal
 ├── gitui/.config/gitui/    # GitUI
-└── btop/.config/btop/      # btop system monitor
+├── btop/.config/btop/      # btop system monitor
+└── opencode/.config/opencode/ # OpenCode config, themes, agents, skills
 ```
 
 ## Key Features
 
 - **Theme:** Catppuccin Mocha across all tools
+- **OpenCode setup:** `catppuccin-mocha-glass` theme + versioned `agents/` and `skills/`
 - `dev` - Opens Yazi + Claude split layout in Zellij
-- `Enter` in Yazi - Edit file in Neovim (returns to Yazi on quit)
+- `Enter` in Yazi - Edit file in Helix (returns to Yazi on quit)
 - `e` in Yazi - View markdown with glow
 - `Alt+m` in Zellij - Toggle fullscreen pane
 - `Space` in Neovim - Leader key for commands
 
 ## LazyVim Quick Reference
 
-| Key | Action |
-|-----|--------|
-| `Space f f` | Find files |
+| Key         | Action                 |
+| ----------- | ---------------------- |
+| `Space f f` | Find files             |
 | `Space s g` | Search in files (grep) |
-| `Space e` | File explorer |
-| `g d` | Go to definition |
-| `g r` | Go to references |
-| `K` | Hover documentation |
-| `Space c a` | Code actions |
+| `Space e`   | File explorer          |
+| `g d`       | Go to definition       |
+| `g r`       | Go to references       |
+| `K`         | Hover documentation    |
+| `Space c a` | Code actions           |
 
 **First run note:** On first launch, Neovim downloads plugins (~30-60 seconds). Subsequent launches are instant.
 
@@ -86,6 +91,51 @@ export GEMINI_API_KEY="your-key-here"
 ```bash
 cd ~/dotfiles && git pull && stow --restow */
 ```
+
+## Updating an Existing Machine
+
+If the machine already has most tools installed, prefer this safe update flow:
+
+```bash
+# 1) Update repo
+cd ~/dotfiles
+git fetch
+git status
+git pull --rebase
+
+# 2) Preview symlink changes
+stow --simulate --verbose=1 --target="$HOME" --restow \
+  zsh git yazi zellij helix nvim lazygit delta tmux ghostty gitui btop opencode
+
+# 3) Apply if preview looks correct
+stow --target="$HOME" --restow \
+  zsh git yazi zellij helix nvim lazygit delta tmux ghostty gitui btop opencode
+
+# 4) Reload shell
+source ~/.zshrc
+```
+
+### Should You Run `install.sh` for Updates?
+
+You can, but it is a full bootstrap script and more invasive than the flow above.
+
+### What Update Operations Can Override
+
+- Managed config files under stowed paths (for example `~/.config/tmux/tmux.conf`, `~/.zshrc`)
+- Existing files at managed paths when using `stow --adopt` (used by `install.sh`)
+- macOS LazyGit config at `~/Library/Application Support/lazygit/config.yml` (relinked by `install.sh`)
+
+### What Usually Stays Intact
+
+- `~/.zshrc.local` (created only if missing)
+- `~/.gitconfig.local` (created only if missing; existing values reused)
+- Unmanaged files outside stowed paths
+- Extra packages not listed in Brewfile (not automatically removed)
+
+### Dirty Working Tree Warning
+
+If `~/dotfiles` has uncommitted changes, `install.sh` skips `git pull` and also skips its restore checkout step.  
+That can leave adopted local content in your dotfiles tree. Commit or stash first.
 
 ## Testing on Ubuntu
 

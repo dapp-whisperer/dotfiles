@@ -32,8 +32,9 @@ id_ecdsa*
 docs/plans/
 docs/brainstorms/
 
-# Yazi plugins (installed via ya pack)
+# Yazi packages (installed via ya pkg)
 yazi/.config/yazi/plugins/
+yazi/.config/yazi/flavors/
 
 # Tmux plugins (installed via TPM)
 tmux/.config/tmux/plugins/
@@ -49,3 +50,11 @@ lazygit/.config/lazygit/config.yml
 # Review todos (local workflow)
 todos/
 
+# OpenCode backups
+opencode/.config/opencode/*.bak.*
+
+# Test framework vendored deps
+tests/lib/
+
+# Local machine-only overrides
+.local/opencode/

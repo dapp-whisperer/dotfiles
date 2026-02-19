@@ -1,4 +1,9 @@
 [[mgr.prepend_keymap]]
+on   = "F"
+run  = 'shell "open -R $@" --confirm'
+desc = "Reveal in Finder"
+
+[[mgr.prepend_keymap]]
 on   = "T"
 run  = '''shell 'bash ~/.config/yazi/scripts/open-typora.sh "$@"' '''
 desc = "Open in Typora"
@@ -12,3 +17,8 @@ desc = "Open in floating pane (90%)"
 on   = "e"
 run  = '''shell 'glow -p -w 80 "$@"' --block'''
 desc = "View with glow"
+
+[[mgr.prepend_keymap]]
+on   = ["g", "i"]
+run  = "plugin lazygit"
+desc = "Open lazygit"

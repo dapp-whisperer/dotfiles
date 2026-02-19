@@ -264,6 +264,7 @@ mkdir -p "$HOME/.config/tmux"
 mkdir -p "$HOME/.config/ghostty"
 mkdir -p "$HOME/.config/gitui"
 mkdir -p "$HOME/.config/btop/themes"
+mkdir -p "$HOME/.config/opencode/themes"
 
 # Backup existing nvim config if it exists and is not a symlink
 if [ -d "$HOME/.config/nvim" ] && [ ! -L "$HOME/.config/nvim" ]; then
@@ -284,7 +285,7 @@ if [[ -d "$SAVED_THEME_DIR" ]]; then
 fi
 
 # Stow each package
-for package in zsh git yazi zellij helix nvim lazygit tmux ghostty gitui btop bat; do
+for package in zsh git yazi zellij helix nvim lazygit delta tmux ghostty gitui btop bat opencode; do
     if [[ -d "$package" ]]; then
         info "Stowing $package..."
         # Use --adopt to take ownership of existing files, then restore from git
@@ -299,6 +300,26 @@ if git -C "$DOTFILES_DIR" diff --quiet && git -C "$DOTFILES_DIR" diff --cached -
 else
     warn "Local changes detected; skipping git checkout"
 fi
+
+# ============================================
+# STEP 6.5: Install Bat/Delta theme (Catppuccin Mocha)
+# ============================================
+step "Installing Catppuccin Mocha syntax theme..."
+
+CATPPUCCIN_THEME="$HOME/.config/bat/themes/Catppuccin Mocha.tmTheme"
+if [[ ! -f "$CATPPUCCIN_THEME" ]]; then
+    info "Downloading Catppuccin Mocha theme for Bat/Delta..."
+    curl -fsSL "https://github.com/catppuccin/bat/raw/main/themes/Catppuccin%20Mocha.tmTheme" \
+        -o "$CATPPUCCIN_THEME" || warn "Could not download Catppuccin Mocha theme"
+
+    if command -v bat &>/dev/null; then
+        bat cache --build || warn "Could not rebuild bat cache"
+        info "Catppuccin Mocha theme installed"
+    fi
+else
+    info "Catppuccin Mocha theme already installed"
+fi
+
 
 # macOS: LazyGit uses ~/Library/Application Support/lazygit instead of ~/.config/lazygit
 if [[ "$OS" == "macos" ]]; then

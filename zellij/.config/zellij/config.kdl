@@ -1,12 +1,13 @@
-theme "tokyonight-night"
+theme "catppuccin-mocha"
 pane_frames false
-scrollback_lines_to_serialize 50000
-scroll_buffer_size 50000
+scroll_buffer_size 200000
+scrollback_editor "/opt/homebrew/bin/hx"
 
 keybinds {
     shared_except "locked" {
         bind "Alt m" { ToggleFocusFullscreen; }
         bind "Alt y" { Run "yazi" { floating true; }; }
+        unbind "Alt f"
         unbind "Alt Left" "Alt Down" "Alt Up" "Alt Right"
     }
     tmux {
@@ -27,7 +28,7 @@ keybinds {
         // Pane actions
         bind "x" { CloseFocus; SwitchToMode "Normal"; }
         bind "z" { ToggleFocusFullscreen; SwitchToMode "Normal"; }
-        bind "f" { ToggleFocusFullscreen; SwitchToMode "Normal"; }
+        bind "f" { ToggleFloatingPanes; SwitchToMode "Normal"; }
         bind "w" { ToggleFloatingPanes; SwitchToMode "Normal"; }
         bind "o" { FocusNextPane; }
 
@@ -56,6 +57,7 @@ keybinds {
 
         // Scroll / search
         bind "[" { SwitchToMode "Scroll"; }
+        bind "e" { EditScrollback; SwitchToMode "Normal"; }
 
         // Sub-mode access
         bind "m" { SwitchToMode "Move"; }
@@ -69,5 +71,21 @@ keybinds {
 
         // Send literal Ctrl+b through
         bind "Ctrl b" { Write 2; SwitchToMode "Normal"; }
+    }
+}
+
+themes {
+    catppuccin-mocha {
+        bg "#585b70"
+        fg "#cdd6f4"
+        red "#f38ba8"
+        green "#a6e3a1"
+        blue "#89b4fa"
+        yellow "#f9e2af"
+        magenta "#f5c2e7"
+        orange "#fab387"
+        cyan "#89dceb"
+        black "#181825"
+        white "#cdd6f4"
     }
 }
