@@ -177,7 +177,7 @@ if [[ "$OS" == "linux" && "$BREW_FAILED" == "true" ]]; then
             git-delta
             bat
             jq
-            lsd
+            eza
             stow
             nodejs
             npm
@@ -264,7 +264,9 @@ mkdir -p "$HOME/.config/tmux"
 mkdir -p "$HOME/.config/ghostty"
 mkdir -p "$HOME/.config/gitui"
 mkdir -p "$HOME/.config/btop/themes"
+mkdir -p "$HOME/Work/tries"
 mkdir -p "$HOME/.config/opencode/themes"
+mkdir -p "$HOME/.config/eza"
 
 # Backup existing nvim config if it exists and is not a symlink
 if [ -d "$HOME/.config/nvim" ] && [ ! -L "$HOME/.config/nvim" ]; then
@@ -494,12 +496,17 @@ command -v claude &>/dev/null && echo "  - claude (Claude Code CLI)"
 command -v codex &>/dev/null && echo "  - codex (OpenAI Codex CLI)"
 command -v glow &>/dev/null && echo "  - glow (markdown renderer)"
 command -v delta &>/dev/null && echo "  - delta (syntax-highlighted diffs)"
+command -v eza &>/dev/null && echo "  - eza (modern ls with icons)"
+command -v fzf &>/dev/null && echo "  - fzf (fuzzy finder)"
+command -v zoxide &>/dev/null && echo "  - zoxide (smart cd)"
+command -v rg &>/dev/null && echo "  - ripgrep (fast grep)"
+command -v fd &>/dev/null && echo "  - fd (fast find)"
 command -v rustup &>/dev/null && echo "  - rust (via rustup with rust-analyzer)"
 
 if [[ "$OS" == "linux" ]]; then
     echo ""
     echo "Note: Nerd Fonts not auto-installed on Linux."
-    echo "For proper icons in LazyVim/lsd, install manually:"
+    echo "For proper icons in LazyVim/eza, install manually:"
     echo "  https://www.nerdfonts.com/font-downloads"
 fi
 
