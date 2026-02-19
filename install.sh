@@ -257,6 +257,7 @@ mkdir -p "$HOME/.config/zellij/themes"
 mkdir -p "$HOME/.config/helix"
 mkdir -p "$HOME/.config/nvim"
 mkdir -p "$HOME/.config/lazygit"
+mkdir -p "$HOME/.config/lazydocker"
 mkdir -p "$HOME/.config/bat/themes"
 mkdir -p "$HOME/.config/delta"
 mkdir -p "$HOME/.config/fzf"
@@ -284,10 +285,12 @@ SAVED_THEME_DIR="$DOTFILES_DIR/themes/$SAVED_THEME"
 if [[ -d "$SAVED_THEME_DIR" ]]; then
     cat "$DOTFILES_DIR/lazygit/base-config.yml" "$SAVED_THEME_DIR/lazygit-theme.yml" \
         > "$DOTFILES_DIR/lazygit/.config/lazygit/config.yml" 2>/dev/null || true
+    cat "$DOTFILES_DIR/lazydocker/base-config.yml" "$SAVED_THEME_DIR/lazydocker-theme.yml" \
+        > "$DOTFILES_DIR/lazydocker/.config/lazydocker/config.yml" 2>/dev/null || true
 fi
 
 # Stow each package
-for package in zsh git yazi zellij helix nvim lazygit delta tmux ghostty gitui btop bat opencode; do
+for package in zsh git yazi zellij helix nvim lazygit lazydocker delta tmux ghostty gitui btop bat opencode; do
     if [[ -d "$package" ]]; then
         info "Stowing $package..."
         # Use --adopt to take ownership of existing files, then restore from git
@@ -331,6 +334,17 @@ if [[ "$OS" == "macos" ]]; then
         rm -f "$LAZYGIT_MACOS_DIR/config.yml"
         ln -s "$DOTFILES_DIR/lazygit/.config/lazygit/config.yml" "$LAZYGIT_MACOS_DIR/config.yml"
         info "Linked LazyGit config for macOS"
+    fi
+fi
+
+# macOS: LazyDocker uses ~/Library/Application Support/jesseduffield/lazydocker
+if [[ "$OS" == "macos" ]]; then
+    LAZYDOCKER_MACOS_DIR="$HOME/Library/Application Support/jesseduffield/lazydocker"
+    mkdir -p "$LAZYDOCKER_MACOS_DIR"
+    if [[ ! -L "$LAZYDOCKER_MACOS_DIR/config.yml" ]]; then
+        rm -f "$LAZYDOCKER_MACOS_DIR/config.yml"
+        ln -s "$DOTFILES_DIR/lazydocker/.config/lazydocker/config.yml" "$LAZYDOCKER_MACOS_DIR/config.yml"
+        info "Linked LazyDocker config for macOS"
     fi
 fi
 

@@ -10,6 +10,7 @@ brew "glow"           # Markdown renderer
 brew "helix"          # Text editor (default)
 brew "neovim"         # Text editor (LazyVim, alternative)
 brew "lazygit"        # Git TUI (LazyVim integration)
+brew "lazydocker"     # Docker TUI
 brew "micro"          # Text editor (simple)
 brew "tmux"           # Terminal multiplexer
 brew "btop"           # System/resource monitor

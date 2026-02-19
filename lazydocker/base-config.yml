@@ -1,0 +1,4 @@
+gui:
+  border: hidden
+  containerStatusHealthStyle: icon
+reporting: "off"

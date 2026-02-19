@@ -21,6 +21,7 @@ The script will prompt for your GitHub username.
 | **zellij**   | Terminal multiplexer (alternative) |
 | **yazi**     | Terminal file manager              |
 | **lazygit**  | Git TUI                            |
+| **lazydocker** | Docker TUI                       |
 | **ghostty**  | Terminal emulator                  |
 | **gitui**    | Git TUI (alternative)              |
 | **btop**     | System monitor                     |
@@ -53,6 +54,7 @@ Tool details: see [tmux/README.md](tmux/README.md), [opencode/README.md](opencod
 ├── helix/.config/helix/    # Helix editor
 ├── tmux/.config/tmux/      # Tmux multiplexer
 ├── lazygit/.config/lazygit/ # LazyGit
+├── lazydocker/.config/lazydocker/ # LazyDocker
 ├── ghostty/.config/ghostty/ # Ghostty terminal
 ├── gitui/.config/gitui/    # GitUI
 ├── btop/.config/btop/      # btop system monitor
@@ -64,12 +66,15 @@ Tool details: see [tmux/README.md](tmux/README.md), [opencode/README.md](opencod
 
 ## Key Features
 
-- **Unified theming** across 14 tools — see [Theme Quickstart](#theme-quickstart)
+- **Unified theming** across 15 tools — see [Theme Quickstart](#theme-quickstart)
 - **OpenCode setup:** `catppuccin-mocha-glass` theme + versioned `agents/` and `skills/`
 - `dev` — Opens Yazi + Claude split layout in Zellij
 - `devt` — Same layout using tmux
 - `Enter` in Yazi — Edit file in Helix (returns to Yazi on quit)
 - `e` in Yazi — View markdown with glow
+- `Ctrl+b o` in Zellij — Session mode (detach, session manager, config, plugins)
+- `Ctrl+b s` in Zellij — Session manager (direct shortcut)
+- `Ctrl+b g` in Zellij — Locked mode (pass all keys through)
 - `Alt+m` in Zellij — Toggle fullscreen pane
 - `Space` in Neovim — Leader key for commands
 
@@ -112,7 +117,7 @@ export GEMINI_API_KEY="your-key-here"
 
 ```bash
 cd ~/dotfiles && git pull && stow --restow --target="$HOME" \
-  zsh git yazi zellij helix nvim lazygit delta tmux ghostty gitui btop bat opencode
+  zsh git yazi zellij helix nvim lazygit lazydocker delta tmux ghostty gitui btop bat opencode
 ```
 
 ## Updating an Existing Machine
@@ -128,11 +133,11 @@ git pull --rebase
 
 # 2) Preview symlink changes
 stow --simulate --verbose=1 --target="$HOME" --restow \
-  zsh git yazi zellij helix nvim lazygit delta tmux ghostty gitui btop bat opencode
+  zsh git yazi zellij helix nvim lazygit lazydocker delta tmux ghostty gitui btop bat opencode
 
 # 3) Apply if preview looks correct
 stow --target="$HOME" --restow \
-  zsh git yazi zellij helix nvim lazygit delta tmux ghostty gitui btop bat opencode
+  zsh git yazi zellij helix nvim lazygit lazydocker delta tmux ghostty gitui btop bat opencode
 
 # 4) Reload shell
 source ~/.zshrc
@@ -147,6 +152,7 @@ You can, but it is a full bootstrap script and more invasive than the flow above
 - Managed config files under stowed paths (for example `~/.config/tmux/tmux.conf`, `~/.zshrc`)
 - Existing files at managed paths when using `stow --adopt` (used by `install.sh`)
 - macOS LazyGit config at `~/Library/Application Support/lazygit/config.yml` (relinked by `install.sh`)
+- macOS LazyDocker config at `~/Library/Application Support/jesseduffield/lazydocker/config.yml` (relinked by `install.sh`)
 
 ### What Usually Stays Intact
 

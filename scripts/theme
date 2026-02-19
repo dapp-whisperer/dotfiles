@@ -151,6 +151,13 @@ cat "$DOTFILES/lazygit/.config/lazygit/config.yml.tmp" \
     > "$DOTFILES/lazygit/.config/lazygit/config.yml"
 rm -f "$DOTFILES/lazygit/.config/lazygit/config.yml.tmp"
 
+# LazyDocker: same concat pattern as LazyGit
+cat "$DOTFILES/lazydocker/base-config.yml" "$THEME_DIR/lazydocker-theme.yml" \
+    > "$DOTFILES/lazydocker/.config/lazydocker/config.yml.tmp"
+cat "$DOTFILES/lazydocker/.config/lazydocker/config.yml.tmp" \
+    > "$DOTFILES/lazydocker/.config/lazydocker/config.yml"
+rm -f "$DOTFILES/lazydocker/.config/lazydocker/config.yml.tmp"
+
 if [[ -f "$THEME_DIR/zellij-colors.kdl" ]]; then
     mkdir -p "$DOTFILES/zellij/.config/zellij/themes"
     copy_over "$THEME_DIR/zellij-colors.kdl" "$DOTFILES/zellij/.config/zellij/themes/${ZELLIJ_NAME}.kdl"
@@ -218,5 +225,5 @@ echo "$THEME" > "$CURRENT_FILE"
 echo "Switched to: $DISPLAY_NAME"
 echo ""
 echo "Auto-reloaded: Ghostty, Zellij, Helix, Neovim, tmux, bat"
-echo "Restart needed: btop, lazygit, gitui, yazi, opencode"
+echo "Restart needed: btop, lazygit, lazydocker, gitui, yazi, opencode"
 echo "New shell needed: fzf"
