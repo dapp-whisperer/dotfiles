@@ -26,6 +26,9 @@ The script will prompt for your GitHub username.
 | **btop**     | System monitor                     |
 | **delta**    | Syntax-highlighted diffs           |
 | **bat**      | Cat with syntax highlighting       |
+| **eza**      | Modern ls with icons               |
+| **fzf**      | Fuzzy finder + shell integration   |
+| **zoxide**   | Smart cd with frecency             |
 | **glow**     | Markdown renderer                  |
 | **claude**   | Claude Code CLI                    |
 | **codex**    | OpenAI Codex CLI                   |
@@ -34,7 +37,7 @@ The script will prompt for your GitHub username.
 
 ## Directory Structure
 
-Tool details: see [tmux/README.md](tmux/README.md), [opencode/README.md](opencode/README.md).
+Tool details: see [tmux/README.md](tmux/README.md), [opencode/README.md](opencode/README.md), [themes/README.md](themes/README.md).
 
 ```
 ~/dotfiles/
@@ -42,6 +45,8 @@ Tool details: see [tmux/README.md](tmux/README.md), [opencode/README.md](opencod
 ├── Brewfile                # Homebrew packages
 ├── zsh/.zshrc              # Shell config
 ├── git/.gitconfig          # Git config
+├── bat/.config/bat/        # bat syntax highlighter
+├── delta/.config/delta/    # delta diff highlighter
 ├── yazi/.config/yazi/      # Yazi file manager
 ├── zellij/.config/zellij/  # Zellij multiplexer
 ├── nvim/.config/nvim/      # Neovim (LazyVim)
@@ -51,18 +56,35 @@ Tool details: see [tmux/README.md](tmux/README.md), [opencode/README.md](opencod
 ├── ghostty/.config/ghostty/ # Ghostty terminal
 ├── gitui/.config/gitui/    # GitUI
 ├── btop/.config/btop/      # btop system monitor
-└── opencode/.config/opencode/ # OpenCode config, themes, agents, skills
+├── opencode/.config/opencode/ # OpenCode config, themes, agents, skills
+├── scripts/                # Theme switcher, utilities
+├── themes/                 # Theme packs + current tracker
+└── tests/                  # BATS test suite
 ```
 
 ## Key Features
 
-- **Theme:** Catppuccin Mocha across all tools
+- **Unified theming** across 14 tools — see [Theme Quickstart](#theme-quickstart)
 - **OpenCode setup:** `catppuccin-mocha-glass` theme + versioned `agents/` and `skills/`
-- `dev` - Opens Yazi + Claude split layout in Zellij
-- `Enter` in Yazi - Edit file in Helix (returns to Yazi on quit)
-- `e` in Yazi - View markdown with glow
-- `Alt+m` in Zellij - Toggle fullscreen pane
-- `Space` in Neovim - Leader key for commands
+- `dev` — Opens Yazi + Claude split layout in Zellij
+- `devt` — Same layout using tmux
+- `Enter` in Yazi — Edit file in Helix (returns to Yazi on quit)
+- `e` in Yazi — View markdown with glow
+- `Alt+m` in Zellij — Toggle fullscreen pane
+- `Space` in Neovim — Leader key for commands
+
+## Theme Quickstart
+
+```bash
+# Show current + available themes
+theme
+
+# Switch theme
+theme catppuccin-mocha
+theme tokyonight-night
+```
+
+See [themes/README.md](themes/README.md) for internals, maintenance, and agent instructions.
 
 ## LazyVim Quick Reference
 
@@ -89,7 +111,8 @@ export GEMINI_API_KEY="your-key-here"
 ## Manual Update
 
 ```bash
-cd ~/dotfiles && git pull && stow --restow */
+cd ~/dotfiles && git pull && stow --restow --target="$HOME" \
+  zsh git yazi zellij helix nvim lazygit delta tmux ghostty gitui btop bat opencode
 ```
 
 ## Updating an Existing Machine
@@ -105,11 +128,11 @@ git pull --rebase
 
 # 2) Preview symlink changes
 stow --simulate --verbose=1 --target="$HOME" --restow \
-  zsh git yazi zellij helix nvim lazygit delta tmux ghostty gitui btop opencode
+  zsh git yazi zellij helix nvim lazygit delta tmux ghostty gitui btop bat opencode
 
 # 3) Apply if preview looks correct
 stow --target="$HOME" --restow \
-  zsh git yazi zellij helix nvim lazygit delta tmux ghostty gitui btop opencode
+  zsh git yazi zellij helix nvim lazygit delta tmux ghostty gitui btop bat opencode
 
 # 4) Reload shell
 source ~/.zshrc
@@ -137,7 +160,15 @@ You can, but it is a full bootstrap script and more invasive than the flow above
 If `~/dotfiles` has uncommitted changes, `install.sh` skips `git pull` and also skips its restore checkout step.  
 That can leave adopted local content in your dotfiles tree. Commit or stash first.
 
-## Testing on Ubuntu
+## Testing
+
+### Theme Switcher Tests
+
+```bash
+bats tests/theme/tests/
+```
+
+### Ubuntu Docker Test
 
 Test the install script on a fresh Ubuntu environment using Docker:
 

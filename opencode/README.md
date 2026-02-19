@@ -65,3 +65,4 @@ Write this file at either path:
 
 - Default theme is `catppuccin-mocha-glass`
 - Glass effect comes from OpenCode using `"none"` backgrounds + terminal opacity settings
+- Global theming architecture and maintenance guide: [themes/README.md](../themes/README.md)
