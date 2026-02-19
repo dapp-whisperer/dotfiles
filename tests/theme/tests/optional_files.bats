@@ -17,3 +17,9 @@ load '../helpers/setup'
     run_theme catppuccin-mocha
     [ "$status" -eq 0 ]
 }
+
+@test "switch succeeds when optional tmux-theme.conf is missing" {
+    rm -f "$DOTFILES/themes/catppuccin-mocha/tmux-theme.conf"
+    run_theme catppuccin-mocha
+    [ "$status" -eq 0 ]
+}

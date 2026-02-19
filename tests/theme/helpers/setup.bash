@@ -18,6 +18,8 @@ THEME_DIRS=(
     yazi/.config/yazi
     lazygit
     gitui/.config/gitui
+    tmux/.config/tmux
+    opencode/.config/opencode
     themes
 )
 
@@ -32,6 +34,8 @@ SED_FILES=(
     git/.gitconfig
     bat/.config/bat/config
     yazi/.config/yazi/yazi.toml
+    tmux/.config/tmux/tmux.conf
+    opencode/.config/opencode/opencode.json
 )
 
 setup() {

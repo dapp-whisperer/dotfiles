@@ -9,6 +9,8 @@ load '../helpers/setup'
     for f in "${SED_FILES[@]}"; do
         cp "$DOTFILES/$f" "$snap/$(echo "$f" | tr '/' '_')"
     done
+    # Also snapshot non-stow file copies
+    cp "$HOME/.config/eza/theme.yml" "$snap/eza_theme.yml"
 
     # Round trip
     run_theme tokyonight-night
@@ -19,6 +21,8 @@ load '../helpers/setup'
         diff -u "$snap/$(echo "$f" | tr '/' '_')" "$DOTFILES/$f" || \
             fail "Round-trip mismatch in $f"
     done
+    diff -u "$snap/eza_theme.yml" "$HOME/.config/eza/theme.yml" || \
+        fail "Round-trip mismatch in eza theme.yml"
 }
 
 @test "switching to same theme twice is idempotent" {

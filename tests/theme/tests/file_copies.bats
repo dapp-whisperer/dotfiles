@@ -17,6 +17,7 @@ load '../helpers/setup'
     [ -f "$HOME/.config/delta/theme.gitconfig" ]
     [ -f "$HOME/.config/fzf/theme.sh" ]
     [ -f "$HOME/.config/bat/themes/bat.tmTheme" ]
+    [ -f "$HOME/.config/eza/theme.yml" ]
 }
 
 @test "gitui theme.ron is copied" {
@@ -32,4 +33,12 @@ load '../helpers/setup'
 @test "btop theme file copied to themes dir" {
     run_theme catppuccin-mocha
     [ -f "$DOTFILES/btop/.config/btop/themes/catppuccin_mocha.theme" ]
+}
+
+@test "eza theme.yml content changes with theme" {
+    run_theme catppuccin-mocha
+    grep -q '#cba6f7' "$HOME/.config/eza/theme.yml"
+
+    run_theme tokyonight-night
+    grep -q '#7aa2f7' "$HOME/.config/eza/theme.yml"
 }

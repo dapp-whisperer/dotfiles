@@ -15,10 +15,12 @@ list_themes() {
     done
 }
 
-# Parse a key from manifest (grep -F for literal match, [^"]* for non-greedy)
+# Parse key = "value" from TOML manifest
 manifest_get() {
-    local file="$1" key="$2"
-    grep -F "${key} = " "$file" | head -1 | sed 's/^[^=]*= *"\([^"]*\)"/\1/'
+    local file="$1" key="$2" val
+    val=$(grep -F "${key} = " "$file" | head -1 | sed 's/^[^=]*= *"\([^"]*\)"/\1/') || true
+    [[ -n "$val" ]] || die "Missing manifest key '$key' in $file"
+    echo "$val"
 }
 
 # Validate that a value contains only safe characters (alphanumeric, spaces, hyphens, underscores, dots)
@@ -40,7 +42,7 @@ sed_inplace() {
 # Sed helper for common key = "value" pattern
 replace_quoted() {
     local key="$1" value="$2" file="$3"
-    sed_inplace "s/^${key} = \".*\"/${key} = \"${value}\"/" "$file"
+    sed_inplace "s/^${key} = \"[^\"]*\"/${key} = \"${value}\"/" "$file"
 }
 
 # Inode-preserving file copy: cp creates a new file, breaking file watchers.
@@ -93,6 +95,8 @@ BTOP_NAME=$(manifest_get "$MANIFEST" "btop")
 NVIM_NAME=$(manifest_get "$MANIFEST" "neovim")
 DELTA_FEAT=$(manifest_get "$MANIFEST" "delta")
 BAT_NAME=$(manifest_get "$MANIFEST" "bat")
+TMUX_NAME=$(manifest_get "$MANIFEST" "tmux")
+OPENCODE_NAME=$(manifest_get "$MANIFEST" "opencode")
 
 # Validate all parsed values
 validate_value "$DISPLAY_NAME" "name"
@@ -104,6 +108,8 @@ validate_value "$BTOP_NAME" "btop"
 validate_value "$NVIM_NAME" "neovim"
 validate_value "$DELTA_FEAT" "delta"
 validate_value "$BAT_NAME" "bat"
+validate_value "$TMUX_NAME" "tmux"
+validate_value "$OPENCODE_NAME" "opencode"
 
 # Sed replacements on stow source files (inode-preserving for live reload)
 replace_quoted "theme" "$GHOSTTY_NAME" "$DOTFILES/ghostty/.config/ghostty/config"
@@ -126,12 +132,24 @@ sed_inplace "s/^--theme=\".*\"/--theme=\"${BAT_NAME}\"/" \
 sed_inplace "s/-s=[a-z]*/-s=${VARIANT}/" \
     "$DOTFILES/yazi/.config/yazi/yazi.toml"
 
+# tmux: swap catppuccin flavor name
+sed_inplace "s/@catppuccin_flavor '.*'/@catppuccin_flavor '${TMUX_NAME}'/" \
+    "$DOTFILES/tmux/.config/tmux/tmux.conf"
+
+# opencode: swap theme in JSON config
+sed_inplace "s/\"theme\": \"[^\"]*\"/\"theme\": \"${OPENCODE_NAME}\"/" \
+    "$DOTFILES/opencode/.config/opencode/opencode.json"
+
 # Full file replacements (inode-preserving for stow symlink targets)
 copy_over "$THEME_DIR/gitui-theme.ron" "$DOTFILES/gitui/.config/gitui/theme.ron"
 
 # LazyGit: concatenate base behavioral config + theme color overlay
+# Write to temp first to avoid truncating config on interrupt
 cat "$DOTFILES/lazygit/base-config.yml" "$THEME_DIR/lazygit-theme.yml" \
+    > "$DOTFILES/lazygit/.config/lazygit/config.yml.tmp"
+cat "$DOTFILES/lazygit/.config/lazygit/config.yml.tmp" \
     > "$DOTFILES/lazygit/.config/lazygit/config.yml"
+rm -f "$DOTFILES/lazygit/.config/lazygit/config.yml.tmp"
 
 if [[ -f "$THEME_DIR/zellij-colors.kdl" ]]; then
     mkdir -p "$DOTFILES/zellij/.config/zellij/themes"
@@ -147,6 +165,14 @@ if [[ -f "$THEME_DIR/yazi-theme.toml" ]]; then
     copy_over "$THEME_DIR/yazi-theme.toml" "$DOTFILES/yazi/.config/yazi/theme.toml"
 fi
 
+# tmux: install custom flavor file for non-catppuccin themes
+if [[ -f "$THEME_DIR/tmux-theme.conf" ]]; then
+    TMUX_PLUGIN_THEMES="$HOME/.config/tmux/plugins/tmux/themes"
+    if [[ -d "$TMUX_PLUGIN_THEMES" ]]; then
+        copy_over "$THEME_DIR/tmux-theme.conf" "$TMUX_PLUGIN_THEMES/catppuccin_${TMUX_NAME}_tmux.conf"
+    fi
+fi
+
 # Copy to non-stow destinations (not symlinked, cp is fine)
 mkdir -p "$HOME/.config/delta"
 cp "$THEME_DIR/delta.gitconfig" "$HOME/.config/delta/theme.gitconfig"
@@ -156,6 +182,9 @@ cp "$THEME_DIR/fzf-theme.sh" "$HOME/.config/fzf/theme.sh"
 
 mkdir -p "$HOME/.config/bat/themes"
 cp "$THEME_DIR/bat.tmTheme" "$HOME/.config/bat/themes/"
+
+mkdir -p "$HOME/.config/eza"
+cp "$THEME_DIR/eza-theme.yml" "$HOME/.config/eza/theme.yml"
 
 # Live reloads (best-effort, non-fatal)
 bat cache --build 2>/dev/null || true
@@ -177,6 +206,9 @@ if pgrep -q ghostty 2>/dev/null; then
     ' 2>/dev/null || true
 fi
 
+# tmux: source config to reload theme
+tmux source-file ~/.config/tmux/tmux.conf 2>/dev/null || true
+
 # Zellij, Helix: auto-reload on config file change (inode-preserving writes trigger this)
 
 # Write current LAST (signals complete application)
@@ -185,6 +217,6 @@ echo "$THEME" > "$CURRENT_FILE"
 # Print summary
 echo "Switched to: $DISPLAY_NAME"
 echo ""
-echo "Auto-reloaded: Ghostty, Zellij, Helix, Neovim, bat"
-echo "Restart needed: btop, lazygit, gitui, yazi"
+echo "Auto-reloaded: Ghostty, Zellij, Helix, Neovim, tmux, bat"
+echo "Restart needed: btop, lazygit, gitui, yazi, opencode"
 echo "New shell needed: fzf"

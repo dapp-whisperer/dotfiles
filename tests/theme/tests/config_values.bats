@@ -11,6 +11,8 @@ load '../helpers/setup'
     grep -q 'colorscheme = "tokyonight-night"' "$DOTFILES/nvim/.config/nvim/lua/plugins/colorscheme.lua"
     grep -q 'features = tokyonight-night' "$DOTFILES/git/.gitconfig"
     grep -q -- '--theme="tokyonight_night"' "$DOTFILES/bat/.config/bat/config"
+    grep -q "@catppuccin_flavor 'tokyonight-night'" "$DOTFILES/tmux/.config/tmux/tmux.conf"
+    grep -q '"theme": "tokyonight"' "$DOTFILES/opencode/.config/opencode/opencode.json"
 }
 
 @test "switch to catppuccin-mocha updates all sed-modified configs" {
@@ -22,6 +24,8 @@ load '../helpers/setup'
     grep -q 'theme = "Catppuccin Mocha"' "$DOTFILES/ghostty/.config/ghostty/config"
     grep -q 'theme = "catppuccin_mocha"' "$DOTFILES/helix/.config/helix/config.toml"
     grep -q 'color_theme = "catppuccin_mocha"' "$DOTFILES/btop/.config/btop/btop.conf"
+    grep -q "@catppuccin_flavor 'mocha'" "$DOTFILES/tmux/.config/tmux/tmux.conf"
+    grep -q '"theme": "catppuccin-mocha-glass"' "$DOTFILES/opencode/.config/opencode/opencode.json"
 }
 
 @test "yazi glow flag matches manifest variant" {

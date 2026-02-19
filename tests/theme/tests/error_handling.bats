@@ -56,6 +56,8 @@ btop = "test"
 neovim = "test"
 delta = "test"
 bat = "test"
+tmux = "test"
+opencode = "test"
 TOML
     run_theme catppuccin-mocha
     [ "$status" -ne 0 ]
