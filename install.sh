@@ -177,7 +177,7 @@ if [[ "$OS" == "linux" && "$BREW_FAILED" == "true" ]]; then
             git-delta
             bat
             jq
-            lsd
+            eza
             stow
             nodejs
             npm
@@ -253,16 +253,20 @@ cd "$DOTFILES_DIR"
 # Create necessary directories first
 mkdir -p "$HOME/.config/yazi"
 mkdir -p "$HOME/.config/zellij/layouts"
+mkdir -p "$HOME/.config/zellij/themes"
 mkdir -p "$HOME/.config/helix"
 mkdir -p "$HOME/.config/nvim"
 mkdir -p "$HOME/.config/lazygit"
 mkdir -p "$HOME/.config/bat/themes"
 mkdir -p "$HOME/.config/delta"
+mkdir -p "$HOME/.config/fzf"
 mkdir -p "$HOME/.config/tmux"
 mkdir -p "$HOME/.config/ghostty"
 mkdir -p "$HOME/.config/gitui"
 mkdir -p "$HOME/.config/btop/themes"
+mkdir -p "$HOME/Work/tries"
 mkdir -p "$HOME/.config/opencode/themes"
+mkdir -p "$HOME/.config/eza"
 
 # Backup existing nvim config if it exists and is not a symlink
 if [ -d "$HOME/.config/nvim" ] && [ ! -L "$HOME/.config/nvim" ]; then
@@ -273,8 +277,17 @@ if [ -d "$HOME/.config/nvim" ] && [ ! -L "$HOME/.config/nvim" ]; then
     fi
 fi
 
+# Generate theme-managed files before stow (so symlink targets exist)
+SAVED_THEME="catppuccin-mocha"
+[[ -f "$DOTFILES_DIR/themes/current" ]] && SAVED_THEME="$(tr -d '[:space:]' < "$DOTFILES_DIR/themes/current")"
+SAVED_THEME_DIR="$DOTFILES_DIR/themes/$SAVED_THEME"
+if [[ -d "$SAVED_THEME_DIR" ]]; then
+    cat "$DOTFILES_DIR/lazygit/base-config.yml" "$SAVED_THEME_DIR/lazygit-theme.yml" \
+        > "$DOTFILES_DIR/lazygit/.config/lazygit/config.yml" 2>/dev/null || true
+fi
+
 # Stow each package
-for package in zsh git yazi zellij helix nvim lazygit delta tmux ghostty gitui btop opencode; do
+for package in zsh git yazi zellij helix nvim lazygit delta tmux ghostty gitui btop bat opencode; do
     if [[ -d "$package" ]]; then
         info "Stowing $package..."
         # Use --adopt to take ownership of existing files, then restore from git
@@ -453,6 +466,20 @@ else
 fi
 
 # ============================================
+# STEP 10.5: Restore active theme
+# ============================================
+step "Restoring theme..."
+
+if [[ -f "$DOTFILES_DIR/themes/current" ]]; then
+    ACTIVE_THEME="$(tr -d '[:space:]' < "$DOTFILES_DIR/themes/current")"
+    if [[ -n "$ACTIVE_THEME" && -d "$DOTFILES_DIR/themes/$ACTIVE_THEME" ]]; then
+        "$DOTFILES_DIR/scripts/theme" "$ACTIVE_THEME" || warn "Could not restore theme '$ACTIVE_THEME'"
+    fi
+else
+    info "No saved theme found, skipping"
+fi
+
+# ============================================
 # Done!
 # ============================================
 echo ""
@@ -469,12 +496,17 @@ command -v claude &>/dev/null && echo "  - claude (Claude Code CLI)"
 command -v codex &>/dev/null && echo "  - codex (OpenAI Codex CLI)"
 command -v glow &>/dev/null && echo "  - glow (markdown renderer)"
 command -v delta &>/dev/null && echo "  - delta (syntax-highlighted diffs)"
+command -v eza &>/dev/null && echo "  - eza (modern ls with icons)"
+command -v fzf &>/dev/null && echo "  - fzf (fuzzy finder)"
+command -v zoxide &>/dev/null && echo "  - zoxide (smart cd)"
+command -v rg &>/dev/null && echo "  - ripgrep (fast grep)"
+command -v fd &>/dev/null && echo "  - fd (fast find)"
 command -v rustup &>/dev/null && echo "  - rust (via rustup with rust-analyzer)"
 
 if [[ "$OS" == "linux" ]]; then
     echo ""
     echo "Note: Nerd Fonts not auto-installed on Linux."
-    echo "For proper icons in LazyVim/lsd, install manually:"
+    echo "For proper icons in LazyVim/eza, install manually:"
     echo "  https://www.nerdfonts.com/font-downloads"
 fi
 

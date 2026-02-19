@@ -1,0 +1,222 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+DOTFILES="$HOME/dotfiles"
+THEMES_DIR="$DOTFILES/themes"
+CURRENT_FILE="$THEMES_DIR/current"
+
+# ── Helpers ──────────────────────────────────────────────────────────
+
+die() { echo "Error: $1" >&2; exit 1; }
+
+list_themes() {
+    for d in "$THEMES_DIR"/*/; do
+        [[ -f "$d/manifest.toml" ]] && basename "$d"
+    done
+}
+
+# Parse key = "value" from TOML manifest
+manifest_get() {
+    local file="$1" key="$2" val
+    val=$(grep -F "${key} = " "$file" | head -1 | sed 's/^[^=]*= *"\([^"]*\)"/\1/') || true
+    [[ -n "$val" ]] || die "Missing manifest key '$key' in $file"
+    echo "$val"
+}
+
+# Validate that a value contains only safe characters (alphanumeric, spaces, hyphens, underscores, dots)
+validate_value() {
+    local val="$1" label="$2"
+    [[ "$val" =~ ^[a-zA-Z0-9_.\ -]+$ ]] || die "Invalid manifest value for '$label': $val"
+}
+
+# Inode-preserving sed: macOS sed -i creates a NEW file (new inode), which
+# breaks file watchers in Ghostty, Zellij, Helix, btop, etc. Instead, read
+# the file into memory, apply the sed pattern, and write back to the same fd.
+sed_inplace() {
+    local pattern="$1" file="$2"
+    local content
+    content="$(sed "$pattern" "$file")"
+    printf '%s\n' "$content" > "$file"
+}
+
+# Sed helper for common key = "value" pattern
+replace_quoted() {
+    local key="$1" value="$2" file="$3"
+    sed_inplace "s/^${key} = \"[^\"]*\"/${key} = \"${value}\"/" "$file"
+}
+
+# Inode-preserving file copy: cp creates a new file, breaking file watchers.
+# cat src > dst writes into the existing dst inode.
+copy_over() {
+    local src="$1" dst="$2"
+    if [[ -f "$dst" ]]; then
+        cat "$src" > "$dst"
+    else
+        cp "$src" "$dst"
+    fi
+}
+
+# ── No args: show status ────────────────────────────────────────────
+
+if [[ $# -eq 0 ]]; then
+    current="(none)"
+    [[ -f "$CURRENT_FILE" ]] && current="$(tr -d '[:space:]' < "$CURRENT_FILE")"
+    echo "Current theme: $current"
+    echo ""
+    echo "Available themes:"
+    for t in $(list_themes); do
+        marker="  "
+        [[ "$t" == "$current" ]] && marker="* "
+        name=$(manifest_get "$THEMES_DIR/$t/manifest.toml" "name")
+        echo "  ${marker}${t}  ($name)"
+    done
+    exit 0
+fi
+
+# ── Switch theme ────────────────────────────────────────────────────
+
+THEME="$1"
+[[ "$THEME" =~ ^[a-zA-Z0-9_-]+$ ]] || die "Invalid theme name (only alphanumeric, hyphens, underscores allowed)"
+
+THEME_DIR="$THEMES_DIR/$THEME"
+
+# Validate theme exists
+[[ -d "$THEME_DIR" ]] || die "Theme '$THEME' not found. Run 'theme' to list available themes."
+[[ -f "$THEME_DIR/manifest.toml" ]] || die "Theme '$THEME' is missing manifest.toml"
+
+# Parse manifest
+MANIFEST="$THEME_DIR/manifest.toml"
+DISPLAY_NAME=$(manifest_get "$MANIFEST" "name")
+VARIANT=$(manifest_get "$MANIFEST" "variant")
+GHOSTTY_NAME=$(manifest_get "$MANIFEST" "ghostty")
+HELIX_NAME=$(manifest_get "$MANIFEST" "helix")
+ZELLIJ_NAME=$(manifest_get "$MANIFEST" "zellij")
+BTOP_NAME=$(manifest_get "$MANIFEST" "btop")
+NVIM_NAME=$(manifest_get "$MANIFEST" "neovim")
+DELTA_FEAT=$(manifest_get "$MANIFEST" "delta")
+BAT_NAME=$(manifest_get "$MANIFEST" "bat")
+TMUX_NAME=$(manifest_get "$MANIFEST" "tmux")
+OPENCODE_NAME=$(manifest_get "$MANIFEST" "opencode")
+
+# Validate all parsed values
+validate_value "$DISPLAY_NAME" "name"
+validate_value "$VARIANT" "variant"
+validate_value "$GHOSTTY_NAME" "ghostty"
+validate_value "$HELIX_NAME" "helix"
+validate_value "$ZELLIJ_NAME" "zellij"
+validate_value "$BTOP_NAME" "btop"
+validate_value "$NVIM_NAME" "neovim"
+validate_value "$DELTA_FEAT" "delta"
+validate_value "$BAT_NAME" "bat"
+validate_value "$TMUX_NAME" "tmux"
+validate_value "$OPENCODE_NAME" "opencode"
+
+# Sed replacements on stow source files (inode-preserving for live reload)
+replace_quoted "theme" "$GHOSTTY_NAME" "$DOTFILES/ghostty/.config/ghostty/config"
+replace_quoted "theme" "$HELIX_NAME" "$DOTFILES/helix/.config/helix/config.toml"
+replace_quoted "color_theme" "$BTOP_NAME" "$DOTFILES/btop/.config/btop/btop.conf"
+
+sed_inplace "s/^theme \".*\"/theme \"${ZELLIJ_NAME}\"/" \
+    "$DOTFILES/zellij/.config/zellij/config.kdl"
+
+sed_inplace "s/colorscheme = \".*\"/colorscheme = \"${NVIM_NAME}\"/" \
+    "$DOTFILES/nvim/.config/nvim/lua/plugins/colorscheme.lua"
+
+sed_inplace "s/^	features = .*/	features = ${DELTA_FEAT}/" \
+    "$DOTFILES/git/.gitconfig"
+
+sed_inplace "s/^--theme=\".*\"/--theme=\"${BAT_NAME}\"/" \
+    "$DOTFILES/bat/.config/bat/config"
+
+# Yazi glow flag: variant-aware (dark/light)
+sed_inplace "s/-s=[a-z]*/-s=${VARIANT}/" \
+    "$DOTFILES/yazi/.config/yazi/yazi.toml"
+
+# tmux: swap catppuccin flavor name
+sed_inplace "s/@catppuccin_flavor '.*'/@catppuccin_flavor '${TMUX_NAME}'/" \
+    "$DOTFILES/tmux/.config/tmux/tmux.conf"
+
+# opencode: swap theme in JSON config
+sed_inplace "s/\"theme\": \"[^\"]*\"/\"theme\": \"${OPENCODE_NAME}\"/" \
+    "$DOTFILES/opencode/.config/opencode/opencode.json"
+
+# Full file replacements (inode-preserving for stow symlink targets)
+copy_over "$THEME_DIR/gitui-theme.ron" "$DOTFILES/gitui/.config/gitui/theme.ron"
+
+# LazyGit: concatenate base behavioral config + theme color overlay
+# Write to temp first to avoid truncating config on interrupt
+cat "$DOTFILES/lazygit/base-config.yml" "$THEME_DIR/lazygit-theme.yml" \
+    > "$DOTFILES/lazygit/.config/lazygit/config.yml.tmp"
+cat "$DOTFILES/lazygit/.config/lazygit/config.yml.tmp" \
+    > "$DOTFILES/lazygit/.config/lazygit/config.yml"
+rm -f "$DOTFILES/lazygit/.config/lazygit/config.yml.tmp"
+
+if [[ -f "$THEME_DIR/zellij-colors.kdl" ]]; then
+    mkdir -p "$DOTFILES/zellij/.config/zellij/themes"
+    copy_over "$THEME_DIR/zellij-colors.kdl" "$DOTFILES/zellij/.config/zellij/themes/${ZELLIJ_NAME}.kdl"
+fi
+
+if [[ -f "$THEME_DIR/btop.theme" ]]; then
+    mkdir -p "$DOTFILES/btop/.config/btop/themes"
+    copy_over "$THEME_DIR/btop.theme" "$DOTFILES/btop/.config/btop/themes/${BTOP_NAME}.theme"
+fi
+
+if [[ -f "$THEME_DIR/yazi-theme.toml" ]]; then
+    copy_over "$THEME_DIR/yazi-theme.toml" "$DOTFILES/yazi/.config/yazi/theme.toml"
+fi
+
+# tmux: install custom flavor file for non-catppuccin themes
+if [[ -f "$THEME_DIR/tmux-theme.conf" ]]; then
+    TMUX_PLUGIN_THEMES="$HOME/.config/tmux/plugins/tmux/themes"
+    if [[ -d "$TMUX_PLUGIN_THEMES" ]]; then
+        copy_over "$THEME_DIR/tmux-theme.conf" "$TMUX_PLUGIN_THEMES/catppuccin_${TMUX_NAME}_tmux.conf"
+    fi
+fi
+
+# Copy to non-stow destinations (not symlinked, cp is fine)
+mkdir -p "$HOME/.config/delta"
+cp "$THEME_DIR/delta.gitconfig" "$HOME/.config/delta/theme.gitconfig"
+
+mkdir -p "$HOME/.config/fzf"
+cp "$THEME_DIR/fzf-theme.sh" "$HOME/.config/fzf/theme.sh"
+
+mkdir -p "$HOME/.config/bat/themes"
+cp "$THEME_DIR/bat.tmTheme" "$HOME/.config/bat/themes/"
+
+mkdir -p "$HOME/.config/eza"
+cp "$THEME_DIR/eza-theme.yml" "$HOME/.config/eza/theme.yml"
+
+# Live reloads (best-effort, non-fatal)
+bat cache --build 2>/dev/null || true
+
+# Neovim RPC reload
+for sock in "${XDG_RUNTIME_DIR:-/tmp}"/nvim-*.sock /tmp/nvim-*/0 ; do
+    [[ -S "$sock" ]] && nvim --server "$sock" --remote-send ":colorscheme ${NVIM_NAME}<CR>" 2>/dev/null || true
+done
+
+# Ghostty: file watching doesn't trigger through stow symlinks on macOS,
+# so we use AppleScript to invoke the "Reload Configuration" menu action.
+if pgrep -q ghostty 2>/dev/null; then
+    osascript -e '
+        tell application "System Events"
+            tell process "ghostty"
+                click menu item "Reload Configuration" of menu 1 of menu bar item "Ghostty" of menu bar 1
+            end tell
+        end tell
+    ' 2>/dev/null || true
+fi
+
+# tmux: source config to reload theme
+tmux source-file ~/.config/tmux/tmux.conf 2>/dev/null || true
+
+# Zellij, Helix: auto-reload on config file change (inode-preserving writes trigger this)
+
+# Write current LAST (signals complete application)
+echo "$THEME" > "$CURRENT_FILE"
+
+# Print summary
+echo "Switched to: $DISPLAY_NAME"
+echo ""
+echo "Auto-reloaded: Ghostty, Zellij, Helix, Neovim, tmux, bat"
+echo "Restart needed: btop, lazygit, gitui, yazi, opencode"
+echo "New shell needed: fzf"

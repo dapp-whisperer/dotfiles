@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# try - manage experiments in ~/Work/tries
+# Usage: try [name]
+#   No args  → list existing tries
+#   try name → create ~/Work/tries/YYYY-MM-DD-name/ and cd into it
+#
+# This script is sourced (not executed) so cd affects the caller's shell.
+
+TRIES_DIR="$HOME/Work/tries"
+mkdir -p "$TRIES_DIR"
+
+if [[ $# -eq 0 ]]; then
+    ls "$TRIES_DIR"
+    return 0 2>/dev/null || exit 0
+fi
+
+name="$1"
+dir="$TRIES_DIR/$(date +%Y-%m-%d)-${name}"
+
+if [[ -d "$dir" ]]; then
+    echo "Already exists: $dir"
+else
+    mkdir -p "$dir"
+    echo "Created: $dir"
+fi
+
+cd "$dir"

@@ -1,6 +1,6 @@
 # Tmux Dotfiles
 
-Terminal multiplexer config with Catppuccin Mocha theme, session management, and vim-style navigation.
+Terminal multiplexer config with Catppuccin theme (switchable via `theme` command), session management, and vim-style navigation.
 
 ## Managed Paths
 
@@ -17,7 +17,7 @@ Managed by [TPM](https://github.com/tmux-plugins/tpm). Install with `prefix+I` i
 | [tpm](https://github.com/tmux-plugins/tpm) | Plugin manager |
 | [tmux-sensible](https://github.com/tmux-plugins/tmux-sensible) | Sensible defaults |
 | [vim-tmux-navigator](https://github.com/christoomey/vim-tmux-navigator) | Seamless vim/tmux pane switching |
-| [catppuccin/tmux](https://github.com/catppuccin/tmux) | Catppuccin Mocha theme (v2) |
+| [catppuccin/tmux](https://github.com/catppuccin/tmux) | Catppuccin theme engine (v2) |
 | [tmux-yank](https://github.com/tmux-plugins/tmux-yank) | System clipboard integration |
 | [tmux-thumbs](https://github.com/fcsonline/tmux-thumbs) | Text hint overlay (copy text with keyboard) |
 | [tmux-sessionx](https://github.com/omerxx/tmux-sessionx) | Fuzzy session manager with zoxide |
@@ -60,7 +60,7 @@ Prefix is `Ctrl+B` (default).
 
 ## Theme
 
-Catppuccin Mocha (v2) with:
+Catppuccin (v2), flavor set by `theme` command:
 - Session name on the left
 - Current directory on the right
 - Zoom indicator `()` on zoomed windows

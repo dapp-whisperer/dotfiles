@@ -24,7 +24,7 @@ brew "zoxide"         # Smart cd with frecency
 brew "git-delta"      # Syntax-highlighted diffs
 brew "bat"            # Cat with syntax highlighting (delta themes)
 brew "jq"             # JSON processor
-brew "lsd"            # Modern ls
+brew "eza"            # Modern ls
 brew "stow"           # Symlink manager
 
 # Development

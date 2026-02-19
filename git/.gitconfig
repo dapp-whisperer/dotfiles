@@ -9,7 +9,7 @@
 	diffFilter = delta --color-only
 
 [include]
-	path = ~/.config/delta/catppuccin.gitconfig
+	path = ~/.config/delta/theme.gitconfig
 
 [delta]
 	line-numbers = false
