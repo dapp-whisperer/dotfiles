@@ -8,7 +8,10 @@ keybinds {
         bind "Alt m" { ToggleFocusFullscreen; }
         bind "Alt y" { Run "yazi" { floating true; }; }
         unbind "Alt f"
+        bind "Alt w" { Run "zsh" { floating true; x "15%"; y "15%"; width "70%"; height "70%"; }; }
         unbind "Alt Left" "Alt Down" "Alt Up" "Alt Right"
+        unbind "Ctrl o"
+        unbind "Ctrl g"
     }
     tmux {
         // Pane splitting
@@ -30,7 +33,6 @@ keybinds {
         bind "z" { ToggleFocusFullscreen; SwitchToMode "Normal"; }
         bind "f" { ToggleFloatingPanes; SwitchToMode "Normal"; }
         bind "w" { ToggleFloatingPanes; SwitchToMode "Normal"; }
-        bind "o" { FocusNextPane; }
 
         // Pane resize (Shift+hjkl, stays in tmux for repeated resizing)
         bind "H" { Resize "Increase Left"; }
@@ -63,8 +65,15 @@ keybinds {
         bind "m" { SwitchToMode "Move"; }
         bind "R" { SwitchToMode "Resize"; }
 
-        // Session
+        // Session / lock
+        bind "o" { SwitchToMode "Session"; }
+        bind "s" { LaunchOrFocusPlugin "session-manager" { floating true; move_to_focused_tab true; }; SwitchToMode "Normal"; }
+        bind "g" { SwitchToMode "Locked"; }
         bind "D" { Detach; }
+
+        // Swap panes
+        bind "{" { MovePane "Left"; SwitchToMode "Normal"; }
+        bind "}" { MovePane "Right"; SwitchToMode "Normal"; }
 
         // Layout
         bind "Space" { NextSwapLayout; }
