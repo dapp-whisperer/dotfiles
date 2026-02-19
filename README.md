@@ -102,6 +102,7 @@ See [themes/README.md](themes/README.md) for internals, maintenance, and agent i
 | `g r`       | Go to references       |
 | `K`         | Hover documentation    |
 | `Space c a` | Code actions           |
+| `Space m p` | Preview in Typora (macOS: centered window) |
 
 **First run note:** On first launch, Neovim downloads plugins (~30-60 seconds). Subsequent launches are instant.
 
