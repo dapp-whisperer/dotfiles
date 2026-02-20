@@ -16,7 +16,7 @@ The script will prompt for your GitHub username.
 | ------------ | ---------------------------------- |
 | **git**      | Version control with delta diffs   |
 | **helix**    | Text editor (default)              |
-| **neovim**   | Text editor (LazyVim)              |
+| **neovim**   | Text editor (LazyVim, [details](nvim/README.md)) |
 | **tmux**     | Terminal multiplexer ([details](tmux/README.md)) |
 | **zellij**   | Terminal multiplexer (alternative) |
 | **yazi**     | Terminal file manager              |
@@ -39,7 +39,7 @@ The script will prompt for your GitHub username.
 
 ## Directory Structure
 
-Tool details: see [tmux/README.md](tmux/README.md), [opencode/README.md](opencode/README.md), [themes/README.md](themes/README.md).
+Tool details: see [nvim/README.md](nvim/README.md), [tmux/README.md](tmux/README.md), [opencode/README.md](opencode/README.md), [themes/README.md](themes/README.md).
 
 ```
 ~/dotfiles/
@@ -108,18 +108,9 @@ scripts/karabiner restore
 scripts/karabiner diff
 ```
 
-## LazyVim Quick Reference
+## Neovim
 
-| Key         | Action                 |
-| ----------- | ---------------------- |
-| `Space f f` | Find files             |
-| `Space s g` | Search in files (grep) |
-| `Space e`   | File explorer          |
-| `g d`       | Go to definition       |
-| `g r`       | Go to references       |
-| `K`         | Hover documentation    |
-| `Space c a` | Code actions           |
-| `Space m p` | Preview in Typora (macOS: centered window) |
+LazyVim with added plugins (markview.nvim, diffview.nvim), Rust extras, and markdown-focused keybindings. See [nvim/README.md](nvim/README.md) for full details.
 
 **First run note:** On first launch, Neovim downloads plugins (~30-60 seconds). Subsequent launches are instant.
 

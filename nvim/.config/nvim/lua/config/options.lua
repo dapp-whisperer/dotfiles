@@ -5,8 +5,8 @@
 vim.opt.wrap = true
 vim.opt.linebreak = true
 vim.opt.breakindent = true
--- optional:
-vim.opt.showbreak = "↪ "
+-- vim.opt.showbreak = "↪ "
+vim.opt.fillchars:append({ diff = " " })
 
 -- Start RPC server for external file-open integration (tmux-fingers, etc.)
 local sock = (vim.env.XDG_RUNTIME_DIR or '/tmp') .. '/nvim-server.sock'
