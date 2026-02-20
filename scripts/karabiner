@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+DOTFILES="$HOME/dotfiles"
+REPO_CONFIG="$DOTFILES/karabiner/karabiner.json"
+LIVE_CONFIG="$HOME/.config/karabiner/karabiner.json"
+
+# ── Helpers ──────────────────────────────────────────────────────────
+
+die() { echo "Error: $1" >&2; exit 1; }
+
+usage() {
+    echo "Usage: karabiner <save|restore|diff>"
+    echo ""
+    echo "  save     Copy live config into dotfiles repo"
+    echo "  restore  Copy dotfiles config to live location"
+    echo "  diff     Show diff between live and repo versions"
+    exit 1
+}
+
+# ── Guards ───────────────────────────────────────────────────────────
+
+[[ "$(uname)" == "Darwin" ]] || die "Karabiner-Elements is macOS-only"
+
+# ── Commands ─────────────────────────────────────────────────────────
+
+cmd_save() {
+    [[ -f "$LIVE_CONFIG" ]] || die "Live config not found: $LIVE_CONFIG"
+
+    if [[ -f "$REPO_CONFIG" ]]; then
+        printf "Overwrite repo config with live config? [y/N] "
+        read -r reply
+        [[ "$reply" =~ ^[Yy]$ ]] || { echo "Aborted."; exit 1; }
+    fi
+
+    cp "$LIVE_CONFIG" "$REPO_CONFIG"
+    echo "Saved: $LIVE_CONFIG → $REPO_CONFIG"
+}
+
+cmd_restore() {
+    [[ -f "$REPO_CONFIG" ]] || die "Repo config not found: $REPO_CONFIG"
+
+    if [[ -f "$LIVE_CONFIG" ]]; then
+        printf "Overwrite live config with repo config? [y/N] "
+        read -r reply
+        [[ "$reply" =~ ^[Yy]$ ]] || { echo "Aborted."; exit 1; }
+    fi
+
+    mkdir -p "$(dirname "$LIVE_CONFIG")"
+    cp "$REPO_CONFIG" "$LIVE_CONFIG"
+    echo "Restored: $REPO_CONFIG → $LIVE_CONFIG"
+}
+
+cmd_diff() {
+    [[ -f "$REPO_CONFIG" ]] || die "Repo config not found: $REPO_CONFIG"
+    [[ -f "$LIVE_CONFIG" ]] || die "Live config not found: $LIVE_CONFIG"
+
+    if diff -u "$REPO_CONFIG" "$LIVE_CONFIG"; then
+        echo "No differences."
+    else
+        exit 1
+    fi
+}
+
+# ── Main ─────────────────────────────────────────────────────────────
+
+[[ $# -ge 1 ]] || usage
+
+case "$1" in
+    save)    cmd_save ;;
+    restore) cmd_restore ;;
+    diff)    cmd_diff ;;
+    *)       usage ;;
+esac

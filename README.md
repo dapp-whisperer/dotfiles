@@ -34,6 +34,7 @@ The script will prompt for your GitHub username.
 | **claude**   | Claude Code CLI                    |
 | **codex**    | OpenAI Codex CLI                   |
 | **opencode** | OpenCode CLI + custom theme        |
+| **karabiner** | Keyboard remapping (macOS, [details](#karabiner)) |
 | **rust**     | Rust toolchain with rust-analyzer  |
 
 ## Directory Structure
@@ -59,6 +60,7 @@ Tool details: see [tmux/README.md](tmux/README.md), [opencode/README.md](opencod
 ├── gitui/.config/gitui/    # GitUI
 ├── btop/.config/btop/      # btop system monitor
 ├── opencode/.config/opencode/ # OpenCode config, themes, agents, skills
+├── karabiner/              # Karabiner-Elements (copy-managed, macOS only)
 ├── scripts/                # Theme switcher, utilities
 ├── themes/                 # Theme packs + current tracker
 └── tests/                  # BATS test suite
@@ -90,6 +92,21 @@ theme tokyonight-night
 ```
 
 See [themes/README.md](themes/README.md) for internals, maintenance, and agent instructions.
+
+## Karabiner
+
+Provides personal key overrides for MacOS. Karabiner-Elements config is copy-managed (not stowed) since its GUI writes to the config file directly.
+
+```bash
+# Save live config to repo
+scripts/karabiner save
+
+# Restore repo config to live
+scripts/karabiner restore
+
+# Show diff between live and repo
+scripts/karabiner diff
+```
 
 ## LazyVim Quick Reference
 
