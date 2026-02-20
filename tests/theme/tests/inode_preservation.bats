@@ -36,12 +36,10 @@ assert_inode_unchanged() {
 
     record_inode "$DOTFILES/zellij/.config/zellij/themes/catppuccin-mocha.kdl"
     record_inode "$DOTFILES/btop/.config/btop/themes/catppuccin_mocha.theme"
-    record_inode "$DOTFILES/gitui/.config/gitui/theme.ron"
 
     # Re-apply same theme
     run_theme catppuccin-mocha
 
     assert_inode_unchanged "$DOTFILES/zellij/.config/zellij/themes/catppuccin-mocha.kdl"
     assert_inode_unchanged "$DOTFILES/btop/.config/btop/themes/catppuccin_mocha.theme"
-    assert_inode_unchanged "$DOTFILES/gitui/.config/gitui/theme.ron"
 }

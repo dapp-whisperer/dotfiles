@@ -141,7 +141,9 @@ sed_inplace "s/\"theme\": \"[^\"]*\"/\"theme\": \"${OPENCODE_NAME}\"/" \
     "$DOTFILES/opencode/.config/opencode/opencode.json"
 
 # Full file replacements (inode-preserving for stow symlink targets)
-copy_over "$THEME_DIR/gitui-theme.ron" "$DOTFILES/gitui/.config/gitui/theme.ron"
+if [[ -d "$DOTFILES/gitui/.config/gitui" ]]; then
+    copy_over "$THEME_DIR/gitui-theme.ron" "$DOTFILES/gitui/.config/gitui/theme.ron"
+fi
 
 # LazyGit: concatenate base behavioral config + theme color overlay
 # Write to temp first to avoid truncating config on interrupt
@@ -225,5 +227,5 @@ echo "$THEME" > "$CURRENT_FILE"
 echo "Switched to: $DISPLAY_NAME"
 echo ""
 echo "Auto-reloaded: Ghostty, Zellij, Helix, Neovim, tmux, bat"
-echo "Restart needed: btop, lazygit, lazydocker, gitui, yazi, opencode"
+echo "Restart needed: btop, lazygit, lazydocker, yazi, opencode"
 echo "New shell needed: fzf"

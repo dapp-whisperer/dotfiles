@@ -20,9 +20,13 @@ load '../helpers/setup'
     [ -f "$HOME/.config/eza/theme.yml" ]
 }
 
-@test "gitui theme.ron is copied" {
-    run_theme catppuccin-mocha
-    [ -f "$DOTFILES/gitui/.config/gitui/theme.ron" ]
+@test "lazydocker config is concatenation of base + theme" {
+    run_theme tokyonight-night
+
+    local config="$DOTFILES/lazydocker/.config/lazydocker/config.yml"
+    [ -f "$config" ]
+    grep -q 'border: hidden' "$config"
+    grep -q 'theme:' "$config"
 }
 
 @test "zellij colors file copied to themes dir" {

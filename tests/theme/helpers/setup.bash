@@ -17,7 +17,7 @@ THEME_DIRS=(
     bat/.config/bat
     yazi/.config/yazi
     lazygit
-    gitui/.config/gitui
+    lazydocker
     tmux/.config/tmux
     opencode/.config/opencode
     themes
