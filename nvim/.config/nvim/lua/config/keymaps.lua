@@ -15,3 +15,6 @@ vim.keymap.set("n", "<leader>mp", function()
   end
   vim.fn.jobstart({ "bash", vim.fn.expand("~/.config/yazi/scripts/open-typora.sh"), file }, { detach = true })
 end, { desc = "Preview in Typora" })
+
+-- Override LazyVim's default git diff with DiffviewOpen
+vim.keymap.set("n", "<leader>gd", "<cmd>DiffviewOpen<cr>", { desc = "Diffview" })

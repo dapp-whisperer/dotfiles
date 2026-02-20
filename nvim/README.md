@@ -34,6 +34,12 @@ All LazyVim default keybindings are preserved. These are added:
 
 All markdown bindings live under the `<leader>m` which-key group.
 
+### Overridden Keybindings
+
+| Key | Mode | Action | Replaces |
+| --- | ---- | ------ | -------- |
+| `<leader>gd` | Normal | Open Diffview (`DiffviewOpen`) | LazyVim git diff |
+
 ## Changed Options
 
 Defined in `lua/config/options.lua`. These override LazyVim defaults:
