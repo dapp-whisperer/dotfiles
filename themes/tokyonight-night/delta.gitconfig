@@ -22,4 +22,5 @@
 		bold blue => syntax "#2a3a5c", \
 		bold cyan => syntax "#243e4a", \
 		bold yellow => syntax "#4a3f2f"
-	syntax-theme = tokyonight_night
+	# Should match the name of the bat theme
+	syntax-theme = TokyoNight

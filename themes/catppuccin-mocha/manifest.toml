@@ -1,5 +1,6 @@
 name = "Catppuccin Mocha"
 variant = "dark"
+font = "JetBrains Mono"
 ghostty = "Catppuccin Mocha"
 helix = "catppuccin_mocha"
 zellij = "catppuccin-mocha"

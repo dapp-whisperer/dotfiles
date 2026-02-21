@@ -16,4 +16,4 @@ export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS \
   --color=separator:#ff9e64 \
   --color=spinner:#ff007c"
 
-export BAT_THEME="tokyonight_night"
+export BAT_THEME="TokyoNight"

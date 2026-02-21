@@ -97,6 +97,7 @@ DELTA_FEAT=$(manifest_get "$MANIFEST" "delta")
 BAT_NAME=$(manifest_get "$MANIFEST" "bat")
 TMUX_NAME=$(manifest_get "$MANIFEST" "tmux")
 OPENCODE_NAME=$(manifest_get "$MANIFEST" "opencode")
+FONT_NAME=$(manifest_get "$MANIFEST" "font")
 
 # Validate all parsed values
 validate_value "$DISPLAY_NAME" "name"
@@ -110,9 +111,11 @@ validate_value "$DELTA_FEAT" "delta"
 validate_value "$BAT_NAME" "bat"
 validate_value "$TMUX_NAME" "tmux"
 validate_value "$OPENCODE_NAME" "opencode"
+validate_value "$FONT_NAME" "font"
 
 # Sed replacements on stow source files (inode-preserving for live reload)
 replace_quoted "theme" "$GHOSTTY_NAME" "$DOTFILES/ghostty/.config/ghostty/config"
+replace_quoted "font-family" "$FONT_NAME" "$DOTFILES/ghostty/.config/ghostty/config"
 replace_quoted "theme" "$HELIX_NAME" "$DOTFILES/helix/.config/helix/config.toml"
 replace_quoted "color_theme" "$BTOP_NAME" "$DOTFILES/btop/.config/btop/btop.conf"
 
@@ -170,6 +173,10 @@ if [[ -f "$THEME_DIR/btop.theme" ]]; then
     copy_over "$THEME_DIR/btop.theme" "$DOTFILES/btop/.config/btop/themes/${BTOP_NAME}.theme"
 fi
 
+# Restow packages that may have new theme files (stow won't symlink files
+# added after the initial stow run without a restow)
+(cd "$DOTFILES" && stow -R btop zellij)
+
 if [[ -f "$THEME_DIR/yazi-theme.toml" ]]; then
     copy_over "$THEME_DIR/yazi-theme.toml" "$DOTFILES/yazi/.config/yazi/theme.toml"
 fi
@@ -190,7 +197,7 @@ mkdir -p "$HOME/.config/fzf"
 cp "$THEME_DIR/fzf-theme.sh" "$HOME/.config/fzf/theme.sh"
 
 mkdir -p "$HOME/.config/bat/themes"
-cp "$THEME_DIR/bat.tmTheme" "$HOME/.config/bat/themes/"
+cp "$THEME_DIR/bat.tmTheme" "$HOME/.config/bat/themes/${BAT_NAME}.tmTheme"
 
 mkdir -p "$HOME/.config/eza"
 cp "$THEME_DIR/eza-theme.yml" "$HOME/.config/eza/theme.yml"
@@ -224,7 +231,7 @@ tmux source-file ~/.config/tmux/tmux.conf 2>/dev/null || true
 echo "$THEME" > "$CURRENT_FILE"
 
 # Print summary
-echo "Switched to: $DISPLAY_NAME"
+echo "Switched to: $DISPLAY_NAME ($FONT_NAME)"
 echo ""
 echo "Auto-reloaded: Ghostty, Zellij, Helix, Neovim, tmux, bat"
 echo "Restart needed: btop, lazygit, lazydocker, yazi, opencode"
