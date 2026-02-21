@@ -190,7 +190,7 @@ mkdir -p "$HOME/.config/fzf"
 cp "$THEME_DIR/fzf-theme.sh" "$HOME/.config/fzf/theme.sh"
 
 mkdir -p "$HOME/.config/bat/themes"
-cp "$THEME_DIR/bat.tmTheme" "$HOME/.config/bat/themes/"
+cp "$THEME_DIR/bat.tmTheme" "$HOME/.config/bat/themes/${BAT_NAME}.tmTheme"
 
 mkdir -p "$HOME/.config/eza"
 cp "$THEME_DIR/eza-theme.yml" "$HOME/.config/eza/theme.yml"
