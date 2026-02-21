@@ -170,6 +170,10 @@ if [[ -f "$THEME_DIR/btop.theme" ]]; then
     copy_over "$THEME_DIR/btop.theme" "$DOTFILES/btop/.config/btop/themes/${BTOP_NAME}.theme"
 fi
 
+# Restow packages that may have new theme files (stow won't symlink files
+# added after the initial stow run without a restow)
+(cd "$DOTFILES" && stow -R btop zellij)
+
 if [[ -f "$THEME_DIR/yazi-theme.toml" ]]; then
     copy_over "$THEME_DIR/yazi-theme.toml" "$DOTFILES/yazi/.config/yazi/theme.toml"
 fi
