@@ -34,6 +34,7 @@ Each `themes/<theme-name>/` directory should contain:
 
 - `name`
 - `variant` (`dark` or `light`)
+- `font` (Ghostty `font-family`, e.g. `"JetBrains Mono"` or `"IBM Plex Mono"`)
 - `ghostty`
 - `helix`
 - `zellij`
@@ -49,6 +50,7 @@ Example:
 ```toml
 name = "Catppuccin Mocha"
 variant = "dark"
+font = "JetBrains Mono"
 ghostty = "Catppuccin Mocha"
 helix = "catppuccin_mocha"
 zellij = "catppuccin-mocha"
