@@ -1,5 +1,6 @@
 name = "Tokyo Night"
 variant = "dark"
+font = "JetBrains Mono"
 ghostty = "TokyoNight Night"
 helix = "tokyonight_night"
 zellij = "tokyonight-night"

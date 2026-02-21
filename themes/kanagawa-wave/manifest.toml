@@ -1,5 +1,6 @@
 name = "Kanagawa Wave"
 variant = "dark"
+font = "JetBrains Mono"
 ghostty = "Kanagawa Wave"
 helix = "kanagawa"
 zellij = "kanagawa-wave"
