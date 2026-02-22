@@ -42,9 +42,11 @@ Prefix is `Ctrl+B` (default).
 
 | Key | Action |
 |-----|--------|
-| `prefix+h` | Split pane right (horizontal layout) |
-| `prefix+v` | Split pane below (vertical layout) |
-| `prefix+r` | Reload config |
+| `prefix+r` | Split pane right (horizontal layout) |
+| `prefix+d` | Split pane below (vertical layout) |
+| `prefix+h` | Split pane right (alias) |
+| `prefix+v` | Split pane below (alias) |
+| `prefix+R` | Reload config |
 | `prefix+D` | Detach tmux client |
 | `prefix+x` | Kill pane (no confirmation prompt) |
 | `prefix+z` | Toggle pane zoom |
@@ -109,7 +111,7 @@ tmux
 # Press prefix+I (Ctrl+B then Shift+I)
 
 # 4. Reload config to ensure clean state
-# Press prefix+r
+# Press prefix+R
 
 # 5. First prefix+Space triggers tmux-thumbs Rust compilation (~30s)
 ```
