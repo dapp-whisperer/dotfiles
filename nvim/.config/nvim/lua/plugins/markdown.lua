@@ -31,6 +31,20 @@ return {
       { "<leader>mm", "<cmd>Markview toggle<cr>", desc = "Toggle Markview", ft = "markdown" },
       { "<leader>mh", "<cmd>Markview hybridToggle<cr>", desc = "Toggle hybrid mode", ft = "markdown" },
       { "<leader>ms", "<cmd>Markview splitToggle<cr>", desc = "Toggle split preview", ft = "markdown" },
+      {
+        "<leader>mw",
+        function()
+          vim.wo.wrap = not vim.wo.wrap
+          if vim.wo.wrap then
+            vim.cmd("Markview disable")
+          else
+            vim.cmd("Markview enable")
+          end
+          vim.notify("wrap " .. (vim.wo.wrap and "on (raw)" or "off (rendered)"))
+        end,
+        desc = "Toggle wrap",
+        ft = "markdown",
+      },
     },
   },
 }
