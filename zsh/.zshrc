@@ -9,7 +9,6 @@ command -v fd &>/dev/null || alias fd='fdfind'
 
 # Aliases
 alias dev='zellij --layout dev'
-alias devt='tmux has-session -t devt 2>/dev/null && tmux attach-session -t devt || tmux new-session -d -s devt "yazi" \; split-window -h -l 45% "claude --dangerously-skip-permissions" \; attach-session -t devt'
 alias co='opencode'
 
 # eza aliases (https://github.com/eza-community/eza)
@@ -31,11 +30,6 @@ ff() { fzf --preview 'bat --color=always --style=numbers {}'; }
 alias codexr='codex --search --dangerously-bypass-approvals-and-sandbox'
 alias clod='claude --dangerously-skip-permissions'
 alias cx='claude --dangerously-skip-permissions'
-
-# Always use inline mode for Codex so output remains in terminal scrollback.
-codex() {
-    command codex --no-alt-screen "$@"
-}
 
 # Load local secrets if they exist (API keys, etc.)
 [[ -f "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
