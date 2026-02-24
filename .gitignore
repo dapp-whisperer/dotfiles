@@ -50,7 +50,9 @@ lazygit/.config/lazygit/config.yml
 # Review todos (local workflow)
 todos/
 
-# OpenCode backups
+# OpenCode - ignore runtime config and profiles
+opencode/.config/opencode-profiles/
+opencode/.config/opencode/agents/
 opencode/.config/opencode/*.bak.*
 
 # Test framework vendored deps
@@ -58,3 +60,6 @@ tests/lib/
 
 # Local machine-only overrides
 .local/opencode/
+
+# Sisyphus workflow state
+.sisyphus/
