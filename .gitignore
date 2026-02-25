@@ -50,9 +50,7 @@ lazygit/.config/lazygit/config.yml
 # Review todos (local workflow)
 todos/
 
-# OpenCode - ignore runtime config and profiles
-opencode/.config/opencode-profiles/
-opencode/.config/opencode/agents/
+# OpenCode - ignore transient backup files
 opencode/.config/opencode/*.bak.*
 
 # Test framework vendored deps

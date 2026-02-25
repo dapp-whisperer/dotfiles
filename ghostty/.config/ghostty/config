@@ -6,21 +6,5 @@ background-blur-radius = 20
 # Yazi image preview support
 image-storage-limit = 320000000
 
-# tmux-style keybindings (leader: ctrl+space)
-# Splits
-keybind = ctrl+space>r=new_split:right
-keybind = ctrl+space>d=new_split:down
-keybind = ctrl+space>z=toggle_split_zoom
-keybind = ctrl+space>x=close_surface
-# Split navigation
-keybind = ctrl+space>h=goto_split:left
-keybind = ctrl+space>j=goto_split:down
-keybind = ctrl+space>k=goto_split:up
-keybind = ctrl+space>l=goto_split:right
-# Tabs
-keybind = ctrl+space>c=new_tab
-keybind = ctrl+space>n=next_tab
-keybind = ctrl+space>p=previous_tab
-
 # Chat-CLI ergonomics in tmux: send explicit Shift+Enter (CSI-u) to apps.
 keybind = shift+enter=text:\x1b[13;2u

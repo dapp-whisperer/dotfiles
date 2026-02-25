@@ -225,6 +225,11 @@ fi
 # tmux: source config to reload theme
 tmux source-file ~/.config/tmux/tmux.conf 2>/dev/null || true
 
+# Also update inner tmux sessions
+sed_inplace "s/@catppuccin_flavor '.*'/@catppuccin_flavor '${TMUX_NAME}'/" \
+    "$DOTFILES/tmux/.config/tmux/inner.conf"
+tmux -L inner source-file ~/.config/tmux/inner.conf 2>/dev/null || true
+
 # Zellij, Helix: auto-reload on config file change (inode-preserving writes trigger this)
 
 # Write current LAST (signals complete application)
