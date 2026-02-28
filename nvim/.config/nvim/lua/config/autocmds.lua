@@ -6,12 +6,3 @@
 --
 -- Or remove existing autocmds by their group name (which is prefixed with `lazyvim_` for the defaults)
 vim.api.nvim_del_augroup_by_name("lazyvim_wrap_spell")
-
--- Disable wrap in markdown so markview can render tables
--- (markview skips table rendering when wrap=true and table is wide)
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "markdown", "markdown.mdx" },
-  callback = function()
-    vim.wo.wrap = false
-  end,
-})

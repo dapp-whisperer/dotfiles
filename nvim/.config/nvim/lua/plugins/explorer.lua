@@ -13,6 +13,14 @@ return {
           explorer = {
             hidden = true,
             ignored = true,
+            win = {
+              list = {
+                keys = {
+                  ["c"] = { "explorer_yank", mode = { "n", "x" } },
+                  ["C"] = "explorer_copy",
+                },
+              },
+            },
           },
         },
       },

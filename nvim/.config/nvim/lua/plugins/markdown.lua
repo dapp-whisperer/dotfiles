@@ -35,12 +35,7 @@ return {
         "<leader>mw",
         function()
           vim.wo.wrap = not vim.wo.wrap
-          if vim.wo.wrap then
-            vim.cmd("Markview disable")
-          else
-            vim.cmd("Markview enable")
-          end
-          vim.notify("wrap " .. (vim.wo.wrap and "on (raw)" or "off (rendered)"))
+          vim.notify("wrap " .. (vim.wo.wrap and "on" or "off (tables)"))
         end,
         desc = "Toggle wrap",
         ft = "markdown",
