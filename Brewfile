@@ -26,6 +26,7 @@ brew "git-delta"      # Syntax-highlighted diffs
 brew "bat"            # Cat with syntax highlighting (delta themes)
 brew "jq"             # JSON processor
 brew "eza"            # Modern ls
+brew "starship"       # Cross-shell prompt
 brew "stow"           # Symlink manager
 
 # Development

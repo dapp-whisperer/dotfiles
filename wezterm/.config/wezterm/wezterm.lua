@@ -26,6 +26,13 @@ config.background = {
 }
 config.macos_window_background_blur = 28
 
+-- Keys: make Alt+Arrow work like Ghostty (word navigation)
+local act = wezterm.action
+config.keys = {
+  { key = 'LeftArrow', mods = 'OPT', action = act.SendKey { key = 'b', mods = 'ALT' } },
+  { key = 'RightArrow', mods = 'OPT', action = act.SendKey { key = 'f', mods = 'ALT' } },
+}
+
 -- Window
 config.window_padding = { left = 10, right = 10, top = 10, bottom = 10 }
 config.window_decorations = 'RESIZE'

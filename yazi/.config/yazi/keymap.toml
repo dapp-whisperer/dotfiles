@@ -24,6 +24,11 @@ run  = 'shell "nvim ." --block'
 desc = "Open nvim in current directory"
 
 [[mgr.prepend_keymap]]
+on   = ["g", "z"]
+run  = "plugin zoxide"
+desc = "Jump to directory (zoxide)"
+
+[[mgr.prepend_keymap]]
 on   = ["g", "i"]
 run  = "plugin lazygit"
 desc = "Open lazygit"
