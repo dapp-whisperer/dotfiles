@@ -290,7 +290,7 @@ if [[ -d "$SAVED_THEME_DIR" ]]; then
 fi
 
 # Stow each package
-for package in zsh git yazi zellij helix nvim lazygit lazydocker delta tmux ghostty gitui btop bat opencode; do
+for package in zsh git yazi zellij helix nvim lazygit lazydocker delta tmux ghostty gitui btop bat opencode starship; do
     if [[ -d "$package" ]]; then
         info "Stowing $package..."
         # Use --adopt to take ownership of existing files, then restore from git

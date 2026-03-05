@@ -156,3 +156,6 @@ try() { source "$HOME/dotfiles/scripts/try" "$@"; }
 
 # Dotfiles scripts
 export PATH="$HOME/dotfiles/scripts:$PATH"
+
+# Starship prompt
+eval "$(starship init zsh)"
