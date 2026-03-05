@@ -265,6 +265,7 @@ mkdir -p "$HOME/.config/tmux"
 mkdir -p "$HOME/.config/ghostty"
 mkdir -p "$HOME/.config/gitui"
 mkdir -p "$HOME/.config/btop/themes"
+mkdir -p "$HOME/.config/bottom"
 mkdir -p "$HOME/Work/tries"
 mkdir -p "$HOME/.config/opencode/themes"
 mkdir -p "$HOME/.config/eza"
@@ -290,7 +291,7 @@ if [[ -d "$SAVED_THEME_DIR" ]]; then
 fi
 
 # Stow each package
-for package in zsh git yazi zellij helix nvim lazygit lazydocker delta tmux ghostty gitui btop bat opencode starship; do
+for package in zsh git yazi zellij helix nvim lazygit lazydocker delta tmux ghostty gitui btop bottom bat opencode starship; do
     if [[ -d "$package" ]]; then
         info "Stowing $package..."
         # Use --adopt to take ownership of existing files, then restore from git
