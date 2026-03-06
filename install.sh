@@ -254,6 +254,7 @@ cd "$DOTFILES_DIR"
 mkdir -p "$HOME/.config/yazi"
 mkdir -p "$HOME/.config/zellij/layouts"
 mkdir -p "$HOME/.config/zellij/themes"
+mkdir -p "$HOME/.config/zellij/plugins"
 mkdir -p "$HOME/.config/helix"
 mkdir -p "$HOME/.config/nvim"
 mkdir -p "$HOME/.config/lazygit"
@@ -265,6 +266,7 @@ mkdir -p "$HOME/.config/tmux"
 mkdir -p "$HOME/.config/ghostty"
 mkdir -p "$HOME/.config/gitui"
 mkdir -p "$HOME/.config/btop/themes"
+mkdir -p "$HOME/.config/bottom"
 mkdir -p "$HOME/Work/tries"
 mkdir -p "$HOME/.config/opencode/themes"
 mkdir -p "$HOME/.config/eza"
@@ -290,7 +292,7 @@ if [[ -d "$SAVED_THEME_DIR" ]]; then
 fi
 
 # Stow each package
-for package in zsh git yazi zellij helix nvim lazygit lazydocker delta tmux ghostty gitui btop bat opencode starship; do
+for package in zsh git yazi zellij helix nvim lazygit lazydocker delta tmux ghostty gitui btop bottom bat opencode starship; do
     if [[ -d "$package" ]]; then
         info "Stowing $package..."
         # Use --adopt to take ownership of existing files, then restore from git
@@ -325,6 +327,22 @@ else
     info "Catppuccin Mocha theme already installed"
 fi
 
+
+# ============================================
+# STEP 6.6: Install zellij-attention plugin
+# ============================================
+step "Installing zellij-attention plugin..."
+
+ZELLIJ_PLUGINS_DIR="$HOME/.config/zellij/plugins"
+ZELLIJ_ATTENTION_WASM="$ZELLIJ_PLUGINS_DIR/zellij-attention.wasm"
+
+if [[ ! -f "$ZELLIJ_ATTENTION_WASM" ]]; then
+    info "Downloading zellij-attention plugin..."
+    curl -fsSL "https://github.com/KiryuuLight/zellij-attention/releases/latest/download/zellij-attention.wasm" \
+        -o "$ZELLIJ_ATTENTION_WASM" || warn "Could not download zellij-attention plugin"
+else
+    info "zellij-attention plugin already installed"
+fi
 
 # macOS: LazyGit uses ~/Library/Application Support/lazygit instead of ~/.config/lazygit
 if [[ "$OS" == "macos" ]]; then

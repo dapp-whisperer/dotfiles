@@ -159,3 +159,4 @@ export PATH="$HOME/dotfiles/scripts:$PATH"
 
 # Starship prompt
 eval "$(starship init zsh)"
+export PATH=$PATH:$HOME/.maestro/bin

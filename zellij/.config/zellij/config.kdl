@@ -1,14 +1,23 @@
 theme "catppuccin-mocha"
 pane_frames false
+
+load_plugins {
+    "file:~/.config/zellij/plugins/zellij-attention.wasm" {
+        enabled "true"
+        waiting_icon "⏳"
+        completed_icon "✅"
+    }
+}
 scroll_buffer_size 200000
 scrollback_editor "/opt/homebrew/bin/hx"
 
 keybinds {
     shared_except "locked" {
         bind "Alt m" { ToggleFocusFullscreen; }
-        bind "Alt y" { Run "yazi" { floating true; }; }
+        bind "Alt y" { Run "yazi" { floating true; close_on_exit true; x "10%"; y "10%"; width "80%"; height "80%"; }; }
         unbind "Alt f"
         bind "Alt w" { Run "zsh" { floating true; x "15%"; y "15%"; width "70%"; height "70%"; }; }
+        bind "Alt g" { Run "lazygit" { floating true; close_on_exit true; x "10%"; y "10%"; width "80%"; height "80%"; }; }
         unbind "Alt Left" "Alt Down" "Alt Up" "Alt Right"
         unbind "Ctrl o"
         unbind "Ctrl g"

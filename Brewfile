@@ -14,6 +14,7 @@ brew "lazydocker"     # Docker TUI
 brew "micro"          # Text editor (simple)
 brew "tmux"           # Terminal multiplexer
 brew "btop"           # System/resource monitor
+brew "bottom"         # System/resource monitor (flexible layouts)
 
 # CLI Utilities
 brew "git"
