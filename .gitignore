@@ -50,14 +50,14 @@ lazygit/.config/lazygit/config.yml
 # Review todos (local workflow)
 todos/
 
-# OpenCode - ignore transient backup files
-opencode/.config/opencode/*.bak.*
+# OpenCode (managed outside dotfiles repo)
+opencode/
 
 # Test framework vendored deps
 tests/lib/
 
 # Local machine-only overrides
-.local/opencode/
+.local/
 
 # Sisyphus workflow state
 .sisyphus/
