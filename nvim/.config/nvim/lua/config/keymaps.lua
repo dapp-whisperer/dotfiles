@@ -18,3 +18,11 @@ end, { desc = "Preview in Typora" })
 
 -- Override LazyVim's default git diff with DiffviewOpen
 vim.keymap.set("n", "<leader>gd", "<cmd>DiffviewOpen<cr>", { desc = "Diffview" })
+
+-- Half-page jumps with centering
+vim.keymap.set("n", "J", "<C-d>zz", { desc = "Half page down" })
+vim.keymap.set("n", "K", "<C-u>zz", { desc = "Half page up" })
+
+-- Preserve lost defaults on new keys
+vim.keymap.set("n", "<leader>j", "J", { desc = "Join lines" })
+vim.keymap.set("n", "gh", "K", { desc = "LSP Hover" })
