@@ -1,5 +1,5 @@
-theme = "Catppuccin Mocha"
-font-family = "JetBrains Mono"
+theme = "Monokai Pro"
+font-family = "Fira Code"
 background-opacity = 0.95
 background-blur-radius = 20
 

@@ -1,4 +1,4 @@
-theme "catppuccin-mocha"
+theme "monokai"
 pane_frames false
 
 load_plugins {
