@@ -189,6 +189,11 @@ if [[ -f "$THEME_DIR/tmux-theme.conf" ]]; then
     fi
 fi
 
+# tmux: install theme colors for outer status bar
+if [[ -f "$THEME_DIR/tmux-theme.conf" ]]; then
+    cp "$THEME_DIR/tmux-theme.conf" "$HOME/.config/tmux/current-theme.conf"
+fi
+
 # Copy to non-stow destinations (not symlinked, cp is fine)
 mkdir -p "$HOME/.config/delta"
 cp "$THEME_DIR/delta.gitconfig" "$HOME/.config/delta/theme.gitconfig"
