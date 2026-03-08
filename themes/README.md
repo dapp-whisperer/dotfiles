@@ -25,7 +25,7 @@ Each `themes/<theme-name>/` directory should contain:
 - `btop.theme`
 - `yazi-theme.toml`
 - `bat.tmTheme`
-- Optional: `tmux-theme.conf` for custom/non-standard tmux flavor files
+- `tmux-theme.conf` — catppuccin `@thm_*` palette variables + outer status bar colors, pane borders, and copy-mode highlight
 - Optional: `zellij-colors.kdl` for custom Zellij theme definitions
 
 ## Manifest Keys

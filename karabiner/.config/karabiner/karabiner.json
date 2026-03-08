@@ -50,7 +50,7 @@
                         ]
                     },
                     {
-                        "description": "RIGHT_SHIFT to HYPER (SHIFT+COMMAND+OPTION+CONTROL) or ESCAPE (If Alone) — Internal keyboard only",
+                        "description": "RIGHT_SHIFT to ESCAPE (If Alone) — Internal keyboard only",
                         "manipulators": [
                             {
                                 "conditions": [
@@ -65,43 +65,17 @@
                                 },
                                 "to": [
                                     {
-                                        "key_code": "left_shift",
-                                        "modifiers": ["left_command", "left_control", "left_option"]
+                                        "key_code": "left_shift"
                                     }
                                 ],
                                 "to_if_alone": [{ "key_code": "escape" }],
                                 "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "identifiers": [{ "is_built_in_keyboard": true }],
-                                        "type": "device_if"
-                                    }
-                                ],
-                                "description": "Avoid starting sysdiagnose with the built-in macOS shortcut cmd+shift+option+ctrl+,",
-                                "from": {
-                                    "key_code": "comma",
-                                    "modifiers": { "mandatory": ["command", "shift", "option", "control"] }
-                                },
-                                "to": [],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "identifiers": [{ "is_built_in_keyboard": true }],
-                                        "type": "device_if"
-                                    }
-                                ],
-                                "description": "Avoid starting sysdiagnose with the built-in macOS shortcut cmd+shift+option+ctrl+.",
-                                "from": {
-                                    "key_code": "period",
-                                    "modifiers": { "mandatory": ["command", "shift", "option", "control"] }
-                                },
-                                "to": [],
-                                "type": "basic"
-                            },
+                            }
+                        ]
+                    },
+                    {
+                        "description": "Right Option to Right Control — Internal keyboard only",
+                        "manipulators": [
                             {
                                 "conditions": [
                                     {
@@ -110,11 +84,10 @@
                                     }
                                 ],
                                 "from": {
-                                    "description": "Avoid starting sysdiagnose with the built-in macOS shortcut cmd+shift+option+ctrl+/",
-                                    "key_code": "slash",
-                                    "modifiers": { "mandatory": ["command", "shift", "option", "control"] }
+                                    "key_code": "right_option",
+                                    "modifiers": { "optional": ["any"] }
                                 },
-                                "to": [],
+                                "to": [{ "key_code": "right_control" }],
                                 "type": "basic"
                             }
                         ]
@@ -235,7 +208,7 @@
                         ]
                     },
                     {
-                        "description": "Hyper + i/j/k/l == vim directional Keys",
+                        "description": "Hyper + H/J/K/L == vim directional keys",
                         "manipulators": [
                             {
                                 "from": {
@@ -268,10 +241,54 @@
                                 },
                                 "to": [{ "key_code": "right_arrow" }],
                                 "type": "basic"
+                            }
+                        ]
+                    },
+                    {
+                        "description": "Hyper + Y/U/I/O/P == line/word navigation + forward delete",
+                        "manipulators": [
+                            {
+                                "from": {
+                                    "key_code": "y",
+                                    "modifiers": { "mandatory": ["left_shift", "left_command", "left_control", "left_option"] }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "left_arrow",
+                                        "modifiers": ["left_command"]
+                                    }
+                                ],
+                                "type": "basic"
                             },
                             {
                                 "from": {
-                                    "key_code": "semicolon",
+                                    "key_code": "u",
+                                    "modifiers": { "mandatory": ["left_shift", "left_command", "left_control", "left_option"] }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "left_arrow",
+                                        "modifiers": ["left_option"]
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "from": {
+                                    "key_code": "i",
+                                    "modifiers": { "mandatory": ["left_shift", "left_command", "left_control", "left_option"] }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "right_arrow",
+                                        "modifiers": ["left_option"]
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "from": {
+                                    "key_code": "o",
                                     "modifiers": { "mandatory": ["left_shift", "left_command", "left_control", "left_option"] }
                                 },
                                 "to": [
@@ -280,6 +297,14 @@
                                         "modifiers": ["left_command"]
                                     }
                                 ],
+                                "type": "basic"
+                            },
+                            {
+                                "from": {
+                                    "key_code": "p",
+                                    "modifiers": { "mandatory": ["left_shift", "left_command", "left_control", "left_option"] }
+                                },
+                                "to": [{ "key_code": "delete_forward" }],
                                 "type": "basic"
                             }
                         ]
@@ -440,42 +465,6 @@
                                     {
                                         "key_code": "a",
                                         "modifiers": ["left_command"]
-                                    }
-                                ],
-                                "type": "basic"
-                            }
-                        ]
-                    },
-                    {
-                        "description": "Hyper + left_arrow : Cmd + left_arrow",
-                        "manipulators": [
-                            {
-                                "from": {
-                                    "key_code": "left_arrow",
-                                    "modifiers": { "mandatory": ["left_shift", "left_command", "left_control", "left_option"] }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "left_arrow",
-                                        "modifiers": ["left_option"]
-                                    }
-                                ],
-                                "type": "basic"
-                            }
-                        ]
-                    },
-                    {
-                        "description": "Hyper + right_arrow : Cmd + right_arrow",
-                        "manipulators": [
-                            {
-                                "from": {
-                                    "key_code": "right_arrow",
-                                    "modifiers": { "mandatory": ["left_shift", "left_command", "left_control", "left_option"] }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "right_arrow",
-                                        "modifiers": ["left_option"]
                                     }
                                 ],
                                 "type": "basic"
