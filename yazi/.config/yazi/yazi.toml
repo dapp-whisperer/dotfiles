@@ -7,7 +7,7 @@ url = "*.md"
 run = 'faster-piper -- CLICOLOR_FORCE=1 glow -w=$w -s=dark "$1"'
 
 [mgr]
-ratio = [1, 1, 4]
+ratio = [1, 4, 3]
 show_hidden = false
 
 [opener]
@@ -31,4 +31,5 @@ rules = [
     { mime = "text/*", use = ["edit"] },
     { mime = "application/json", use = ["edit"] },
     { mime = "*/javascript", use = ["edit"] },
+    { url = "*", use = ["open"] },
 ]

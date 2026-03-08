@@ -10,6 +10,7 @@ command -v fd &>/dev/null || alias fd='fdfind'
 # Aliases
 alias dev='zellij --layout dev'
 alias co='opencode'
+alias y='yazi'
 
 # OpenCode startup mode wrappers
 OPENCODE_DOTFILES_ROOT="${OPENCODE_DOTFILES_ROOT:-}"
