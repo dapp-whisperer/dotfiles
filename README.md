@@ -34,7 +34,7 @@ The script will prompt for your GitHub username.
 | **claude**   | Claude Code CLI                    |
 | **codex**    | OpenAI Codex CLI                   |
 | **opencode** | OpenCode CLI + custom theme        |
-| **karabiner** | Keyboard remapping (macOS, [details](#karabiner)) |
+| **karabiner** | Keyboard remapping (macOS, stow-managed) |
 | **rust**     | Rust toolchain with rust-analyzer  |
 
 ## Directory Structure
@@ -60,7 +60,7 @@ Tool details: see [nvim/README.md](nvim/README.md), [tmux/README.md](tmux/README
 ├── gitui/.config/gitui/    # GitUI
 ├── btop/.config/btop/      # btop system monitor
 ├── opencode/.config/opencode/ # OpenCode config, themes, agents, skills
-├── karabiner/              # Karabiner-Elements (copy-managed, macOS only)
+├── karabiner/.config/karabiner/ # Karabiner-Elements (stow-managed, macOS only)
 ├── scripts/                # Theme switcher, utilities
 ├── themes/                 # Theme packs + current tracker
 └── tests/                  # BATS test suite
@@ -95,18 +95,7 @@ See [themes/README.md](themes/README.md) for internals, maintenance, and agent i
 
 ## Karabiner
 
-Provides personal key overrides for MacOS. Karabiner-Elements config is copy-managed (not stowed) since its GUI writes to the config file directly.
-
-```bash
-# Save live config to repo
-scripts/karabiner save
-
-# Restore repo config to live
-scripts/karabiner restore
-
-# Show diff between live and repo
-scripts/karabiner diff
-```
+Provides personal key overrides for macOS. Karabiner-Elements config is stow-managed like all other tools — `stow karabiner` symlinks `~/.config/karabiner/karabiner.json` into place.
 
 ## Neovim
 
@@ -126,7 +115,7 @@ export GEMINI_API_KEY="your-key-here"
 
 ```bash
 cd ~/dotfiles && git pull && stow --restow --target="$HOME" \
-  zsh git yazi zellij helix nvim lazygit lazydocker delta tmux ghostty gitui btop bat opencode
+  zsh git yazi zellij helix nvim lazygit lazydocker delta tmux ghostty gitui btop bat opencode karabiner
 ```
 
 ## Updating an Existing Machine
@@ -142,11 +131,11 @@ git pull --rebase
 
 # 2) Preview symlink changes
 stow --simulate --verbose=1 --target="$HOME" --restow \
-  zsh git yazi zellij helix nvim lazygit lazydocker delta tmux ghostty gitui btop bat opencode
+  zsh git yazi zellij helix nvim lazygit lazydocker delta tmux ghostty gitui btop bat opencode karabiner
 
 # 3) Apply if preview looks correct
 stow --target="$HOME" --restow \
-  zsh git yazi zellij helix nvim lazygit lazydocker delta tmux ghostty gitui btop bat opencode
+  zsh git yazi zellij helix nvim lazygit lazydocker delta tmux ghostty gitui btop bat opencode karabiner
 
 # 4) Reload shell
 source ~/.zshrc

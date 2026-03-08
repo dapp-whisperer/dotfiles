@@ -1,0 +1,26 @@
+[delta "monokai"]
+	blame-palette = "#272822 #1e1f1c #3e3d32 #49483e #75715e"
+	commit-decoration-style = "#75715e" bold box ul
+	dark = true
+	file-decoration-style = "#75715e"
+	file-style = "#f8f8f2"
+	hunk-header-decoration-style = "#75715e" box ul
+	hunk-header-file-style = bold
+	hunk-header-line-number-style = bold "#75715e"
+	hunk-header-style = file line-number syntax
+	line-numbers-left-style = "#49483e"
+	line-numbers-minus-style = "#f92672"
+	line-numbers-plus-style = "#a6e22e"
+	line-numbers-right-style = "#49483e"
+	line-numbers-zero-style = "#49483e"
+	minus-emph-style = syntax "#6e1a3a"
+	minus-style = syntax "#4a1529"
+	plus-emph-style = syntax "#3d5c1e"
+	plus-style = syntax "#2d4215"
+	map-styles = \
+		bold purple => syntax "#3d2b56", \
+		bold blue => syntax "#1e3a4e", \
+		bold cyan => syntax "#1e4a3e", \
+		bold yellow => syntax "#4e3d1e"
+	# Should match the name of the bat theme
+	syntax-theme = Monokai

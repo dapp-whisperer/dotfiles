@@ -1,0 +1,19 @@
+export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS \
+  --color=bg+:#3e3d32 \
+  --color=bg:#272822 \
+  --color=border:#49483e \
+  --color=fg:#f8f8f2 \
+  --color=gutter:#272822 \
+  --color=header:#fd971f \
+  --color=hl+:#66d9ef \
+  --color=hl:#66d9ef \
+  --color=info:#75715e \
+  --color=marker:#f92672 \
+  --color=pointer:#f92672 \
+  --color=prompt:#66d9ef \
+  --color=query:#f8f8f2:regular \
+  --color=scrollbar:#49483e \
+  --color=separator:#fd971f \
+  --color=spinner:#f92672"
+
+export BAT_THEME="Monokai"
