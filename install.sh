@@ -145,18 +145,61 @@ fi
 # ============================================
 step "Installing packages from Brewfile..."
 
-if [[ -f "$DOTFILES_DIR/Brewfile" ]]; then
-    if command -v brew &>/dev/null; then
-        if ! GIT_CONFIG_GLOBAL=/dev/null GIT_CONFIG_SYSTEM=/dev/null brew bundle --file="$DOTFILES_DIR/Brewfile"; then
-            warn "Brew bundle failed"
-            BREW_FAILED="true"
+# Clear stale brew locks from previous interrupted runs
+if command -v brew &>/dev/null; then
+    BREW_PREFIX="$(brew --prefix)"
+    rm -f "$BREW_PREFIX/var/homebrew/locks/"*.lock 2>/dev/null || true
+    find "$BREW_PREFIX/Cellar" -name ".brew_lock" -delete 2>/dev/null || true
+fi
+
+if [[ -f "$DOTFILES_DIR/Brewfile" ]] && command -v brew &>/dev/null; then
+    while IFS= read -r line || [[ -n "$line" ]]; do
+        # Strip comments and trim whitespace (xargs would also strip quotes)
+        line="$(echo "$line" | sed 's/#.*//; s/^[[:space:]]*//; s/[[:space:]]*$//')"
+        [[ -z "$line" ]] && continue
+
+        # Skip lines gated on OS.mac? when not on macOS
+        if [[ "$OS" != "macos" && "$line" == *"if OS.mac?"* ]]; then
+            continue
         fi
-    else
-        warn "brew command not found"
-        BREW_FAILED="true"
-    fi
+
+        case "$line" in
+            brew\ *)
+                pkg="$(echo "$line" | sed 's/^brew "\([^"]*\)".*/\1/')"
+                if [[ "$pkg" == "node" ]] && command -v node &>/dev/null; then
+                    info "node already available ($(node --version 2>/dev/null || echo '?')), skipping brew install"
+                    continue
+                fi
+                if brew list --formula "$pkg" &>/dev/null; then
+                    info "$pkg already installed"
+                else
+                    info "Installing $pkg..."
+                    GIT_CONFIG_GLOBAL=/dev/null GIT_CONFIG_SYSTEM=/dev/null \
+                        brew install "$pkg" || warn "Failed to install $pkg"
+                fi
+                ;;
+            cask\ *)
+                pkg="$(echo "$line" | sed 's/^cask "\([^"]*\)".*/\1/')"
+                if brew list --cask "$pkg" &>/dev/null; then
+                    info "$pkg cask already installed"
+                else
+                    info "Installing cask $pkg..."
+                    brew install --cask "$pkg" || warn "Failed to install cask $pkg"
+                fi
+                ;;
+            tap\ *)
+                tap_name="$(echo "$line" | sed 's/^tap "\([^"]*\)".*/\1/')"
+                brew tap "$tap_name" 2>/dev/null || true
+                ;;
+        esac
+    done < "$DOTFILES_DIR/Brewfile"
 else
-    warn "No Brewfile found, skipping..."
+    if ! command -v brew &>/dev/null; then
+        warn "brew command not found"
+    else
+        warn "No Brewfile found, skipping..."
+    fi
+    BREW_FAILED="true"
 fi
 
 # ============================================
@@ -291,21 +334,36 @@ if [[ -d "$SAVED_THEME_DIR" ]]; then
         > "$DOTFILES_DIR/lazydocker/.config/lazydocker/config.yml" 2>/dev/null || true
 fi
 
-# Stow each package
-for package in zsh git yazi zellij helix nvim lazygit lazydocker delta tmux ghostty gitui btop bottom bat opencode starship; do
-    if [[ -d "$package" ]]; then
-        info "Stowing $package..."
-        # Use --adopt to take ownership of existing files, then restore from git
-        stow --verbose=1 --target="$HOME" --adopt --restow "$package" 2>&1 | grep -v "^BUG" || true
+# Record repo state before stow so we can distinguish adopt-diffs from user edits
+REPO_CLEAN_BEFORE_STOW="false"
+if git -C "$DOTFILES_DIR" diff --quiet && git -C "$DOTFILES_DIR" diff --cached --quiet; then
+    REPO_CLEAN_BEFORE_STOW="true"
+fi
+
+# Detect working stow invocation (Homebrew bottle may have mismatched perl shebang)
+STOW_BIN="$(command -v stow || true)"
+if [[ -z "$STOW_BIN" ]]; then
+    warn "stow not found, skipping symlink creation"
+else
+    STOW_CMD=("$STOW_BIN")
+    if ! "$STOW_BIN" --version &>/dev/null; then
+        STOW_CMD=(perl "$STOW_BIN")
     fi
-done
+
+    for package in zsh git yazi zellij helix nvim lazygit lazydocker delta tmux ghostty gitui btop bottom bat opencode starship; do
+        if [[ -d "$package" ]]; then
+            info "Stowing $package..."
+            "${STOW_CMD[@]}" --verbose=1 --target="$HOME" --adopt --restow "$package" 2>&1 | grep -v "^BUG" || true
+        fi
+    done
+fi
 
 # Restore any adopted files to dotfiles version
-info "Restoring dotfiles versions..."
-if git -C "$DOTFILES_DIR" diff --quiet && git -C "$DOTFILES_DIR" diff --cached --quiet; then
+if [[ "$REPO_CLEAN_BEFORE_STOW" == "true" ]]; then
+    info "Restoring dotfiles versions..."
     git -C "$DOTFILES_DIR" checkout -- . 2>/dev/null || true
 else
-    warn "Local changes detected; skipping git checkout"
+    warn "Pre-existing local changes detected; skipping git checkout (adopted files may differ from repo)"
 fi
 
 # ============================================
@@ -372,7 +430,13 @@ fi
 step "Installing Yazi plugins..."
 
 if command -v ya &>/dev/null; then
-    ya pack -i 2>/dev/null || info "Yazi plugins already installed"
+    if ya pkg install 2>/dev/null; then
+        info "Yazi plugins installed"
+    elif ya pack -i 2>/dev/null; then
+        info "Yazi plugins installed (legacy ya)"
+    else
+        info "Yazi plugins already up to date"
+    fi
 else
     warn "ya command not found, skipping plugin installation"
 fi
@@ -383,15 +447,28 @@ fi
 step "Checking Rust toolchain..."
 
 if command -v rustup &>/dev/null; then
-    info "Rust toolchain already installed"
+    if rustup show active-toolchain &>/dev/null; then
+        info "Rust toolchain already installed"
+    else
+        info "rustup found but no toolchain installed, installing stable..."
+        if rustup toolchain install stable; then
+            rustup component add rust-analyzer || warn "Could not add rust-analyzer component"
+            info "Rust stable toolchain installed with rust-analyzer"
+        else
+            warn "Failed to install Rust stable toolchain"
+        fi
+    fi
 elif command -v rustup-init &>/dev/null; then
     info "Installing Rust toolchain..."
-    rustup-init -y --no-modify-path
-    source "$HOME/.cargo/env"
-    rustup component add rust-analyzer
-    info "Rust toolchain installed with rust-analyzer"
+    if rustup-init -y --no-modify-path; then
+        source "$HOME/.cargo/env" 2>/dev/null || true
+        rustup component add rust-analyzer || warn "Could not add rust-analyzer component"
+        info "Rust toolchain installed with rust-analyzer"
+    else
+        warn "Failed to initialize Rust toolchain"
+    fi
 else
-    warn "rustup-init not found, skipping Rust installation"
+    warn "rustup/rustup-init not found, skipping Rust installation"
 fi
 
 # ============================================

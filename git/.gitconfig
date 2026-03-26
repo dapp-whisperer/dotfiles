@@ -31,3 +31,6 @@
 
 [include]
 	path = ~/.gitconfig.local
+[user]
+	name = dapp-whisperer
+	email = dapp-whisperer@pm.me
