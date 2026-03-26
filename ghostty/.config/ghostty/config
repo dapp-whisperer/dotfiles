@@ -8,3 +8,5 @@ image-storage-limit = 320000000
 
 # Chat-CLI ergonomics in tmux: send explicit Shift+Enter (CSI-u) to apps.
 keybind = shift+enter=text:\x1b[13;2u
+keybind = super+r=new_split:right
+keybind = super+d=new_split:down
