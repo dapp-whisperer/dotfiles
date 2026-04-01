@@ -26,3 +26,6 @@ vim.keymap.set("n", "K", "<C-u>zz", { desc = "Half page up" })
 -- Preserve lost defaults on new keys
 vim.keymap.set("n", "<leader>j", "J", { desc = "Join lines" })
 vim.keymap.set("n", "gh", "K", { desc = "LSP Hover" })
+
+-- Yank with c in visual mode
+vim.keymap.set("v", "c", "y", { desc = "Yank selection" })

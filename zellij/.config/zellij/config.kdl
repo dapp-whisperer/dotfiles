@@ -1,4 +1,4 @@
-theme "monokai"
+theme "catppuccin-mocha"
 pane_frames false
 
 load_plugins {
@@ -9,7 +9,7 @@ load_plugins {
     }
 }
 scroll_buffer_size 200000
-scrollback_editor "/opt/homebrew/bin/hx"
+scrollback_editor "/opt/homebrew/bin/nvim"
 
 keybinds {
     shared_except "locked" {

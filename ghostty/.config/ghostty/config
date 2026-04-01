@@ -1,10 +1,27 @@
-theme = "Monokai Pro"
-font-family = "Fira Code"
+# Treat Option as Alt so terminal sequences like Alt+Backspace work correctly.
+macos-option-as-alt = true
+
+theme = "Catppuccin Mocha"
+font-family = "JetBrains Mono"
+font-size = 15
 background-opacity = 0.95
 background-blur-radius = 20
 
 # Yazi image preview support
 image-storage-limit = 320000000
+
+# Copy selected text straight to the system clipboard.
+copy-on-select = clipboard
+
+# Keep a single split "fullscreen" temporarily, tmux-style.
+keybind = super+r=new_split:right
+keybind = super+d=new_split:down
+keybind = super+enter=toggle_split_zoom
+
+# Native Ghostty popup-style terminal for quick tools like lazygit or yazi.
+keybind = super+shift+space=toggle_quick_terminal
+quick-terminal-position = center
+quick-terminal-size = 80%,80%
 
 # Chat-CLI ergonomics in tmux: send explicit Shift+Enter (CSI-u) to apps.
 keybind = shift+enter=text:\x1b[13;2u

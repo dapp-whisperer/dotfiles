@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Fuzzy-search and switch to a Brave Browser tab
+
+export CHROME_BUNDLE_IDENTIFIER="com.brave.Browser"
+
+die() { echo "Error: $1" >&2; exit 1; }
+
+command -v chrome-cli >/dev/null || die "chrome-cli not found (brew install chrome-cli)"
+pgrep -q "Brave" || die "Brave Browser is not running"
+
+# Fetch all tab titles and URLs
+tabs=$(chrome-cli list tabs)
+links=$(chrome-cli list links)
+
+[[ -n "$tabs" ]] || die "No tabs found"
+
+# Merge into fzf format: id<TAB>title  |  url
+entries=$(
+    while IFS=$'\t' read -r tab link; do
+        id="${tab%%]*}"; id="${id#\[}"
+        title="${tab#*] }"
+        url="${link#*] }"
+        printf '%s\t%s  |  %s\n' "$id" "$title" "$url"
+    done < <(paste <(echo "$tabs") <(echo "$links"))
+)
+
+# fzf: hide id column, show title | url
+selection=$(echo "$entries" | fzf --with-nth=2.. --delimiter=$'\t' --prompt="Tab > ") || exit 0
+
+tab_id=$(echo "$selection" | cut -f1)
+
+# Switch to selected tab and bring Brave to foreground
+chrome-cli activate -t "$tab_id"
+open -a "Brave Browser"

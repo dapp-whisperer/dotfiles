@@ -26,7 +26,12 @@ manifest_get() {
 # Validate that a value contains only safe characters (alphanumeric, spaces, hyphens, underscores, dots)
 validate_value() {
     local val="$1" label="$2"
-    [[ "$val" =~ ^[a-zA-Z0-9_.\ -]+$ ]] || die "Invalid manifest value for '$label': $val"
+    [[ "$val" =~ ^[a-zA-Z0-9_.()\ -]+$ ]] || die "Invalid manifest value for '$label': $val"
+}
+
+validate_hex() {
+    local val="$1" label="$2"
+    [[ "$val" =~ ^[a-fA-F0-9]{6}$ ]] || die "Invalid hex color for '$label': $val"
 }
 
 # Inode-preserving sed: macOS sed -i creates a NEW file (new inode), which
@@ -97,6 +102,9 @@ DELTA_FEAT=$(manifest_get "$MANIFEST" "delta")
 BAT_NAME=$(manifest_get "$MANIFEST" "bat")
 TMUX_NAME=$(manifest_get "$MANIFEST" "tmux")
 OPENCODE_NAME=$(manifest_get "$MANIFEST" "opencode")
+WEZTERM_NAME=$(manifest_get "$MANIFEST" "wezterm")
+WEZTERM_FONT=$(manifest_get "$MANIFEST" "wezterm_font")
+WEZTERM_BG=$(manifest_get "$MANIFEST" "wezterm_bg")
 FONT_NAME=$(manifest_get "$MANIFEST" "font")
 
 # Validate all parsed values
@@ -111,6 +119,8 @@ validate_value "$DELTA_FEAT" "delta"
 validate_value "$BAT_NAME" "bat"
 validate_value "$TMUX_NAME" "tmux"
 validate_value "$OPENCODE_NAME" "opencode"
+validate_value "$WEZTERM_NAME" "wezterm"
+validate_hex "$WEZTERM_BG" "wezterm_bg"
 validate_value "$FONT_NAME" "font"
 
 # Sed replacements on stow source files (inode-preserving for live reload)
@@ -142,6 +152,16 @@ sed_inplace "s/@catppuccin_flavor '.*'/@catppuccin_flavor '${TMUX_NAME}'/" \
 # opencode: swap theme in JSON config
 sed_inplace "s/\"theme\": \"[^\"]*\"/\"theme\": \"${OPENCODE_NAME}\"/" \
     "$DOTFILES/opencode/.config/opencode/opencode.json"
+
+# WezTerm: color scheme, background overlay color, and font
+sed_inplace "s/config\.color_scheme = '[^']*'/config.color_scheme = '${WEZTERM_NAME}'/" \
+    "$DOTFILES/wezterm/.config/wezterm/wezterm.lua"
+
+sed_inplace "s/Color = '#[^']*'/Color = '#${WEZTERM_BG}'/" \
+    "$DOTFILES/wezterm/.config/wezterm/wezterm.lua"
+
+sed_inplace "s/^config\.font = .*/config.font = ${WEZTERM_FONT}/" \
+    "$DOTFILES/wezterm/.config/wezterm/wezterm.lua"
 
 # Full file replacements (inode-preserving for stow symlink targets)
 if [[ -d "$DOTFILES/gitui/.config/gitui" ]]; then
@@ -243,6 +263,6 @@ echo "$THEME" > "$CURRENT_FILE"
 # Print summary
 echo "Switched to: $DISPLAY_NAME ($FONT_NAME)"
 echo ""
-echo "Auto-reloaded: Ghostty, Zellij, Helix, Neovim, tmux, bat"
+echo "Auto-reloaded: Ghostty, WezTerm, Zellij, Helix, Neovim, tmux, bat"
 echo "Restart needed: btop, lazygit, lazydocker, yazi, opencode"
 echo "New shell needed: fzf"

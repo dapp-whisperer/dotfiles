@@ -1,5 +1,8 @@
 # Default editor
-export EDITOR="hx"
+export EDITOR="nvim"
+
+# Vi mode for command-line editing (ESC to enter command mode, i to return)
+bindkey -v
 
 # Force yazi to use Kitty graphics protocol (for Ghostty)
 export YAZI_ADAPTER="kgp"
@@ -97,12 +100,14 @@ ff() { fzf --preview 'bat --color=always --style=numbers {}'; }
 # DANGEROUS: These bypass security controls - use only when you trust the context
 alias codexr='codex --search --dangerously-bypass-approvals-and-sandbox'
 alias clod='claude --dangerously-skip-permissions'
+alias c='claude --dangerously-skip-permissions'
 alias cx='claude --dangerously-skip-permissions'
 alias lgit='lazygit'
 alias ldock='lazydocker'
 
 # Load local secrets if they exist (API keys, etc.)
 [[ -f "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
+[[ -f "$HOME/.secrets" ]] && source "$HOME/.secrets"
 
 # OpenCode local override (private, machine-specific)
 OPENCODE_LOCAL_CONFIG="$HOME/.config/opencode/opencode.local.json"
@@ -161,3 +166,8 @@ export PATH="$HOME/dotfiles/scripts:$PATH"
 # Starship prompt
 eval "$(starship init zsh)"
 export PATH=$PATH:$HOME/.maestro/bin
+
+# nvm
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"

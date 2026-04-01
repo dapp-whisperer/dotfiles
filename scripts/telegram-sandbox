@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Launch Telegram Web in an isolated, hardened Brave Browser profile.
+# The profile is completely separate from your normal browsing — no shared
+# cookies, history, extensions, autofill, or saved passwords.
+
+PROFILE_DIR="$HOME/.telegram-sandbox"
+BRAVE="/Applications/Brave Browser.app/Contents/MacOS/Brave Browser"
+TELEGRAM_URL="https://web.telegram.org/k/"
+
+die() { echo "Error: $1" >&2; exit 1; }
+
+[[ -x "$BRAVE" ]] || die "Brave Browser not found at $BRAVE"
+
+# Create profile dir on first run
+mkdir -p "$PROFILE_DIR"
+
+exec "$BRAVE" \
+    --user-data-dir="$PROFILE_DIR" \
+    --no-first-run \
+    --no-default-browser-check \
+    --disable-sync \
+    --disable-background-networking \
+    --disable-extensions \
+    --disable-translate \
+    --disable-plugins \
+    --disable-notifications \
+    --disable-file-system \
+    --disable-component-update \
+    --disable-background-timer-throttling \
+    --disable-backgrounding-occluded-windows \
+    --disable-client-side-phishing-detection \
+    --disable-domain-reliability \
+    --disable-hang-monitor \
+    --incognito \
+    --app="$TELEGRAM_URL"

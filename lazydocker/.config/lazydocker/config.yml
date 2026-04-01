@@ -5,11 +5,11 @@ reporting: "off"
 gui:
   theme:
     activeBorderColor:
-      - "#FD971F"
+      - "#89b4fa"
       - bold
     inactiveBorderColor:
-      - "#49483E"
+      - "#a6adc8"
     selectedLineBgColor:
-      - "#3E3D32"
+      - "#313244"
     optionsTextColor:
-      - "#66D9EF"
+      - "#89b4fa"

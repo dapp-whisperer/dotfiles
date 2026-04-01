@@ -1,7 +1,7 @@
 #!/bin/bash
 # Open file in $EDITOR, with Zellij floating pane support
 
-EDITOR_CMD="${EDITOR:-hx}"
+EDITOR_CMD="${EDITOR:-nvim}"
 
 if [ -n "$ZELLIJ" ]; then
     # Inside Zellij: open in 90% floating pane

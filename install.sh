@@ -313,6 +313,7 @@ mkdir -p "$HOME/.config/bottom"
 mkdir -p "$HOME/Work/tries"
 mkdir -p "$HOME/.config/opencode/themes"
 mkdir -p "$HOME/.config/eza"
+mkdir -p "$HOME/.config/uv"
 
 # Backup existing nvim config if it exists and is not a symlink
 if [ -d "$HOME/.config/nvim" ] && [ ! -L "$HOME/.config/nvim" ]; then
@@ -350,7 +351,7 @@ else
         STOW_CMD=(perl "$STOW_BIN")
     fi
 
-    for package in zsh git yazi zellij helix nvim lazygit lazydocker delta tmux ghostty gitui btop bottom bat opencode starship; do
+    for package in zsh git yazi zellij helix nvim lazygit lazydocker delta tmux ghostty gitui btop bottom bat opencode starship wezterm npm uv; do
         if [[ -d "$package" ]]; then
             info "Stowing $package..."
             "${STOW_CMD[@]}" --verbose=1 --target="$HOME" --adopt --restow "$package" 2>&1 | grep -v "^BUG" || true
@@ -599,8 +600,8 @@ echo ""
 echo "Installed tools:"
 command -v yazi &>/dev/null && echo "  - yazi (file manager)"
 command -v zellij &>/dev/null && echo "  - zellij (terminal multiplexer)"
-command -v hx &>/dev/null && echo "  - helix (default editor)"
-command -v nvim &>/dev/null && echo "  - neovim (LazyVim, use 'nvim' to launch)"
+command -v hx &>/dev/null && echo "  - helix (alternative editor)"
+command -v nvim &>/dev/null && echo "  - neovim (default editor)"
 command -v claude &>/dev/null && echo "  - claude (Claude Code CLI)"
 command -v codex &>/dev/null && echo "  - codex (OpenAI Codex CLI)"
 command -v glow &>/dev/null && echo "  - glow (markdown renderer)"

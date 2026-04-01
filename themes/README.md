@@ -21,6 +21,7 @@ Each `themes/<theme-name>/` directory should contain:
 - `fzf-theme.sh`
 - `eza-theme.yml`
 - `lazygit-theme.yml`
+- `lazydocker-theme.yml`
 - `gitui-theme.ron`
 - `btop.theme`
 - `yazi-theme.toml`
@@ -44,6 +45,9 @@ Each `themes/<theme-name>/` directory should contain:
 - `bat`
 - `tmux`
 - `opencode`
+- `wezterm` (WezTerm built-in color scheme name)
+- `wezterm_font` (full Lua `wezterm.font` expression, e.g. `"wezterm.font 'JetBrainsMono Nerd Font Mono'"`)
+- `wezterm_bg` (6-digit hex background overlay color, no `#` prefix)
 
 Example:
 
@@ -60,6 +64,9 @@ delta = "catppuccin-mocha"
 bat = "Catppuccin Mocha"
 tmux = "mocha"
 opencode = "catppuccin-mocha-glass"
+wezterm = "Catppuccin Mocha"
+wezterm_font = "wezterm.font 'JetBrainsMono Nerd Font Mono'"
+wezterm_bg = "1e1e2e"
 ```
 
 ## Commands

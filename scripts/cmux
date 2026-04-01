@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# cmux source-build shim (managed by scripts/reload.sh)
+set -euo pipefail
+
+CLI_PATH_FILE="/tmp/cmux-last-cli-path"
+CLI_PATH_OWNER="$(stat -f '%u' "$CLI_PATH_FILE" 2>/dev/null || stat -c '%u' "$CLI_PATH_FILE" 2>/dev/null || echo -1)"
+if [[ -r "$CLI_PATH_FILE" ]] && [[ ! -L "$CLI_PATH_FILE" ]] && [[ "$CLI_PATH_OWNER" == "$(id -u)" ]]; then
+  CLI_PATH="$(cat "$CLI_PATH_FILE")"
+  if [[ -x "$CLI_PATH" ]]; then
+    exec "$CLI_PATH" "$@"
+  fi
+fi
+
+if [[ -x "/tmp/cmux-cli" ]] && [[ ! -L "/tmp/cmux-cli" || "$(readlink "/tmp/cmux-cli" 2>/dev/null || true)" != "/Users/dev/dotfiles/scripts/cmux" ]]; then
+  exec "/tmp/cmux-cli" "$@"
+fi
+
+echo "error: no reload-selected source cmux CLI found. Run ./scripts/reload.sh --tag <name> first." >&2
+exit 1

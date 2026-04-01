@@ -1,30 +1,30 @@
   theme:
     activeBorderColor:
-      - "#fd971f"
+      - "#fc9867"
       - bold
     inactiveBorderColor:
-      - "#49483e"
+      - "#5b595c"
     searchingActiveBorderColor:
-      - "#fd971f"
+      - "#fc9867"
       - bold
     optionsTextColor:
-      - "#66d9ef"
+      - "#78dce8"
     selectedLineBgColor:
-      - "#3e3d32"
+      - "#403e41"
     cherryPickedCommitFgColor:
-      - "#66d9ef"
+      - "#78dce8"
     cherryPickedCommitBgColor:
-      - "#ae81ff"
+      - "#ab9df2"
     markedBaseCommitFgColor:
-      - "#66d9ef"
+      - "#78dce8"
     markedBaseCommitBgColor:
-      - "#e6db74"
+      - "#ffd866"
     unstagedChangesColor:
-      - "#f92672"
+      - "#ff6188"
     defaultFgColor:
-      - "#f8f8f2"
+      - "#fcfcfa"
   authorColors:
-    "*": "#ae81ff"
+    "*": "#ab9df2"
 git:
   pagers:
     - colorArg: always
