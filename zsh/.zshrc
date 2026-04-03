@@ -97,6 +97,9 @@ fz() { fzf --bind 'enter:become(realpath {})' | pbcopy; }
 # fzf: fuzzy find files with bat preview
 ff() { fzf --preview 'bat --color=always --style=numbers {}'; }
 
+# zoxide: pick a directory and copy its path to clipboard
+fa() { local dir; dir=$(zoxide query -i) && echo "$dir" | pbcopy && echo "Copied: $dir"; }
+
 # DANGEROUS: These bypass security controls - use only when you trust the context
 alias codexr='codex --search --dangerously-bypass-approvals-and-sandbox'
 alias clod='claude --dangerously-skip-permissions'
@@ -134,7 +137,7 @@ if [[ -o interactive && -t 0 ]] && command -v zoxide &>/dev/null; then
 fi
 
 # Local environment
-export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/.bun/bin:$HOME/.local/bin:$PATH"
 [[ -f "$HOME/.local/bin/env" ]] && . "$HOME/.local/bin/env"
 
 # opencode
