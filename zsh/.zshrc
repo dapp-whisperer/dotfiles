@@ -4,6 +4,9 @@ export EDITOR="nvim"
 # Vi mode for command-line editing (ESC to enter command mode, i to return)
 bindkey -v
 
+# Fix CR handling in Ghostty (without this, Enter sends ^M instead of newline)
+stty icrnl
+
 # Force yazi to use Kitty graphics protocol (for Ghostty)
 export YAZI_ADAPTER="kgp"
 
