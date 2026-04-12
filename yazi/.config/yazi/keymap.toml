@@ -1,3 +1,30 @@
+# Single c copies file path immediately (no menu)
+[[mgr.prepend_keymap]]
+on   = "c"
+run  = "copy path"
+desc = "Copy the file path"
+
+# Move copy menu to C (Shift+c)
+[[mgr.prepend_keymap]]
+on   = ["C", "c"]
+run  = "copy path"
+desc = "Copy the file path"
+
+[[mgr.prepend_keymap]]
+on   = ["C", "d"]
+run  = "copy dirname"
+desc = "Copy the directory path"
+
+[[mgr.prepend_keymap]]
+on   = ["C", "f"]
+run  = "copy filename"
+desc = "Copy the filename"
+
+[[mgr.prepend_keymap]]
+on   = ["C", "n"]
+run  = "copy name_without_ext"
+desc = "Copy the filename without extension"
+
 [[mgr.prepend_keymap]]
 on   = "F"
 run  = 'shell "open -R $@" --confirm'
