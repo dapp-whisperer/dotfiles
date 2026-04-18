@@ -177,3 +177,6 @@ export PATH=$PATH:$HOME/.maestro/bin
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+
+# bun completions
+[ -s "/Users/dev/.bun/_bun" ] && source "/Users/dev/.bun/_bun"

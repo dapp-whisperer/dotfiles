@@ -61,6 +61,6 @@ run  = "plugin lazygit"
 desc = "Open lazygit"
 
 [[mgr.prepend_keymap]]
-on   = ["y", "c"]
-run  = 'shell "pbcopy < $0" --confirm'
-desc = "Copy file contents to clipboard"
+on   = ["g", "/"]
+run  = "cd /"
+desc = "Go to root directory"
