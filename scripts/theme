@@ -23,6 +23,15 @@ manifest_get() {
     echo "$val"
 }
 
+# Same as manifest_get but returns empty string instead of dying on missing key.
+# Used for optional manifest keys so new integrations can land independently of
+# per-pack retrofits.
+manifest_get_optional() {
+    local file="$1" key="$2" val
+    val=$(grep -F "${key} = " "$file" | head -1 | sed 's/^[^=]*= *"\([^"]*\)"/\1/' || true)
+    echo "${val:-}"
+}
+
 # Validate that a value contains only safe characters (alphanumeric, spaces, hyphens, underscores, dots)
 validate_value() {
     local val="$1" label="$2"
@@ -106,6 +115,7 @@ WEZTERM_NAME=$(manifest_get "$MANIFEST" "wezterm")
 WEZTERM_FONT=$(manifest_get "$MANIFEST" "wezterm_font")
 WEZTERM_BG=$(manifest_get "$MANIFEST" "wezterm_bg")
 FONT_NAME=$(manifest_get "$MANIFEST" "font")
+TYPORA_NAME=$(manifest_get_optional "$MANIFEST" "typora")
 
 # Validate all parsed values
 validate_value "$DISPLAY_NAME" "name"
@@ -122,6 +132,7 @@ validate_value "$OPENCODE_NAME" "opencode"
 validate_value "$WEZTERM_NAME" "wezterm"
 validate_hex "$WEZTERM_BG" "wezterm_bg"
 validate_value "$FONT_NAME" "font"
+[[ -n "$TYPORA_NAME" ]] && validate_value "$TYPORA_NAME" "typora"
 
 # Sed replacements on stow source files (inode-preserving for live reload)
 replace_quoted "theme" "$GHOSTTY_NAME" "$DOTFILES/ghostty/.config/ghostty/config"
@@ -195,7 +206,7 @@ fi
 
 # Restow packages that may have new theme files (stow won't symlink files
 # added after the initial stow run without a restow)
-(cd "$DOTFILES" && stow -R btop zellij)
+(cd "$DOTFILES" && stow -R btop zellij wezterm)
 
 if [[ -f "$THEME_DIR/yazi-theme.toml" ]]; then
     copy_over "$THEME_DIR/yazi-theme.toml" "$DOTFILES/yazi/.config/yazi/theme.toml"
@@ -226,6 +237,30 @@ cp "$THEME_DIR/bat.tmTheme" "$HOME/.config/bat/themes/${BAT_NAME}.tmTheme"
 
 mkdir -p "$HOME/.config/eza"
 cp "$THEME_DIR/eza-theme.yml" "$HOME/.config/eza/theme.yml"
+
+# Typora: copy CSS to Typora's themes directory and update both `theme` and
+# `darkTheme` defaults so the active pack renders regardless of Typora's
+# useSeparateDarkTheme state. Optional: packs without `typora` skip silently.
+# THEME_TYPORA_APP / THEME_TYPORA_THEMES env vars allow test isolation.
+if [[ "$OSTYPE" == "darwin"* && -n "$TYPORA_NAME" && -f "$THEME_DIR/typora-theme.css" ]]; then
+    TYPORA_THEMES="${THEME_TYPORA_THEMES:-$HOME/Library/Application Support/abnerworks.Typora/themes}"
+    TYPORA_APP="${THEME_TYPORA_APP:-/Applications/Typora.app}"
+    if [[ -d "$TYPORA_THEMES" || -d "$TYPORA_APP" ]]; then
+        mkdir -p "$TYPORA_THEMES"
+        cp "$THEME_DIR/typora-theme.css" "$TYPORA_THEMES/${TYPORA_NAME}.css"
+        defaults write abnerworks.Typora theme "$DISPLAY_NAME" 2>/dev/null || true
+        defaults write abnerworks.Typora darkTheme "$DISPLAY_NAME" 2>/dev/null || true
+    fi
+fi
+
+# cmux: app chrome + built-in browser theme follow the pack's variant.
+# Reuses the existing variant key, so every pack works without retrofit.
+# THEME_CMUX_APP env var allows test isolation.
+CMUX_APP="${THEME_CMUX_APP:-/Applications/cmux.app}"
+if [[ "$OSTYPE" == "darwin"* && -d "$CMUX_APP" ]]; then
+    defaults write com.cmuxterm.app appearanceMode "$VARIANT" 2>/dev/null || true
+    defaults write com.cmuxterm.app browserThemeMode "$VARIANT" 2>/dev/null || true
+fi
 
 # Live reloads (best-effort, non-fatal)
 bat cache --build 2>/dev/null || true
@@ -264,5 +299,5 @@ echo "$THEME" > "$CURRENT_FILE"
 echo "Switched to: $DISPLAY_NAME ($FONT_NAME)"
 echo ""
 echo "Auto-reloaded: Ghostty, WezTerm, Zellij, Helix, Neovim, tmux, bat"
-echo "Restart needed: btop, lazygit, lazydocker, yazi, opencode"
+echo "Restart needed: btop, lazygit, lazydocker, yazi, opencode, Typora, cmux"
 echo "New shell needed: fzf"

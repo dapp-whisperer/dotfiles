@@ -38,6 +38,15 @@ load '../helpers/setup'
     [ "$(cat "$DOTFILES/themes/current")" = "tokyonight-night" ]
 }
 
+@test "cmux appearance and browser mode follow variant" {
+    run_theme catppuccin-mocha
+    [ "$status" -eq 0 ]
+
+    # Both cmux defaults were written with the pack's variant value.
+    grep -qF 'write com.cmuxterm.app appearanceMode dark' "$DEFAULTS_LOG"
+    grep -qF 'write com.cmuxterm.app browserThemeMode dark' "$DEFAULTS_LOG"
+}
+
 # Note: manifest_get() uses grep -F "key = " with strict single-space format.
 # Extra whitespace around '=' would break parsing. This is intentional —
 # manifests are authored by us, not user input, so strict format is fine.
