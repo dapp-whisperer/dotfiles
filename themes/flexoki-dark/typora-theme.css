@@ -29,12 +29,12 @@ html {
 html, body {
     background-color: var(--flexoki-paper);
     color: var(--flexoki-base-200);
-    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", Arial, sans-serif;
+    font-family: "Monaspace Argon NF", "Monaspace Argon", ui-monospace, Menlo, Consolas, monospace;
     line-height: 1.6;
 }
 
 #write {
-    max-width: 860px;
+    max-width: 1120px;
     padding: 30px 30px 100px 30px;
     color: var(--flexoki-base-200);
     background-color: var(--flexoki-paper);
@@ -78,8 +78,24 @@ a:hover {
 
 /* Inline code */
 code, .md-fences {
-    font-family: "Monaspace Xenon NF", "JetBrains Mono", Menlo, Consolas, monospace;
+    font-family: "Monaspace Argon NF", "Monaspace Argon", ui-monospace, Menlo, Consolas, monospace;
     font-size: 0.92em;
+}
+
+/* YAML front matter block (rendered at the top of the document).
+ * Typora's default styling uses a light gray background that disappears on
+ * dark themes; re-skin it to match the fenced code block treatment. */
+pre.md-meta-block,
+.md-front-matter,
+.md-meta-block {
+    background-color: var(--flexoki-base-950) !important;
+    color: var(--flexoki-base-200) !important;
+    border: 1px solid var(--flexoki-base-800);
+    border-radius: 4px;
+    padding: 12px 16px;
+    font-family: "Monaspace Argon NF", "Monaspace Argon", ui-monospace, Menlo, Consolas, monospace;
+    font-size: 0.92em;
+    line-height: 1.5;
 }
 
 code {
