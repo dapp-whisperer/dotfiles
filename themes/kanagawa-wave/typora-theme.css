@@ -1,0 +1,148 @@
+/*
+ * Kanagawa Wave for Typora
+ * Palette: rebelot/kanagawa.nvim
+ */
+
+:root {
+    --kw-sumi-ink-3:  #1F1F28;
+    --kw-sumi-ink-0:  #16161D;
+    --kw-sumi-ink-5:  #2A2A37;
+    --kw-sumi-ink-6:  #363646;
+    --kw-winter-ylw:  #49443C;
+    --kw-fuji-gray:   #54546D;
+    --kw-fuji-white:  #DCD7BA;
+    --kw-old-white:   #C8C093;
+    --kw-carp-yellow: #DCA561;
+    --kw-wave-red:    #E46876;
+    --kw-crystal-blue:#7E9CD8;
+    --kw-spring-green:#98BB6C;
+    --kw-wave-aqua:   #7FB4CA;
+
+    --side-bar-bg-color: var(--kw-sumi-ink-0);
+    --control-text-color: var(--kw-old-white);
+}
+
+html { font-size: 16px; }
+
+html, body {
+    background-color: var(--kw-sumi-ink-3);
+    color: var(--kw-fuji-white);
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", Arial, sans-serif;
+    line-height: 1.6;
+}
+
+#write {
+    max-width: 860px;
+    padding: 30px 30px 100px 30px;
+    color: var(--kw-fuji-white);
+    background-color: var(--kw-sumi-ink-3);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--kw-old-white);
+    font-weight: 600;
+    line-height: 1.25;
+}
+
+h1 { font-size: 2em;    border-bottom: 1px solid var(--kw-sumi-ink-6); padding-bottom: 0.3em; }
+h2 { font-size: 1.5em;  border-bottom: 1px solid var(--kw-sumi-ink-6); padding-bottom: 0.3em; }
+h3 { font-size: 1.25em; }
+h4 { font-size: 1em;    }
+h5 { font-size: 0.875em; }
+h6 { font-size: 0.85em; color: var(--kw-old-white); }
+
+a { color: var(--kw-crystal-blue); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+::selection {
+    background-color: var(--kw-winter-ylw);
+    color: var(--kw-fuji-white);
+}
+
+code, .md-fences {
+    font-family: "JetBrainsMono Nerd Font Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+    font-size: 0.92em;
+}
+
+code {
+    background-color: var(--kw-sumi-ink-5);
+    color: var(--kw-fuji-white);
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+}
+
+.md-fences {
+    background-color: var(--kw-sumi-ink-0);
+    color: var(--kw-fuji-white);
+    border: 1px solid var(--kw-sumi-ink-6);
+    border-radius: 4px;
+    padding: 12px 16px;
+}
+
+.CodeMirror {
+    background-color: var(--kw-sumi-ink-0) !important;
+    color: var(--kw-fuji-white) !important;
+}
+
+.CodeMirror-gutters {
+    background-color: var(--kw-sumi-ink-0) !important;
+    border-right: 1px solid var(--kw-sumi-ink-6);
+}
+
+.CodeMirror-linenumber { color: var(--kw-fuji-gray); }
+.CodeMirror-cursor { border-left: 1px solid var(--kw-fuji-white) !important; }
+
+.cm-keyword   { color: var(--kw-wave-red); }
+.cm-number    { color: var(--kw-carp-yellow); }
+.cm-def       { color: var(--kw-crystal-blue); }
+.cm-variable  { color: var(--kw-fuji-white); }
+.cm-property  { color: var(--kw-wave-aqua); }
+.cm-operator  { color: var(--kw-wave-red); }
+.cm-comment   { color: var(--kw-fuji-gray); font-style: italic; }
+.cm-string    { color: var(--kw-spring-green); }
+.cm-builtin   { color: var(--kw-wave-aqua); }
+.cm-tag       { color: var(--kw-wave-red); }
+.cm-attribute { color: var(--kw-carp-yellow); }
+.cm-header    { color: var(--kw-crystal-blue); }
+.cm-link      { color: var(--kw-crystal-blue); }
+.cm-error     { color: var(--kw-wave-red); }
+
+blockquote {
+    color: var(--kw-old-white);
+    border-left: 4px solid var(--kw-fuji-gray);
+    padding-left: 1em;
+    margin-left: 0;
+}
+
+hr { border: 0; border-top: 1px solid var(--kw-sumi-ink-6); margin: 2em 0; }
+
+table { border-collapse: collapse; border-color: var(--kw-sumi-ink-6); }
+table thead { background-color: var(--kw-sumi-ink-0); color: var(--kw-old-white); }
+table th, table td { border: 1px solid var(--kw-sumi-ink-6); padding: 6px 12px; }
+table tr:nth-child(2n) { background-color: var(--kw-sumi-ink-0); }
+
+mark, .md-search-hit {
+    background-color: var(--kw-carp-yellow);
+    color: var(--kw-sumi-ink-3);
+    padding: 0 2px;
+    border-radius: 2px;
+}
+
+.md-warning, .md-error { color: var(--kw-wave-red); }
+
+.sidebar-tabs {
+    background-color: var(--kw-sumi-ink-0);
+    border-bottom: 1px solid var(--kw-sumi-ink-6);
+}
+
+.sidebar-footer, .typora-sidebar, #typora-sidebar {
+    background-color: var(--kw-sumi-ink-0);
+    color: var(--kw-old-white);
+}
+
+.file-list-item.active,
+.file-node-open > .file-node-background,
+.outline-item-wrapper.active-tab {
+    background-color: var(--kw-winter-ylw);
+    color: var(--kw-fuji-white);
+}
