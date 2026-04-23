@@ -34,6 +34,7 @@ The script will prompt for your GitHub username.
 | **claude**   | Claude Code CLI                    |
 | **codex**    | OpenAI Codex CLI                   |
 | **opencode** | OpenCode CLI + custom theme        |
+| **pi**       | Pi coding agent config + custom extensions |
 | **karabiner** | Keyboard remapping (macOS, stow-managed) |
 | **rust**     | Rust toolchain with rust-analyzer  |
 
@@ -60,6 +61,7 @@ Tool details: see [nvim/README.md](nvim/README.md), [tmux/README.md](tmux/README
 ├── gitui/.config/gitui/    # GitUI
 ├── btop/.config/btop/      # btop system monitor
 ├── opencode/.config/opencode/ # OpenCode config, themes, agents, skills
+├── pi/.pi/agent/            # Pi settings + custom extensions
 ├── karabiner/.config/karabiner/ # Karabiner-Elements (stow-managed, macOS only)
 ├── scripts/                # Theme switcher, utilities
 ├── themes/                 # Theme packs + current tracker
@@ -70,6 +72,7 @@ Tool details: see [nvim/README.md](nvim/README.md), [tmux/README.md](tmux/README
 
 - **Unified theming** across 15 tools — see [Theme Quickstart](#theme-quickstart)
 - **OpenCode setup:** `catppuccin-mocha-glass` theme + versioned `agents/` and `skills/`
+- **Pi setup:** quiet startup + versioned custom `/resources` command
 - `dev` — Opens Yazi + Claude split layout in Zellij
 - `devt` — Same layout using tmux
 - `Enter` in Yazi — Edit file in Helix (returns to Yazi on quit)
@@ -103,6 +106,14 @@ LazyVim with added plugins (markview.nvim, diffview.nvim), Rust extras, and mark
 
 **First run note:** On first launch, Neovim downloads plugins (~30-60 seconds). Subsequent launches are instant.
 
+## Pi
+
+Pi config is stow-managed from `pi/.pi/agent/`, currently tracking `settings.json` plus custom extensions like `/resources`.
+
+Not tracked: `~/.pi/agent/auth.json`, `~/.pi/agent/sessions/`, and `~/.pi/agent/cache/`.
+
+**First migration on an existing machine:** if `~/.pi/agent/settings.json` or `~/.pi/agent/extensions/resources.ts` already exist as regular files, use `install.sh` or run `stow --adopt --restow --target="$HOME" pi` once. After that, regular `stow --restow` works.
+
 ## Secrets
 
 API keys go in `~/.zshrc.local` (not tracked):
@@ -115,7 +126,7 @@ export GEMINI_API_KEY="your-key-here"
 
 ```bash
 cd ~/dotfiles && git pull && stow --restow --target="$HOME" \
-  zsh git yazi zellij helix nvim lazygit lazydocker delta tmux ghostty gitui btop bat opencode karabiner
+  zsh git yazi zellij helix nvim lazygit lazydocker delta tmux ghostty gitui btop bat opencode pi karabiner
 ```
 
 ## Updating an Existing Machine
@@ -131,11 +142,11 @@ git pull --rebase
 
 # 2) Preview symlink changes
 stow --simulate --verbose=1 --target="$HOME" --restow \
-  zsh git yazi zellij helix nvim lazygit lazydocker delta tmux ghostty gitui btop bat opencode karabiner
+  zsh git yazi zellij helix nvim lazygit lazydocker delta tmux ghostty gitui btop bat opencode pi karabiner
 
 # 3) Apply if preview looks correct
 stow --target="$HOME" --restow \
-  zsh git yazi zellij helix nvim lazygit lazydocker delta tmux ghostty gitui btop bat opencode karabiner
+  zsh git yazi zellij helix nvim lazygit lazydocker delta tmux ghostty gitui btop bat opencode pi karabiner
 
 # 4) Reload shell
 source ~/.zshrc
@@ -147,7 +158,7 @@ You can, but it is a full bootstrap script and more invasive than the flow above
 
 ### What Update Operations Can Override
 
-- Managed config files under stowed paths (for example `~/.config/tmux/tmux.conf`, `~/.zshrc`)
+- Managed config files under stowed paths (for example `~/.config/tmux/tmux.conf`, `~/.zshrc`, `~/.pi/agent/settings.json`)
 - Existing files at managed paths when using `stow --adopt` (used by `install.sh`)
 - macOS LazyGit config at `~/Library/Application Support/lazygit/config.yml` (relinked by `install.sh`)
 - macOS LazyDocker config at `~/Library/Application Support/jesseduffield/lazydocker/config.yml` (relinked by `install.sh`)
@@ -156,6 +167,7 @@ You can, but it is a full bootstrap script and more invasive than the flow above
 
 - `~/.zshrc.local` (created only if missing)
 - `~/.gitconfig.local` (created only if missing; existing values reused)
+- `~/.pi/agent/auth.json`, `~/.pi/agent/sessions/`, and `~/.pi/agent/cache/`
 - Unmanaged files outside stowed paths
 - Extra packages not listed in Brewfile (not automatically removed)
 

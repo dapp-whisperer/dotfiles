@@ -1,0 +1,67 @@
+{
+  "lastChangelogVersion": "0.68.1",
+  "defaultProvider": "openai",
+  "defaultModel": "gpt-5.4",
+  "defaultThinkingLevel": "high",
+  "powerlineRainbowThinking": false,
+  "packages": [
+    "https://github.com/davebcn87/pi-autoresearch",
+    "npm:pi-powerline-footer",
+    "npm:pi-mcp-adapter",
+    "npm:pi-web-access",
+    "npm:pi-memory-md",
+    "git:github.com/badlogic/pi-diff-review@1584211692c49780ecd0f490a82762b0823fd475",
+    "npm:@devkade/pi-plan",
+    "npm:pi-simplify",
+    "npm:pi-add-dir",
+    "npm:pi-prompt-template-model",
+    "npm:@plannotator/pi-extension",
+    "npm:@juanibiapina/pi-powerbar",
+    "npm:@juanibiapina/pi-extension-settings",
+    "npm:@tmustier/pi-usage-extension",
+    "npm:@tmustier/pi-raw-paste",
+    "git:github.com/tintinweb/pi-manage-todo-list@b75c449aa85ce328e9a8b632f62bf642aed40359",
+    "npm:pi-btw",
+    "npm:@tmustier/pi-ralph-wiggum",
+    "npm:@every-env/compound-plugin",
+    {
+      "source": "npm:pi-themes",
+      "themes": [
+        "themes/*.json",
+        "!themes/catppuccin-mocha.json",
+        "!themes/gruvbox-dark.json"
+      ]
+    },
+    "git:github.com/javierportillo/pi-hackerman@63b0a3ef2c7b14985ffeb6cac44614ba59cd5693",
+    "npm:pi-cyber-ui",
+    "npm:@victor-software-house/pi-curated-themes",
+    "npm:pi-terminal-theme",
+    "npm:pi-subagents",
+    "npm:pi-ask-user",
+    "npm:pi-interactive-shell"
+  ],
+  "subagents": {
+    "agentOverrides": {
+      "context-builder": {
+        "model": ""
+      },
+      "planner": {
+        "model": ""
+      },
+      "researcher": {
+        "model": ""
+      },
+      "reviewer": {
+        "model": ""
+      },
+      "scout": {
+        "model": ""
+      },
+      "worker": {
+        "model": ""
+      }
+    }
+  },
+  "theme": "catppuccin-mocha",
+  "quietStartup": true
+}

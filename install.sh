@@ -314,6 +314,7 @@ mkdir -p "$HOME/Work/tries"
 mkdir -p "$HOME/.config/opencode/themes"
 mkdir -p "$HOME/.config/eza"
 mkdir -p "$HOME/.config/uv"
+mkdir -p "$HOME/.pi/agent/extensions"
 
 # Backup existing nvim config if it exists and is not a symlink
 if [ -d "$HOME/.config/nvim" ] && [ ! -L "$HOME/.config/nvim" ]; then
@@ -351,7 +352,7 @@ else
         STOW_CMD=(perl "$STOW_BIN")
     fi
 
-    for package in zsh git yazi zellij helix nvim lazygit lazydocker delta tmux ghostty gitui btop bottom bat opencode starship wezterm npm uv; do
+    for package in zsh git yazi zellij helix nvim lazygit lazydocker delta tmux ghostty gitui btop bottom bat opencode pi starship wezterm npm uv; do
         if [[ -d "$package" ]]; then
             info "Stowing $package..."
             "${STOW_CMD[@]}" --verbose=1 --target="$HOME" --adopt --restow "$package" 2>&1 | grep -v "^BUG" || true
