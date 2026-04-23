@@ -65,6 +65,12 @@ setup() {
     export THEME_CMUX_APP="$HOME/fake-cmux.app"
     mkdir -p "$THEME_TYPORA_APP" "$THEME_CMUX_APP"
 
+    # Sandbox Brave extension dir + Preferences path into temp HOME so tests
+    # never touch a real Brave profile. Preferences is deliberately absent by
+    # default; tests that exercise the jq edit path create it themselves.
+    export THEME_BRAVE_EXT="$HOME/brave-theme/current"
+    export THEME_BRAVE_PREFS="$HOME/brave-prefs/Preferences"
+
     # Fresh defaults stub log per test
     export DEFAULTS_LOG="$BATS_TMPDIR/defaults-calls-$$.log"
     : > "$DEFAULTS_LOG"

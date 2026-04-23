@@ -29,6 +29,7 @@ Each `themes/<theme-name>/` directory should contain:
 - `tmux-theme.conf` — catppuccin `@thm_*` palette variables + outer status bar colors, pane borders, and copy-mode highlight
 - Optional: `zellij-colors.kdl` for custom Zellij theme definitions. In practice, every non-catppuccin pack needs this (see gruvbox-dark, monokai, flexoki-dark precedent).
 - Optional: `typora-theme.css` — required only if the pack wants custom Typora theming. Must define all 10 semantic roles listed under *Tool Integrations → Typora*.
+- Optional: `palette.toml` — shared 6-key semantic palette (hex-only) consumed by Brave integration and future palette-driven targets. See *Tool Integrations → Brave Browser*.
 
 ## Manifest Keys
 
@@ -125,6 +126,37 @@ When adding a new OpenCode theme:
 - cmux sidebar background auto-derives from the terminal background because `sidebarMatchTerminalBackground = 1` in cmux defaults.
 - **Restart cmux** to pick up defaults changes; macOS `cfprefsd` can delay propagation otherwise.
 
+### Brave Browser (macOS)
+
+Two mechanisms cover two surfaces:
+
+- **Browser chrome** (toolbar, tabs, frame, omnibox, bookmarks) — `scripts/theme` generates a Chrome theme extension at `~/.config/brave-theme/current/manifest.json` from the pack's `palette.toml`. JSON is validated via `python3 -m json.tool` before replacing the live file.
+- **New tab page background** — `scripts/theme` edits `~/Library/Application Support/BraveSoftware/Brave-Browser/Default/Preferences` via `jq`, writing the palette `background` hex into `brave.new_tab_page.background`. Brave's NTP ignores Chrome theme `ntp_background` (brave-browser#29409, #34304), so this second mechanism is required.
+
+Both steps are gated on `palette.toml` existing — packs without it skip silently. The Preferences edit additionally requires Brave to not be running (Brave rewrites Preferences on clean exit, which would silently lose the edit).
+
+`palette.toml` keys (all 6 required, hex-only, 6-digit with `#` prefix):
+
+| Key | Role | Maps to |
+|---|---|---|
+| `background` | main window bg | `frame`, NTP solid bg |
+| `foreground` | main text | `toolbar_text`, `tab_text`, `omnibox_text`, `bookmark_text`, `toolbar_button_icon` |
+| `surface` | elevated surface | `toolbar`, active tab bg |
+| `surface_dark` | deep surface | `frame_inactive`, `background_tab`, `omnibox_background` |
+| `comment` | dim text | `tab_background_text` (inactive tab labels) |
+| `accent` | link / accent | parsed and reserved for future slots |
+
+**One-time setup:**
+
+1. Open `brave://extensions`, toggle Developer mode on.
+2. Click **Load unpacked** and select `~/.config/brave-theme/current`.
+3. Use `brave` (from `scripts/brave`) to launch going forward — the wrapper always passes `--load-extension` so the current theme loads on every start.
+
+**Known limitations:**
+
+- Launching Brave via Dock or Spotlight bypasses the wrapper; the extension still loads if it was previously loaded via Load unpacked, but the "current" directory contents only reflect the most recent `theme <name>` switch.
+- NTP widget defaults (show_stats, show_clock, etc.) are written once by `install.sh`, not per theme switch — they are user UI preferences, not theme colors.
+
 ### WezTerm (local color schemes)
 
 - Packs can ship a custom scheme at `wezterm/.config/wezterm/colors/<slug>.toml` and reference it via the `wezterm` manifest key.
@@ -154,12 +186,13 @@ Background: macOS file watchers and stow symlinks can miss updates when inode ch
 5. Confirm `bat.tmTheme`'s internal `<key>name</key><string>...</string>` matches the manifest `bat` value **exactly** — `bat cache --build` indexes themes by the plist's internal name, not the filename.
 6. If shipping a custom WezTerm scheme, include `[metadata] name = "<slug>"` matching the manifest `wezterm` value.
 7. If shipping a Typora CSS, ensure all 10 semantic roles are defined against the pack's palette (see *Tool Integrations → Typora*).
-8. Run `theme <new-theme>`.
-9. Verify:
-   - `themes/current` changed
-   - config values were updated in stowed sources
-   - apps that should auto-reload do so
-   - restart-required apps (btop, lazygit, lazydocker, yazi, opencode, Typora, cmux) reflect the new theme after restart
+8. If shipping Brave support, add `palette.toml` with all 6 semantic keys (see *Tool Integrations → Brave Browser*).
+9. Run `theme <new-theme>`.
+10. Verify:
+    - `themes/current` changed
+    - config values were updated in stowed sources
+    - apps that should auto-reload do so
+    - restart-required apps (btop, lazygit, lazydocker, yazi, opencode, Typora, cmux, Brave Browser) reflect the new theme after restart
 
 ## Troubleshooting
 

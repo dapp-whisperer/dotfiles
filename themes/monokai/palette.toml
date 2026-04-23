@@ -1,0 +1,8 @@
+# Monokai Pro — shared semantic palette
+# Source: Monokai Pro base0..base8 scale (base2 = bg, base3 = surface1)
+background   = "#2d2a2e"   # main background (base2)
+foreground   = "#fcfcfa"   # main text (base8)
+surface      = "#403e41"   # elevated surface — toolbar, active tab bg (base3)
+surface_dark = "#221f22"   # deep surface — omnibox, inactive frame (base1)
+comment      = "#727072"   # dim text — inactive tab labels (base5)
+accent       = "#78dce8"   # accent / link — Monokai Pro blue

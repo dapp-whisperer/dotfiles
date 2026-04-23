@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# Stub for `jq` so tests can exercise the Brave Preferences edit path without
+# requiring real jq. The stub records what it was called with (via JQ_LOG if
+# set), passes through the input file unchanged to stdout when an input path
+# is given, and returns an empty object otherwise. Tests that want to verify
+# a specific transform should set JQ_LOG and grep the captured calls.
+
+if [[ -n "${JQ_LOG:-}" ]]; then
+    printf '%s\n' "$*" >> "$JQ_LOG"
+fi
+
+# Last arg is the input file in the real jq invocations used here
+# (`jq <filter> <file>`). Emit its contents unchanged so mv sees a valid file.
+input="${!#}"
+if [[ -f "$input" ]]; then
+    cat "$input"
+else
+    echo '{}'
+fi

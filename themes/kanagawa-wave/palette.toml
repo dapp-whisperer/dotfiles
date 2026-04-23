@@ -1,0 +1,8 @@
+# Kanagawa Wave — shared semantic palette
+# Source: rebelot/kanagawa.nvim sumiInk scale, fujiWhite, crystalBlue
+background   = "#1F1F28"   # main background — sumiInk1
+foreground   = "#DCD7BA"   # main text — fujiWhite
+surface      = "#2A2A37"   # elevated surface — sumiInk2
+surface_dark = "#16161D"   # deep surface — sumiInk0
+comment      = "#727169"   # dim text — fujiGray
+accent       = "#7E9CD8"   # accent / link — crystalBlue

@@ -79,3 +79,30 @@ load '../helpers/setup'
     last_theme=$(grep -F 'write abnerworks.Typora theme ' "$DEFAULTS_LOG" | tail -1)
     [[ "$last_theme" == *"Catppuccin Mocha"* ]]
 }
+
+@test "brave manifest.json generated with valid JSON at extension dir" {
+    run_theme flexoki-dark
+    [ "$status" -eq 0 ]
+
+    local manifest="$THEME_BRAVE_EXT/manifest.json"
+    [ -f "$manifest" ]
+
+    # The script validates JSON with python3 json.tool before moving the file
+    # into place; re-validate here so a silent validation bypass would show up.
+    python3 -m json.tool "$manifest" > /dev/null
+}
+
+@test "brave manifest.json name field matches theme slug" {
+    run_theme flexoki-dark
+    grep -qF '"name": "flexoki-dark"' "$THEME_BRAVE_EXT/manifest.json"
+}
+
+@test "brave round-trip: later pack overwrites manifest.json" {
+    run_theme flexoki-dark
+    run_theme tokyonight-night
+    [ "$status" -eq 0 ]
+
+    # Last write wins — manifest reflects the most recently applied theme.
+    grep -qF '"name": "tokyonight-night"' "$THEME_BRAVE_EXT/manifest.json"
+    ! grep -qF '"name": "flexoki-dark"' "$THEME_BRAVE_EXT/manifest.json"
+}

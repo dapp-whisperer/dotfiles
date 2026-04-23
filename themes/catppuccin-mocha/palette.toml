@@ -1,0 +1,8 @@
+# Catppuccin Mocha — shared semantic palette
+# Source: catppuccin.com latte/frappe/macchiato/mocha palette spec
+background   = "#1e1e2e"   # main background — Base
+foreground   = "#cdd6f4"   # main text — Text
+surface      = "#313244"   # elevated surface — Surface0
+surface_dark = "#181825"   # deep surface — Mantle
+comment      = "#7f849c"   # dim text — Overlay1
+accent       = "#cba6f7"   # accent / link — Mauve (signature)

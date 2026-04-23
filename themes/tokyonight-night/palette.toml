@@ -1,0 +1,8 @@
+# Tokyo Night — shared semantic palette
+# Source: folke/tokyonight.nvim night variant colors.lua
+background   = "#1a1b26"   # main background — bg
+foreground   = "#c0caf5"   # main text — fg
+surface      = "#292e42"   # elevated surface — bg_highlight
+surface_dark = "#16161e"   # deep surface — bg_dark
+comment      = "#565f89"   # dim text — comment
+accent       = "#7aa2f7"   # accent / link — blue

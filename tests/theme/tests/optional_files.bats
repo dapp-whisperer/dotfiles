@@ -63,3 +63,28 @@ load '../helpers/setup'
 
     ! grep -qF 'write com.cmuxterm.app' "$DEFAULTS_LOG"
 }
+
+@test "switch succeeds when palette.toml is absent" {
+    rm -f "$DOTFILES/themes/catppuccin-mocha/palette.toml"
+    run_theme catppuccin-mocha
+    [ "$status" -eq 0 ]
+
+    # Entire Brave block gated on palette.toml — no extension dir, no manifest.
+    [ ! -f "$THEME_BRAVE_EXT/manifest.json" ]
+}
+
+@test "restart-needed summary omits Brave Browser when palette.toml is absent" {
+    rm -f "$DOTFILES/themes/catppuccin-mocha/palette.toml"
+    run_theme catppuccin-mocha
+    [ "$status" -eq 0 ]
+
+    # Summary line should NOT include Brave Browser for packs without palette.toml
+    [[ "$output" != *"Brave Browser"* ]]
+}
+
+@test "restart-needed summary includes Brave Browser when palette.toml is present" {
+    run_theme flexoki-dark
+    [ "$status" -eq 0 ]
+
+    [[ "$output" == *"Brave Browser"* ]]
+}
