@@ -41,3 +41,4 @@ cask "ghostty" if OS.mac?
 # Fonts (macOS only - casks don't work on Linux)
 tap "homebrew/cask-fonts" if OS.mac?
 cask "font-jetbrains-mono-nerd-font" if OS.mac?
+cask "font-monaspace-nf" if OS.mac?

@@ -1,0 +1,26 @@
+[delta "flexoki-dark"]
+	blame-palette = "#100f0f #1c1b1a #282726 #403e3c #575653"
+	commit-decoration-style = "#575653" bold box ul
+	dark = true
+	file-decoration-style = "#575653"
+	file-style = "#cecdc3"
+	hunk-header-decoration-style = "#575653" box ul
+	hunk-header-file-style = bold
+	hunk-header-line-number-style = bold "#575653"
+	hunk-header-style = file line-number syntax
+	line-numbers-left-style = "#403e3c"
+	line-numbers-minus-style = "#d14d41"
+	line-numbers-plus-style = "#879a39"
+	line-numbers-right-style = "#403e3c"
+	line-numbers-zero-style = "#403e3c"
+	minus-emph-style = syntax "#3a1f1c"
+	minus-style = syntax "#2e1b18"
+	plus-emph-style = syntax "#2a331c"
+	plus-style = syntax "#22281a"
+	map-styles = \
+		bold purple => syntax "#2a2338", \
+		bold blue => syntax "#1e2a38", \
+		bold cyan => syntax "#1e3534", \
+		bold yellow => syntax "#38301a"
+	# Should match the name of the bat theme
+	syntax-theme = Flexoki Dark

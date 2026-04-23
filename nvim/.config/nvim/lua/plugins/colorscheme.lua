@@ -4,6 +4,7 @@ return {
   { "rebelot/kanagawa.nvim", name = "kanagawa", lazy = true },
   { "ellisonleao/gruvbox.nvim", name = "gruvbox", lazy = true },
   { "loctvl842/monokai-pro.nvim", name = "monokai-pro", lazy = true },
+  { "kepano/flexoki-neovim", name = "flexoki", lazy = true },
 
   {
     "LazyVim/LazyVim",

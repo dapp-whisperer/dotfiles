@@ -1,0 +1,31 @@
+  theme:
+    activeBorderColor:
+      - "#da702c"
+      - bold
+    inactiveBorderColor:
+      - "#403e3c"
+    searchingActiveBorderColor:
+      - "#da702c"
+      - bold
+    optionsTextColor:
+      - "#4385be"
+    selectedLineBgColor:
+      - "#282726"
+    cherryPickedCommitFgColor:
+      - "#4385be"
+    cherryPickedCommitBgColor:
+      - "#8b7ec8"
+    markedBaseCommitFgColor:
+      - "#4385be"
+    markedBaseCommitBgColor:
+      - "#d0a215"
+    unstagedChangesColor:
+      - "#d14d41"
+    defaultFgColor:
+      - "#cecdc3"
+  authorColors:
+    "*": "#8b7ec8"
+git:
+  pagers:
+    - colorArg: always
+      pager: delta --paging=never --features=flexoki-dark

@@ -1,0 +1,19 @@
+export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS \
+  --color=bg+:#282726 \
+  --color=bg:#100f0f \
+  --color=border:#575653 \
+  --color=fg:#cecdc3 \
+  --color=gutter:#100f0f \
+  --color=header:#da702c \
+  --color=hl+:#4385be \
+  --color=hl:#4385be \
+  --color=info:#575653 \
+  --color=marker:#d14d41 \
+  --color=pointer:#d14d41 \
+  --color=prompt:#4385be \
+  --color=query:#cecdc3:regular \
+  --color=scrollbar:#575653 \
+  --color=separator:#da702c \
+  --color=spinner:#d0a215"
+
+export BAT_THEME="Flexoki Dark"
