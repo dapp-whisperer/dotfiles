@@ -35,7 +35,15 @@ Karabiner-Elements loads `~/.config/karabiner/karabiner.json` once at startup an
 
 ## Solution
 
-Quit and relaunch the application:
+Restart the `karabiner_console_user_server` agent via launchctl — faster and more reliable than the GUI quit/relaunch path because it skips the `sleep 1` handoff and avoids racing the menu-bar process:
+
+```bash
+launchctl kickstart -k gui/$(id -u)/org.pqrs.service.agent.karabiner_console_user_server
+```
+
+This is the canonical reload command for Karabiner. Note that `touch` on the config file is **not** sufficient — Karabiner does not watch the file; the agent must be restarted.
+
+Alternative (GUI-level restart) if launchctl is unavailable:
 
 ```bash
 osascript -e 'quit app "Karabiner-Elements"'

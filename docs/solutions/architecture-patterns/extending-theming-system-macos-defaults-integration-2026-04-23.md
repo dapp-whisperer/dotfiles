@@ -43,10 +43,12 @@ The pattern that emerged on `feat/flexoki-dark-theme-pack` is an **optional-mani
 ```bash
 manifest_get_optional() {
     local file="$1" key="$2" val
-    val=$(grep -F "${key} = " "$file" | head -1 | sed 's/^[^=]*= *"\([^"]*\)"/\1/' || true)
+    val=$(grep -F "${key} = " "$file" | head -1 | sed 's/^[^=]*= *"\([^"]*\)".*/\1/' || true)
     echo "${val:-}"
 }
 ```
+
+The trailing `.*` in the sed pattern matters — it consumes anything after the closing quote so inline comments like `key = "value"  # note` don't bleed into the extracted value. This becomes load-bearing once the pattern is extended to parse palette.toml (where aligned inline comments are the norm).
 
 Validate only when present, and guard every downstream use on non-empty:
 
