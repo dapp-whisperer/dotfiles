@@ -20,6 +20,7 @@ THEME_DIRS=(
     lazydocker
     tmux/.config/tmux
     opencode/.config/opencode
+    wezterm/.config/wezterm
     themes
 )
 
@@ -44,7 +45,9 @@ setup() {
     # scripts/theme hardcodes DOTFILES="$HOME/dotfiles", so we must
     # place files there for the script and test assertions to agree.
     export DOTFILES="$HOME/dotfiles"
-    mkdir -p "$HOME/.config"
+    # Real machines have ~/.config/tmux created by first tmux launch; mirror it here
+    # so scripts/theme's outer-status-bar cp doesn't die in test isolation.
+    mkdir -p "$HOME/.config/tmux"
 
     # Copy real repo config dirs + themes into temp DOTFILES.
     # Tests always run against the actual file formats — no fixtures to drift.
@@ -54,13 +57,32 @@ setup() {
         cp -R "$REPO_ROOT/$dir"/. "$DOTFILES/$dir/"
     done
 
-    # Prepend stubs to PATH so bat/nvim/osascript/pgrep are no-ops
+    # Sandbox Typora + cmux app path checks into temp so tests are
+    # deterministic across dev machines (Typora may or may not be installed)
+    # and CI (neither app exists).
+    export THEME_TYPORA_THEMES="$HOME/typora-themes"
+    export THEME_TYPORA_APP="$HOME/fake-typora.app"
+    export THEME_CMUX_APP="$HOME/fake-cmux.app"
+    mkdir -p "$THEME_TYPORA_APP" "$THEME_CMUX_APP"
+
+    # Sandbox Brave extension dir + Preferences path into temp HOME so tests
+    # never touch a real Brave profile. Preferences is deliberately absent by
+    # default; tests that exercise the jq edit path create it themselves.
+    export THEME_BRAVE_EXT="$HOME/brave-theme/current"
+    export THEME_BRAVE_PREFS="$HOME/brave-prefs/Preferences"
+
+    # Fresh defaults stub log per test
+    export DEFAULTS_LOG="$BATS_TMPDIR/defaults-calls-$$.log"
+    : > "$DEFAULTS_LOG"
+
+    # Prepend stubs to PATH so bat/nvim/osascript/pgrep/defaults are no-ops
     export PATH="$STUBS_DIR:$PATH"
 }
 
 teardown() {
     export HOME="$ORIG_HOME"
     rm -rf "$BATS_TMPDIR/home-$$"
+    rm -f "$DEFAULTS_LOG"
 }
 
 # Helper: run the theme script

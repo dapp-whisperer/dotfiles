@@ -315,6 +315,7 @@ mkdir -p "$HOME/.config/opencode/themes"
 mkdir -p "$HOME/.config/eza"
 mkdir -p "$HOME/.config/uv"
 mkdir -p "$HOME/.pi/agent/extensions"
+mkdir -p "$HOME/.config/brave-theme"
 
 # Backup existing nvim config if it exists and is not a symlink
 if [ -d "$HOME/.config/nvim" ] && [ ! -L "$HOME/.config/nvim" ]; then
@@ -577,6 +578,39 @@ else
 fi
 
 # ============================================
+# STEP 10.4: Brave Browser one-time NTP widget defaults (macOS only)
+# ============================================
+# Chrome-theme colors and NTP background are written on every `theme <name>`
+# switch. These NTP widget preferences are user UI choices (not theme colors),
+# so they belong here as a one-time setup rather than in scripts/theme. The
+# edit is skipped when Brave is running (Preferences would be overwritten on
+# quit) or when Brave isn't installed.
+if [[ "$OS" == "macos" ]]; then
+    step "Checking Brave NTP widget defaults..."
+    BRAVE_PREFS="$HOME/Library/Application Support/BraveSoftware/Brave-Browser/Default/Preferences"
+    if [[ -f "$BRAVE_PREFS" ]] && ! pgrep -qx "Brave Browser" 2>/dev/null && command -v jq &>/dev/null; then
+        BRAVE_PREFS_TMP="$(mktemp)"
+        if jq '.brave.new_tab_page.show_stats        = false
+             | .brave.new_tab_page.show_brave_news   = false
+             | .brave.new_tab_page.show_rewards      = false
+             | .brave.new_tab_page.show_brave_vpn    = false
+             | .brave.new_tab_page.show_clock        = true
+             | .brave.new_tab_page.clock_format      = "24"' \
+             "$BRAVE_PREFS" > "$BRAVE_PREFS_TMP" 2>/dev/null; then
+            mv "$BRAVE_PREFS_TMP" "$BRAVE_PREFS"
+            info "Brave NTP widget defaults applied"
+        else
+            rm -f "$BRAVE_PREFS_TMP"
+            warn "Could not update Brave NTP widget defaults"
+        fi
+    elif [[ -f "$BRAVE_PREFS" ]]; then
+        warn "Brave is running or jq missing — skipping NTP widget defaults"
+    else
+        info "Brave not installed — skipping NTP widget defaults"
+    fi
+fi
+
+# ============================================
 # STEP 10.5: Restore active theme
 # ============================================
 step "Restoring theme..."
@@ -628,4 +662,7 @@ echo "  2. Add API keys to ~/.zshrc.local"
 echo "  3. Run 'dev' to launch Yazi + Claude split view"
 echo "  4. Press Enter on any file to edit in Helix (floating pane)"
 echo "  5. Use 'nvim' directly for LazyVim (first launch downloads plugins)"
+echo "  6. Brave theme (one-time): open brave://extensions, enable Developer mode,"
+echo "     click 'Load unpacked', pick ~/.config/brave-theme/current. Then launch"
+echo "     Brave via 'brave' (scripts/brave wrapper) so the theme loads each time."
 echo ""

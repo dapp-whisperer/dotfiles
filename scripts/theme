@@ -15,12 +15,45 @@ list_themes() {
     done
 }
 
-# Parse key = "value" from TOML manifest
+# Parse key = "value" from TOML manifest.
+# Trailing .* in the sed pattern consumes anything after the closing quote so
+# inline comments like `key = "value"  # note` don't bleed into the value.
 manifest_get() {
     local file="$1" key="$2" val
-    val=$(grep -F "${key} = " "$file" | head -1 | sed 's/^[^=]*= *"\([^"]*\)"/\1/') || true
+    val=$(grep -F "${key} = " "$file" | head -1 | sed 's/^[^=]*= *"\([^"]*\)".*/\1/') || true
     [[ -n "$val" ]] || die "Missing manifest key '$key' in $file"
     echo "$val"
+}
+
+# Same as manifest_get but returns empty string instead of dying on missing key.
+# Used for optional manifest keys so new integrations can land independently of
+# per-pack retrofits.
+manifest_get_optional() {
+    local file="$1" key="$2" val
+    val=$(grep -F "${key} = " "$file" | head -1 | sed 's/^[^=]*= *"\([^"]*\)".*/\1/' || true)
+    echo "${val:-}"
+}
+
+# Parse and validate a hex color from palette.toml.
+# palette.toml entries carry inline comments AND aligned whitespace (e.g.
+# `background   = "#100F0F"  # note`), so:
+#   - the grep regex anchors on line start with flexible whitespace before `=`
+#   - the sed pattern's trailing .* consumes the inline comment
+# Value is validated as ^#[0-9a-fA-F]{6}$ before return so downstream
+# consumers (JSON emitter, hex_to_rgb) can trust the shape.
+palette_get() {
+    local file="$1" key="$2" val
+    val=$(grep -E "^${key}[[:space:]]*=" "$file" | head -1 | sed 's/^[^=]*= *"\([^"]*\)".*/\1/') || true
+    [[ -n "$val" ]] || die "Missing palette key '$key' in $file"
+    [[ "$val" =~ ^#[0-9a-fA-F]{6}$ ]] || die "Invalid hex '$val' for key '$key' in $file"
+    echo "$val"
+}
+
+# Convert #RRGGBB to "R, G, B" — the tuple form Chrome theme JSON expects
+# inside color arrays (e.g., "frame": [39, 40, 34]).
+hex_to_rgb() {
+    local hex="${1#'#'}"
+    echo "$((16#${hex:0:2})), $((16#${hex:2:2})), $((16#${hex:4:2}))"
 }
 
 # Validate that a value contains only safe characters (alphanumeric, spaces, hyphens, underscores, dots)
@@ -106,6 +139,7 @@ WEZTERM_NAME=$(manifest_get "$MANIFEST" "wezterm")
 WEZTERM_FONT=$(manifest_get "$MANIFEST" "wezterm_font")
 WEZTERM_BG=$(manifest_get "$MANIFEST" "wezterm_bg")
 FONT_NAME=$(manifest_get "$MANIFEST" "font")
+TYPORA_NAME=$(manifest_get_optional "$MANIFEST" "typora")
 
 # Validate all parsed values
 validate_value "$DISPLAY_NAME" "name"
@@ -122,6 +156,7 @@ validate_value "$OPENCODE_NAME" "opencode"
 validate_value "$WEZTERM_NAME" "wezterm"
 validate_hex "$WEZTERM_BG" "wezterm_bg"
 validate_value "$FONT_NAME" "font"
+[[ -n "$TYPORA_NAME" ]] && validate_value "$TYPORA_NAME" "typora"
 
 # Sed replacements on stow source files (inode-preserving for live reload)
 replace_quoted "theme" "$GHOSTTY_NAME" "$DOTFILES/ghostty/.config/ghostty/config"
@@ -164,7 +199,7 @@ sed_inplace "s/^config\.font = .*/config.font = ${WEZTERM_FONT}/" \
     "$DOTFILES/wezterm/.config/wezterm/wezterm.lua"
 
 # Full file replacements (inode-preserving for stow symlink targets)
-if [[ -d "$DOTFILES/gitui/.config/gitui" ]]; then
+if [[ -d "$DOTFILES/gitui/.config/gitui" && -f "$THEME_DIR/gitui-theme.ron" ]]; then
     copy_over "$THEME_DIR/gitui-theme.ron" "$DOTFILES/gitui/.config/gitui/theme.ron"
 fi
 
@@ -195,7 +230,7 @@ fi
 
 # Restow packages that may have new theme files (stow won't symlink files
 # added after the initial stow run without a restow)
-(cd "$DOTFILES" && stow -R btop zellij)
+(cd "$DOTFILES" && stow -R btop zellij wezterm)
 
 if [[ -f "$THEME_DIR/yazi-theme.toml" ]]; then
     copy_over "$THEME_DIR/yazi-theme.toml" "$DOTFILES/yazi/.config/yazi/theme.toml"
@@ -226,6 +261,113 @@ cp "$THEME_DIR/bat.tmTheme" "$HOME/.config/bat/themes/${BAT_NAME}.tmTheme"
 
 mkdir -p "$HOME/.config/eza"
 cp "$THEME_DIR/eza-theme.yml" "$HOME/.config/eza/theme.yml"
+
+# Typora: copy CSS to Typora's themes directory and update both `theme` and
+# `darkTheme` defaults so the active pack renders regardless of Typora's
+# useSeparateDarkTheme state. Optional: packs without `typora` skip silently.
+# THEME_TYPORA_APP / THEME_TYPORA_THEMES env vars allow test isolation.
+if [[ "$OSTYPE" == "darwin"* && -n "$TYPORA_NAME" && -f "$THEME_DIR/typora-theme.css" ]]; then
+    TYPORA_THEMES="${THEME_TYPORA_THEMES:-$HOME/Library/Application Support/abnerworks.Typora/themes}"
+    TYPORA_APP="${THEME_TYPORA_APP:-/Applications/Typora.app}"
+    if [[ -d "$TYPORA_THEMES" || -d "$TYPORA_APP" ]]; then
+        mkdir -p "$TYPORA_THEMES"
+        cp "$THEME_DIR/typora-theme.css" "$TYPORA_THEMES/${TYPORA_NAME}.css"
+        defaults write abnerworks.Typora theme "$DISPLAY_NAME" 2>/dev/null || true
+        defaults write abnerworks.Typora darkTheme "$DISPLAY_NAME" 2>/dev/null || true
+    fi
+fi
+
+# cmux: app chrome + built-in browser theme follow the pack's variant.
+# Reuses the existing variant key, so every pack works without retrofit.
+# THEME_CMUX_APP env var allows test isolation.
+CMUX_APP="${THEME_CMUX_APP:-/Applications/cmux.app}"
+if [[ "$OSTYPE" == "darwin"* && -d "$CMUX_APP" ]]; then
+    defaults write com.cmuxterm.app appearanceMode "$VARIANT" 2>/dev/null || true
+    defaults write com.cmuxterm.app browserThemeMode "$VARIANT" 2>/dev/null || true
+fi
+
+# Brave Browser: generate a Chrome theme extension from palette.toml and edit
+# the NTP background preference. Gated on palette.toml existence — packs
+# without it skip silently, matching the optional-integration pattern used by
+# Typora / cmux. THEME_BRAVE_EXT / THEME_BRAVE_PREFS env vars allow test isolation.
+PALETTE="$THEME_DIR/palette.toml"
+if [[ -f "$PALETTE" ]]; then
+    BG=$(palette_get "$PALETTE" "background")
+    FG=$(palette_get "$PALETTE" "foreground")
+    SURF=$(palette_get "$PALETTE" "surface")
+    SURF_DARK=$(palette_get "$PALETTE" "surface_dark")
+    CMT=$(palette_get "$PALETTE" "comment")
+    # accent is parsed so palette.toml is fully validated, even though the
+    # Chrome theme slots don't currently consume it; future slots (e.g.
+    # bookmark highlight) can reference $ACC without reparsing.
+    ACC=$(palette_get "$PALETTE" "accent")
+
+    # Pre-compute RGB tuples outside the heredoc — subshell failures inside
+    # heredoc $() expansions are silently swallowed by set -euo pipefail, so
+    # any hex_to_rgb error must abort before the JSON file is written.
+    RGB_BG=$(hex_to_rgb "$BG")
+    RGB_FG=$(hex_to_rgb "$FG")
+    RGB_SURF=$(hex_to_rgb "$SURF")
+    RGB_SURF_DARK=$(hex_to_rgb "$SURF_DARK")
+    RGB_CMT=$(hex_to_rgb "$CMT")
+
+    # ntp_* keys are deliberately omitted: Brave's new tab page ignores Chrome
+    # theme NTP colors (brave-browser#29409, #34304). NTP background is set
+    # via the Preferences edit below instead.
+    # $THEME is safe to interpolate into JSON: validated ^[a-zA-Z0-9_-]+$ above.
+    BRAVE_EXT="${THEME_BRAVE_EXT:-$HOME/.config/brave-theme/current}"
+    mkdir -p "$BRAVE_EXT"
+    MANIFEST_TMP="$(mktemp)"
+    cat > "$MANIFEST_TMP" << EOF
+{
+  "manifest_version": 3,
+  "version": "1.0",
+  "name": "$THEME",
+  "theme": {
+    "colors": {
+      "frame":               [$RGB_BG],
+      "frame_inactive":      [$RGB_SURF_DARK],
+      "toolbar":             [$RGB_SURF],
+      "toolbar_text":        [$RGB_FG],
+      "toolbar_button_icon": [$RGB_FG],
+      "tab_text":            [$RGB_FG],
+      "tab_background_text": [$RGB_CMT],
+      "background_tab":      [$RGB_SURF_DARK],
+      "omnibox_background":  [$RGB_SURF_DARK],
+      "omnibox_text":        [$RGB_FG],
+      "bookmark_text":       [$RGB_FG]
+    }
+  }
+}
+EOF
+    # Validate JSON before replacing the live file — prevents a malformed
+    # manifest.json from bricking Brave's theme load.
+    if ! python3 -m json.tool "$MANIFEST_TMP" > /dev/null 2>&1; then
+        rm -f "$MANIFEST_TMP"
+        die "Generated Brave manifest.json is invalid JSON — aborting"
+    fi
+    mv "$MANIFEST_TMP" "$BRAVE_EXT/manifest.json"
+
+    # NTP background lives in Brave's Preferences JSON. Brave holds Preferences
+    # in memory and rewrites on clean exit, so edits made while Brave is running
+    # are silently lost. pgrep -qx matches the exact process name to avoid
+    # false-positives on "Brave Browser Helper" processes.
+    BRAVE_PREFS="${THEME_BRAVE_PREFS:-$HOME/Library/Application Support/BraveSoftware/Brave-Browser/Default/Preferences}"
+    if [[ -f "$BRAVE_PREFS" ]]; then
+        if pgrep -qx "Brave Browser" 2>/dev/null; then
+            echo "  ⚠  Brave is running — NTP background not updated. Quit Brave and re-run 'theme $THEME' to apply."
+        else
+            PREFS_TMP="$(mktemp)"
+            if jq --arg bg "$BG" \
+                '.brave.new_tab_page.background = {"type":"color","random":false,"selected_value":$bg}' \
+                "$BRAVE_PREFS" > "$PREFS_TMP" 2>/dev/null; then
+                mv "$PREFS_TMP" "$BRAVE_PREFS"
+            else
+                rm -f "$PREFS_TMP"
+            fi
+        fi
+    fi
+fi
 
 # Live reloads (best-effort, non-fatal)
 bat cache --build 2>/dev/null || true
@@ -264,5 +406,7 @@ echo "$THEME" > "$CURRENT_FILE"
 echo "Switched to: $DISPLAY_NAME ($FONT_NAME)"
 echo ""
 echo "Auto-reloaded: Ghostty, WezTerm, Zellij, Helix, Neovim, tmux, bat"
-echo "Restart needed: btop, lazygit, lazydocker, yazi, opencode"
-echo "New shell needed: fzf"
+restart_line="btop, lazygit, lazydocker, yazi, opencode, Typora, cmux"
+[[ -f "$PALETTE" ]] && restart_line="${restart_line}, Brave Browser"
+echo "Restart needed: $restart_line"
+echo "Reload fzf in this shell: source ~/.config/fzf/theme.sh"

@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Brave Browser launcher — always loads the active dotfiles Chrome theme.
+#
+# Brave has no per-theme file watcher, so the theme is injected at launch via
+# --load-extension pointing at the directory scripts/theme generates. Launching
+# Brave via Dock or Spotlight bypasses this wrapper and skips the theme — known
+# limitation, documented in themes/README.md.
+#
+# $@ passthrough is intentional for personal dotfiles use (e.g. `brave <url>`).
+
+BRAVE="/Applications/Brave Browser.app/Contents/MacOS/Brave Browser"
+EXT_DIR="$HOME/.config/brave-theme/current"
+
+if [[ ! -x "$BRAVE" ]]; then
+    echo "brave: Brave Browser not found at $BRAVE" >&2
+    exit 1
+fi
+
+if [[ ! -f "$EXT_DIR/manifest.json" ]]; then
+    echo "brave: no theme loaded at $EXT_DIR — run 'theme <name>' first to generate it" >&2
+    exit 1
+fi
+
+exec "$BRAVE" --load-extension="$EXT_DIR" "$@"

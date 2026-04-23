@@ -26,10 +26,10 @@ local function split_and_zoom(command)
 end
 
 -- Theme
-config.color_scheme = 'Catppuccin Mocha'
+config.color_scheme = 'flexoki-dark'
 
 -- Font
-config.font = wezterm.font 'JetBrainsMono Nerd Font Mono'
+config.font = wezterm.font('Monaspace Argon NF', { weight = 'Regular' })
 config.font_size = 13.5
 config.line_height = 1.08
 
@@ -42,7 +42,7 @@ config.background = {
     height = '100%',
   },
   {
-    source = { Color = '#1e1e2e' }, -- theme background overlay
+    source = { Color = '#100f0f' }, -- theme background overlay
     opacity = 1.0,
     width = '100%',
     height = '100%',

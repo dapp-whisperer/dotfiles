@@ -1,0 +1,8 @@
+# Flexoki Dark — shared semantic palette
+# Source: stephango.com/flexoki palette (Steph Ango)
+background   = "#100F0F"   # main background — paper
+foreground   = "#CECDC3"   # main text — base-200
+surface      = "#282726"   # elevated surface — base-900
+surface_dark = "#1C1B1A"   # deep surface — base-950
+comment      = "#878580"   # dim text — base-500
+accent       = "#4385BE"   # accent / link — blue-400

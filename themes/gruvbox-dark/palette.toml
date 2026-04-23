@@ -1,0 +1,8 @@
+# Gruvbox Dark — shared semantic palette
+# Source: morhetz/gruvbox dark0/dark1/dark0_hard scale, fg1 + neutral_blue
+background   = "#282828"   # main background — dark0 (bg0)
+foreground   = "#ebdbb2"   # main text — fg1
+surface      = "#3c3836"   # elevated surface — dark1 (bg1)
+surface_dark = "#1d2021"   # deep surface — dark0_hard (bg0_h)
+comment      = "#928374"   # dim text — neutral_gray
+accent       = "#83a598"   # accent / link — bright_blue

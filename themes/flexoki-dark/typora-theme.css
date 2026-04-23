@@ -1,0 +1,240 @@
+/*
+ * Flexoki Dark for Typora
+ * Palette: Steph Ango — https://stephango.com/flexoki
+ */
+
+:root {
+    --flexoki-paper: #100F0F;
+    --flexoki-base-950: #1C1B1A;
+    --flexoki-base-900: #282726;
+    --flexoki-base-800: #403E3C;
+    --flexoki-base-700: #575653;
+    --flexoki-base-500: #878580;
+    --flexoki-base-300: #B7B5AC;
+    --flexoki-base-200: #CECDC3;
+    --flexoki-base-100: #E6E4D9;
+    --flexoki-red-400: #D14D41;
+    --flexoki-yellow-400: #D0A215;
+    --flexoki-blue-400: #4385BE;
+    --flexoki-green-400: #879A39;
+
+    --side-bar-bg-color: var(--flexoki-base-950);
+    --control-text-color: var(--flexoki-base-300);
+}
+
+html {
+    font-size: 16px;
+}
+
+html, body {
+    background-color: var(--flexoki-paper);
+    color: var(--flexoki-base-200);
+    font-family: "Monaspace Argon NF", "Monaspace Argon", ui-monospace, Menlo, Consolas, monospace;
+    line-height: 1.6;
+}
+
+#write {
+    max-width: 1120px;
+    padding: 30px 30px 100px 30px;
+    color: var(--flexoki-base-200);
+    background-color: var(--flexoki-paper);
+}
+
+#write > h1:first-child,
+#write > h2:first-child,
+#write > h3:first-child,
+#write > h4:first-child,
+#write > h5:first-child,
+#write > h6:first-child {
+    margin-top: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--flexoki-base-100);
+    font-weight: 600;
+    line-height: 1.25;
+}
+
+h1 { font-size: 2em;    border-bottom: 1px solid var(--flexoki-base-800); padding-bottom: 0.3em; }
+h2 { font-size: 1.5em;  border-bottom: 1px solid var(--flexoki-base-800); padding-bottom: 0.3em; }
+h3 { font-size: 1.25em; }
+h4 { font-size: 1em;    }
+h5 { font-size: 0.875em; }
+h6 { font-size: 0.85em; color: var(--flexoki-base-300); }
+
+a {
+    color: var(--flexoki-blue-400);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+::selection {
+    background-color: var(--flexoki-base-800);
+    color: var(--flexoki-base-100);
+}
+
+/* Inline code */
+code, .md-fences {
+    font-family: "Monaspace Argon NF", "Monaspace Argon", ui-monospace, Menlo, Consolas, monospace;
+    font-size: 0.92em;
+}
+
+/* YAML front matter block (rendered at the top of the document).
+ * Typora's default styling uses a light gray background that disappears on
+ * dark themes; re-skin it to match the fenced code block treatment. */
+pre.md-meta-block,
+.md-front-matter,
+.md-meta-block {
+    background-color: var(--flexoki-base-950) !important;
+    color: var(--flexoki-base-200) !important;
+    border: 1px solid var(--flexoki-base-800);
+    border-radius: 4px;
+    padding: 12px 16px;
+    font-family: "Monaspace Argon NF", "Monaspace Argon", ui-monospace, Menlo, Consolas, monospace;
+    font-size: 0.92em;
+    line-height: 1.5;
+}
+
+code {
+    background-color: var(--flexoki-base-900);
+    color: var(--flexoki-base-100);
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+}
+
+/* Fenced code blocks */
+.md-fences {
+    background-color: var(--flexoki-base-950);
+    color: var(--flexoki-base-200);
+    border: 1px solid var(--flexoki-base-800);
+    border-radius: 4px;
+    padding: 12px 16px;
+}
+
+.CodeMirror {
+    background-color: var(--flexoki-base-950) !important;
+    color: var(--flexoki-base-200) !important;
+}
+
+.CodeMirror-gutters {
+    background-color: var(--flexoki-base-950) !important;
+    border-right: 1px solid var(--flexoki-base-800);
+}
+
+.CodeMirror-linenumber {
+    color: var(--flexoki-base-700);
+}
+
+.CodeMirror-cursor {
+    border-left: 1px solid var(--flexoki-base-200) !important;
+}
+
+.cm-keyword     { color: var(--flexoki-red-400); }
+.cm-atom        { color: #8B7EC8; }
+.cm-number      { color: #8B7EC8; }
+.cm-def         { color: var(--flexoki-green-400); }
+.cm-variable    { color: var(--flexoki-base-200); }
+.cm-variable-2  { color: var(--flexoki-base-200); }
+.cm-property    { color: var(--flexoki-yellow-400); }
+.cm-operator    { color: var(--flexoki-red-400); }
+.cm-comment     { color: var(--flexoki-base-700); font-style: italic; }
+.cm-string      { color: var(--flexoki-yellow-400); }
+.cm-string-2    { color: var(--flexoki-yellow-400); }
+.cm-meta        { color: var(--flexoki-base-500); }
+.cm-builtin     { color: var(--flexoki-blue-400); }
+.cm-tag         { color: var(--flexoki-red-400); }
+.cm-attribute   { color: var(--flexoki-green-400); }
+.cm-header      { color: var(--flexoki-green-400); }
+.cm-hr          { color: var(--flexoki-base-700); }
+.cm-link        { color: var(--flexoki-blue-400); }
+.cm-error       { color: var(--flexoki-red-400); }
+
+/* Blockquote */
+blockquote {
+    color: var(--flexoki-base-300);
+    border-left: 4px solid var(--flexoki-base-700);
+    padding-left: 1em;
+    margin-left: 0;
+}
+
+/* Horizontal rule */
+hr {
+    border: 0;
+    border-top: 1px solid var(--flexoki-base-800);
+    margin: 2em 0;
+}
+
+/* Tables */
+table {
+    border-collapse: collapse;
+    border-color: var(--flexoki-base-800);
+}
+
+table thead {
+    background-color: var(--flexoki-base-950);
+    color: var(--flexoki-base-100);
+}
+
+table th, table td {
+    border: 1px solid var(--flexoki-base-800);
+    padding: 6px 12px;
+}
+
+table tr:nth-child(2n) {
+    background-color: var(--flexoki-base-950);
+}
+
+/* Task lists */
+.task-list-item input[type="checkbox"] {
+    accent-color: var(--flexoki-blue-400);
+}
+
+/* Search / highlight */
+mark,
+.md-search-hit {
+    background-color: var(--flexoki-yellow-400);
+    color: var(--flexoki-paper);
+    padding: 0 2px;
+    border-radius: 2px;
+}
+
+/* Warnings / error surfaces */
+.md-warning,
+.md-error {
+    color: var(--flexoki-red-400);
+}
+
+/* Focus mode / typewriter mode */
+.on-focus-mode blockquote,
+.on-focus-mode .md-fences,
+.on-focus-mode .md-plain,
+.on-focus-mode table {
+    color: var(--flexoki-base-500);
+}
+
+/* Sidebar */
+.sidebar-tabs {
+    background-color: var(--flexoki-base-950);
+    border-bottom: 1px solid var(--flexoki-base-800);
+}
+
+.sidebar-footer,
+.typora-sidebar,
+#typora-sidebar {
+    background-color: var(--flexoki-base-950);
+    color: var(--flexoki-base-300);
+}
+
+.file-list-item.active,
+.file-node-open > .file-node-background {
+    background-color: var(--flexoki-base-800);
+    color: var(--flexoki-base-100);
+}
+
+.outline-item-wrapper.active-tab {
+    background-color: var(--flexoki-base-800);
+    color: var(--flexoki-base-100);
+}

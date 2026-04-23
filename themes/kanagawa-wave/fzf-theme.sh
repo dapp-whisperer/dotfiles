@@ -1,5 +1,4 @@
-export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS \
-  --color=bg+:#2D4F67 \
+export FZF_DEFAULT_OPTS="--color=bg+:#2D4F67 \
   --color=bg:#1F1F28 \
   --color=border:#54546D \
   --color=fg:#DCD7BA \

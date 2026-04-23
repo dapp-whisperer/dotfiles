@@ -1,4 +1,4 @@
-theme "catppuccin-mocha"
+theme "flexoki-dark"
 pane_frames false
 
 load_plugins {

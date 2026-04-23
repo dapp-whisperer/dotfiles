@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Stub for macOS `defaults` so bats tests can assert Typora/cmux state writes
+# without touching the real preferences system. Tests set DEFAULTS_LOG to a
+# per-test file; reads fall through to exit 0 with empty output.
+
+if [[ -n "${DEFAULTS_LOG:-}" ]]; then
+    printf '%s\n' "$*" >> "$DEFAULTS_LOG"
+fi
+exit 0

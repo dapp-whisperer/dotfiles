@@ -1,8 +1,4 @@
 gui:
-  border: hidden
-  containerStatusHealthStyle: icon
-reporting: "off"
-gui:
   theme:
     activeBorderColor:
       - "#da702c"

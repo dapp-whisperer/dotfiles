@@ -1,8 +1,8 @@
 # Treat Option as Alt so terminal sequences like Alt+Backspace work correctly.
 macos-option-as-alt = true
 
-theme = "Catppuccin Mocha"
-font-family = "JetBrains Mono"
+theme = "Flexoki Dark"
+font-family = "Monaspace Argon NF"
 font-size = 15
 background-opacity = 0.95
 background-blur-radius = 20

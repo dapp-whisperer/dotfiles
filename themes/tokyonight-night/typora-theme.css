@@ -1,0 +1,149 @@
+/*
+ * Tokyo Night (Night) for Typora
+ * Palette: folke/tokyonight.nvim
+ */
+
+:root {
+    --tn-bg:         #1a1b26;
+    --tn-bg-dark:    #16161e;
+    --tn-bg-hl:      #292e42;
+    --tn-fg:         #c0caf5;
+    --tn-fg-dark:    #a9b1d6;
+    --tn-comment:    #565f89;
+    --tn-blue-dark:  #364a82;
+    --tn-red:        #f7768e;
+    --tn-orange:     #ff9e64;
+    --tn-yellow:     #e0af68;
+    --tn-green:      #9ece6a;
+    --tn-cyan:       #7dcfff;
+    --tn-blue:       #7aa2f7;
+    --tn-purple:     #bb9af7;
+
+    --side-bar-bg-color: var(--tn-bg-dark);
+    --control-text-color: var(--tn-fg-dark);
+}
+
+html { font-size: 16px; }
+
+html, body {
+    background-color: var(--tn-bg);
+    color: var(--tn-fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", Arial, sans-serif;
+    line-height: 1.6;
+}
+
+#write {
+    max-width: 860px;
+    padding: 30px 30px 100px 30px;
+    color: var(--tn-fg);
+    background-color: var(--tn-bg);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--tn-fg);
+    font-weight: 600;
+    line-height: 1.25;
+}
+
+h1 { font-size: 2em;    border-bottom: 1px solid var(--tn-bg-hl); padding-bottom: 0.3em; }
+h2 { font-size: 1.5em;  border-bottom: 1px solid var(--tn-bg-hl); padding-bottom: 0.3em; }
+h3 { font-size: 1.25em; }
+h4 { font-size: 1em;    }
+h5 { font-size: 0.875em; }
+h6 { font-size: 0.85em; color: var(--tn-fg-dark); }
+
+a { color: var(--tn-blue); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+::selection {
+    background-color: var(--tn-blue-dark);
+    color: var(--tn-fg);
+}
+
+code, .md-fences {
+    font-family: "JetBrainsMono Nerd Font Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+    font-size: 0.92em;
+}
+
+code {
+    background-color: var(--tn-bg-hl);
+    color: var(--tn-fg);
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+}
+
+.md-fences {
+    background-color: var(--tn-bg-dark);
+    color: var(--tn-fg);
+    border: 1px solid var(--tn-bg-hl);
+    border-radius: 4px;
+    padding: 12px 16px;
+}
+
+.CodeMirror {
+    background-color: var(--tn-bg-dark) !important;
+    color: var(--tn-fg) !important;
+}
+
+.CodeMirror-gutters {
+    background-color: var(--tn-bg-dark) !important;
+    border-right: 1px solid var(--tn-bg-hl);
+}
+
+.CodeMirror-linenumber { color: var(--tn-comment); }
+.CodeMirror-cursor { border-left: 1px solid var(--tn-fg) !important; }
+
+.cm-keyword   { color: var(--tn-purple); }
+.cm-number    { color: var(--tn-orange); }
+.cm-def       { color: var(--tn-blue); }
+.cm-variable  { color: var(--tn-fg); }
+.cm-property  { color: var(--tn-green); }
+.cm-operator  { color: var(--tn-cyan); }
+.cm-comment   { color: var(--tn-comment); font-style: italic; }
+.cm-string    { color: var(--tn-green); }
+.cm-builtin   { color: var(--tn-cyan); }
+.cm-tag       { color: var(--tn-red); }
+.cm-attribute { color: var(--tn-green); }
+.cm-header    { color: var(--tn-blue); }
+.cm-link      { color: var(--tn-blue); }
+.cm-error     { color: var(--tn-red); }
+
+blockquote {
+    color: var(--tn-fg-dark);
+    border-left: 4px solid var(--tn-comment);
+    padding-left: 1em;
+    margin-left: 0;
+}
+
+hr { border: 0; border-top: 1px solid var(--tn-bg-hl); margin: 2em 0; }
+
+table { border-collapse: collapse; border-color: var(--tn-bg-hl); }
+table thead { background-color: var(--tn-bg-dark); color: var(--tn-fg); }
+table th, table td { border: 1px solid var(--tn-bg-hl); padding: 6px 12px; }
+table tr:nth-child(2n) { background-color: var(--tn-bg-dark); }
+
+mark, .md-search-hit {
+    background-color: var(--tn-yellow);
+    color: var(--tn-bg);
+    padding: 0 2px;
+    border-radius: 2px;
+}
+
+.md-warning, .md-error { color: var(--tn-red); }
+
+.sidebar-tabs {
+    background-color: var(--tn-bg-dark);
+    border-bottom: 1px solid var(--tn-bg-hl);
+}
+
+.sidebar-footer, .typora-sidebar, #typora-sidebar {
+    background-color: var(--tn-bg-dark);
+    color: var(--tn-fg-dark);
+}
+
+.file-list-item.active,
+.file-node-open > .file-node-background,
+.outline-item-wrapper.active-tab {
+    background-color: var(--tn-bg-hl);
+    color: var(--tn-fg);
+}

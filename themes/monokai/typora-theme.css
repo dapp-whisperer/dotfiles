@@ -1,0 +1,148 @@
+/*
+ * Monokai Pro for Typora
+ * Palette: Wimer Hazenberg (https://monokai.pro/)
+ */
+
+:root {
+    --mk-bg:         #2d2a2e;
+    --mk-mantle:     #221f22;
+    --mk-surface-0:  #363438;
+    --mk-surface-1:  #403e41;
+    --mk-surface-2:  #5b595c;
+    --mk-subtext-0:  #727072;
+    --mk-fg:         #fcfcfa;
+    --mk-red:        #ff6188;
+    --mk-orange:     #fc9867;
+    --mk-yellow:     #ffd866;
+    --mk-green:      #a9dc76;
+    --mk-cyan:       #78dce8;
+    --mk-purple:     #ab9df2;
+
+    --side-bar-bg-color: var(--mk-mantle);
+    --control-text-color: var(--mk-subtext-0);
+}
+
+html { font-size: 16px; }
+
+html, body {
+    background-color: var(--mk-bg);
+    color: var(--mk-fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", Arial, sans-serif;
+    line-height: 1.6;
+}
+
+#write {
+    max-width: 860px;
+    padding: 30px 30px 100px 30px;
+    color: var(--mk-fg);
+    background-color: var(--mk-bg);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--mk-fg);
+    font-weight: 600;
+    line-height: 1.25;
+}
+
+h1 { font-size: 2em;    border-bottom: 1px solid var(--mk-surface-1); padding-bottom: 0.3em; }
+h2 { font-size: 1.5em;  border-bottom: 1px solid var(--mk-surface-1); padding-bottom: 0.3em; }
+h3 { font-size: 1.25em; }
+h4 { font-size: 1em;    }
+h5 { font-size: 0.875em; }
+h6 { font-size: 0.85em; color: var(--mk-surface-2); }
+
+a { color: var(--mk-cyan); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+::selection {
+    background-color: var(--mk-surface-1);
+    color: var(--mk-fg);
+}
+
+code, .md-fences {
+    font-family: "FiraCode Nerd Font Mono", "Fira Code", Menlo, Consolas, monospace;
+    font-size: 0.92em;
+}
+
+code {
+    background-color: var(--mk-surface-0);
+    color: var(--mk-fg);
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+}
+
+.md-fences {
+    background-color: var(--mk-mantle);
+    color: var(--mk-fg);
+    border: 1px solid var(--mk-surface-1);
+    border-radius: 4px;
+    padding: 12px 16px;
+}
+
+.CodeMirror {
+    background-color: var(--mk-mantle) !important;
+    color: var(--mk-fg) !important;
+}
+
+.CodeMirror-gutters {
+    background-color: var(--mk-mantle) !important;
+    border-right: 1px solid var(--mk-surface-1);
+}
+
+.CodeMirror-linenumber { color: var(--mk-subtext-0); }
+.CodeMirror-cursor { border-left: 1px solid var(--mk-fg) !important; }
+
+.cm-keyword   { color: var(--mk-red); }
+.cm-number    { color: var(--mk-purple); }
+.cm-def       { color: var(--mk-green); }
+.cm-variable  { color: var(--mk-fg); }
+.cm-property  { color: var(--mk-cyan); }
+.cm-operator  { color: var(--mk-red); }
+.cm-comment   { color: var(--mk-subtext-0); font-style: italic; }
+.cm-string    { color: var(--mk-yellow); }
+.cm-builtin   { color: var(--mk-cyan); }
+.cm-tag       { color: var(--mk-red); }
+.cm-attribute { color: var(--mk-green); }
+.cm-header    { color: var(--mk-green); }
+.cm-link      { color: var(--mk-cyan); }
+.cm-error     { color: var(--mk-red); }
+
+blockquote {
+    color: var(--mk-subtext-0);
+    border-left: 4px solid var(--mk-surface-2);
+    padding-left: 1em;
+    margin-left: 0;
+}
+
+hr { border: 0; border-top: 1px solid var(--mk-surface-1); margin: 2em 0; }
+
+table { border-collapse: collapse; border-color: var(--mk-surface-1); }
+table thead { background-color: var(--mk-mantle); color: var(--mk-fg); }
+table th, table td { border: 1px solid var(--mk-surface-1); padding: 6px 12px; }
+table tr:nth-child(2n) { background-color: var(--mk-mantle); }
+
+mark, .md-search-hit {
+    background-color: var(--mk-yellow);
+    color: var(--mk-bg);
+    padding: 0 2px;
+    border-radius: 2px;
+}
+
+.md-warning, .md-error { color: var(--mk-red); }
+
+.sidebar-tabs {
+    background-color: var(--mk-mantle);
+    border-bottom: 1px solid var(--mk-surface-1);
+}
+
+.sidebar-footer, .typora-sidebar, #typora-sidebar {
+    background-color: var(--mk-mantle);
+    color: var(--mk-subtext-0);
+}
+
+.file-list-item.active,
+.file-node-open > .file-node-background,
+.outline-item-wrapper.active-tab {
+    background-color: var(--mk-surface-1);
+    color: var(--mk-fg);
+}
