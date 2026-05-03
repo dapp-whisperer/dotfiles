@@ -1,15 +1,17 @@
 {
-  "lastChangelogVersion": "0.68.1",
+  "lastChangelogVersion": "0.70.6",
   "defaultProvider": "openai",
-  "defaultModel": "gpt-5.4",
+  "defaultModel": "gpt-5.5",
   "defaultThinkingLevel": "high",
   "powerlineRainbowThinking": false,
   "packages": [
     "https://github.com/davebcn87/pi-autoresearch",
-    "npm:pi-powerline-footer",
+    {
+      "source": "npm:pi-powerline-footer",
+      "extensions": []
+    },
     "npm:pi-mcp-adapter",
     "npm:pi-web-access",
-    "npm:pi-memory-md",
     "git:github.com/badlogic/pi-diff-review@1584211692c49780ecd0f490a82762b0823fd475",
     "npm:@devkade/pi-plan",
     "npm:pi-simplify",
@@ -24,6 +26,7 @@
     "npm:pi-btw",
     "npm:@tmustier/pi-ralph-wiggum",
     "npm:@every-env/compound-plugin",
+    "/Users/dev/code/compound-engineering-plugin/packages/pi-render-customization",
     {
       "source": "npm:pi-themes",
       "themes": [
@@ -33,12 +36,21 @@
       ]
     },
     "git:github.com/javierportillo/pi-hackerman@63b0a3ef2c7b14985ffeb6cac44614ba59cd5693",
-    "npm:pi-cyber-ui",
+    {
+      "source": "npm:pi-cyber-ui",
+      "extensions": []
+    },
     "npm:@victor-software-house/pi-curated-themes",
     "npm:pi-terminal-theme",
     "npm:pi-subagents",
     "npm:pi-ask-user",
-    "npm:pi-interactive-shell"
+    "npm:pi-interactive-shell",
+    "git:github.com/VandeeFeng/pi-memory-md",
+    "npm:pi-claude-cli",
+    "npm:pi-slopchop",
+    "npm:pi-tool-display",
+    "npm:pi-session-auto-rename",
+    "../../code/pi-cmux-notifications"
   ],
   "subagents": {
     "agentOverrides": {
@@ -62,6 +74,11 @@
       }
     }
   },
-  "theme": "catppuccin-mocha",
-  "quietStartup": true
+  "theme": "catppuccin-mocha-mauve",
+  "quietStartup": true,
+  "hideThinkingBlock": false,
+  "showLastPrompt": false,
+  "extensions": [
+    "extensions/powerline-placement-shim.ts"
+  ]
 }
