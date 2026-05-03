@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+#
+# pi-doctor — post-bootstrap smoke check for the personal Pi profile.
+#
+# All checks are advisory: failures are reported via warn but never
+# halt the script. Run standalone after a LazyPi upgrade or whenever
+# Pi misbehaves. Also called from install.sh after pi-sync apply.
+
+set -uo pipefail
+
+if [[ -t 1 && "${NO_COLOR:-}" != "1" ]]; then
+    GREEN='\033[0;32m'; YELLOW='\033[0;33m'; BLUE='\033[0;34m'; NC='\033[0m'
+else
+    GREEN=''; YELLOW=''; BLUE=''; NC=''
+fi
+info() { printf '%b[INFO]%b %s\n' "$GREEN" "$NC" "$1"; }
+warn() { printf '%b[WARN]%b %s\n' "$YELLOW" "$NC" "$1" >&2; }
+step() { printf '%b[STEP]%b %s\n' "$BLUE" "$NC" "$1"; }
+
+DOTFILES_DIR="${DOTFILES_DIR:-$HOME/dotfiles}"
+LIVE_SETTINGS="$HOME/.pi/agent/settings.json"
+PI_GIT_CACHE="$HOME/.pi/agent/git/github.com"
+
+step "Pi profile smoke check"
+
+# 1. pi command resolves and exits 0 on --version
+if command -v pi >/dev/null 2>&1; then
+    if pi_version="$(pi --version 2>&1)"; then
+        info "  pi on PATH (version: ${pi_version%%$'\n'*})"
+    else
+        warn "  pi --version exited non-zero"
+    fi
+else
+    warn "  pi not on PATH (LazyPi may not be installed)"
+fi
+
+# 2. settings.json is valid JSON
+if [[ -f "$LIVE_SETTINGS" ]]; then
+    if command -v jq >/dev/null 2>&1; then
+        if jq empty "$LIVE_SETTINGS" 2>/dev/null; then
+            info "  ~/.pi/agent/settings.json is valid JSON"
+        else
+            warn "  ~/.pi/agent/settings.json failed jq parse"
+        fi
+    elif command -v python3 >/dev/null 2>&1; then
+        if python3 -c 'import json,sys; json.load(open(sys.argv[1]))' "$LIVE_SETTINGS" 2>/dev/null; then
+            info "  ~/.pi/agent/settings.json is valid JSON"
+        else
+            warn "  ~/.pi/agent/settings.json failed python json.load"
+        fi
+    else
+        warn "  no jq or python3 available; skipping JSON validity check"
+    fi
+else
+    warn "  ~/.pi/agent/settings.json missing"
+fi
+
+# 3. pi-sync --check exits 0 (live matches dotfiles)
+if [[ -x "$DOTFILES_DIR/scripts/pi-sync" ]]; then
+    if "$DOTFILES_DIR/scripts/pi-sync" --check >/dev/null 2>&1; then
+        info "  pi-sync --check clean (live matches dotfiles)"
+    else
+        warn "  pi-sync --check reports drift; run: $DOTFILES_DIR/scripts/pi-sync apply"
+    fi
+else
+    warn "  scripts/pi-sync not executable at $DOTFILES_DIR"
+fi
+
+# 4. cmux-notifications package directory cached by Pi
+cmux_cache="$PI_GIT_CACHE/dapp-whisperer/pi-cmux-notifications"
+if [[ -d "$cmux_cache" ]]; then
+    info "  pi-cmux-notifications cache resolved at ~/.pi/agent/git/github.com/dapp-whisperer/pi-cmux-notifications"
+else
+    warn "  pi-cmux-notifications cache absent (will resolve on next pi launch)"
+fi
+
+# pi-doctor is purely advisory.
+exit 0

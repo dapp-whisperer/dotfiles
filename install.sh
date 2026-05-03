@@ -410,6 +410,14 @@ fi
 
 
 # ============================================
+# STEP 6.56: Pi profile smoke check
+# ============================================
+if [[ -x "$DOTFILES_DIR/scripts/pi-doctor" ]]; then
+    "$DOTFILES_DIR/scripts/pi-doctor" || true
+fi
+
+
+# ============================================
 # STEP 6.6: Install zellij-attention plugin
 # ============================================
 step "Installing zellij-attention plugin..."
