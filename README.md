@@ -106,13 +106,105 @@ LazyVim with added plugins (markview.nvim, diffview.nvim), Rust extras, and mark
 
 **First run note:** On first launch, Neovim downloads plugins (~30-60 seconds). Subsequent launches are instant.
 
-## Pi
+## Pi Profile
 
-Pi config is stow-managed from `pi/.pi/agent/`, currently tracking `settings.json` plus custom extensions like `/resources`.
+Pi customization is captured in dotfiles under `pi/.pi/agent/` and reapplied over the live `~/.pi/agent/` tree via `scripts/pi-sync`. Plain `stow` is not enough: LazyPi rewrites `settings.json` in place during installs and upgrades (the `*.lazypi.<ts>.bak` files in `~/.pi/agent/` are evidence), so the personal overlay needs an explicit reapply step to survive.
 
-Not tracked: `~/.pi/agent/auth.json`, `~/.pi/agent/sessions/`, and `~/.pi/agent/cache/`.
+### Tracked
 
-**First migration on an existing machine:** if `~/.pi/agent/settings.json` or `~/.pi/agent/extensions/resources.ts` already exist as regular files, use `install.sh` or run `stow --adopt --restow --target="$HOME" pi` once. After that, regular `stow --restow` works.
+| Path | What |
+|------|------|
+| `pi/.pi/agent/settings.json` | Pi settings: model, theme, packages array, subagent overrides |
+| `pi/.pi/agent/settings-extensions.json` | Powerbar sidecar config (placement, separator, bar style) |
+| `pi/.pi/agent/extensions/resources.ts` | Personal `/resources` slash command |
+| `pi/.pi/agent/extensions/powerbar-context-refresh.ts` | Powerbar live-refresh helper |
+| `pi/.pi/agent/extensions/powerbar-folder-line.ts` | Powerbar folder-line renderer |
+| `pi/.pi/agent/extensions/powerline-placement-shim.ts` | Powerline placement shim |
+
+### Excluded (regenerated or private)
+
+| Path | Reason |
+|------|--------|
+| `auth.json` | OpenAI/Anthropic credentials |
+| `sessions/` | Per-cwd conversation history |
+| `cache/` | Runtime cache |
+| `run-history.jsonl` | Invocation log |
+| `*.lazypi.*.bak` | LazyPi rewrite backups |
+| `agents/`, `skills/`, `themes/`, `git/`, `compound-engineering/` | Package-installed; regenerated from the `packages` array |
+| `AGENTS.md`, `pi-cyber-ui.json` | Plugin-managed |
+| `extensions/<dir>/` | Package install dirs (only top-level `*.ts` files are tracked) |
+
+### Onboard a new machine
+
+`install.sh` runs `pi-sync apply` after the stow loop, then `pi-doctor` for a smoke check. No manual step required:
+
+```bash
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/dapp-whisperer/dotfiles/main/install.sh)"
+```
+
+Private `git:` packages depend on local GitHub auth being set up first; bootstrap orders that step before `pi-sync` runs.
+
+### Reapply after a LazyPi upgrade
+
+LazyPi rewrites `~/.pi/agent/settings.json` in place. To restore the personal overlay:
+
+```bash
+~/dotfiles/scripts/pi-sync apply
+```
+
+Idempotent — safe to run repeatedly. Overwrite semantics: dotfiles wins.
+
+### Inspect drift
+
+```bash
+~/dotfiles/scripts/pi-sync --check
+```
+
+Exits 0 if live matches dotfiles. Exits 1 and prints drifted file paths otherwise. Use this after manual edits to live, or to discover what LazyPi changed.
+
+### Diagnose problems
+
+```bash
+~/dotfiles/scripts/pi-doctor
+```
+
+Advisory checks: `pi --version`, settings.json validity, drift status, and whether the cmux-notifications package cache resolved. Always exits 0; warnings name remediation steps.
+
+### Add a tracked extension
+
+```bash
+cp ~/.pi/agent/extensions/my-new-tool.ts ~/dotfiles/pi/.pi/agent/extensions/
+git -C ~/dotfiles add pi/.pi/agent/extensions/my-new-tool.ts && git -C ~/dotfiles commit
+~/dotfiles/scripts/pi-sync apply
+```
+
+If the new extension also needs an entry in `settings.json#extensions`, edit `pi/.pi/agent/settings.json`, commit, and re-run `pi-sync apply`.
+
+### Add a new private Pi package
+
+```bash
+# 1. Create the repo and push package code (with package.json#pi.extensions or pi.themes)
+gh repo create dapp-whisperer/<name> --private --source=. --push
+
+# 2. Pin its sha in settings.json
+git -C dapp-whisperer/<name> rev-parse main
+# add "git:github.com/dapp-whisperer/<name>@<sha>" to pi/.pi/agent/settings.json packages array
+
+# 3. Commit and apply
+git -C ~/dotfiles add pi/.pi/agent/settings.json && git -C ~/dotfiles commit
+~/dotfiles/scripts/pi-sync apply
+```
+
+### Pinning policy
+
+Private packages are pinned by full sha for reproducibility (`git:github.com/<owner>/<repo>@<40-char-sha>`), matching the existing `pi-diff-review` and `pi-manage-todo-list` entries. To bump:
+
+```bash
+# discover new sha
+gh api repos/dapp-whisperer/<repo>/commits/main --jq '.sha'
+# edit pi/.pi/agent/settings.json with the new sha, commit, then:
+~/dotfiles/scripts/pi-sync apply
+```
 
 ## Secrets
 
