@@ -1,0 +1,106 @@
+#!/usr/bin/env bash
+#
+# pi-sync — reapply the dotfiles-tracked Pi profile over the live
+# ~/.pi/agent/ tree. LazyPi rewrites settings.json in place during
+# installs and upgrades, so the dotfiles overlay needs an explicit
+# reapply step to survive.
+#
+# Modes:
+#   apply (default)  Copy each tracked file under pi/.pi/agent/ in
+#                    dotfiles to the matching path under ~/.pi/agent/.
+#                    Overwrite semantics — dotfiles wins.
+#   --check          Read-only: list drifted paths to stderr and exit 1.
+#                    Exit 0 when every tracked file matches.
+#
+# The tracked set is enumerated via `git ls-files`, so .gitignore is
+# automatically respected: excluded runtime state (auth, sessions,
+# caches, *.lazypi.*.bak) is never read or written.
+
+set -euo pipefail
+
+if [[ -t 1 && "${NO_COLOR:-}" != "1" ]]; then
+    RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[0;33m'; NC='\033[0m'
+else
+    RED=''; GREEN=''; YELLOW=''; NC=''
+fi
+info() { printf '%b[INFO]%b %s\n' "$GREEN" "$NC" "$1"; }
+warn() { printf '%b[WARN]%b %s\n' "$YELLOW" "$NC" "$1" >&2; }
+err()  { printf '%b[ERROR]%b %s\n' "$RED" "$NC" "$1" >&2; }
+
+usage() {
+    cat <<'EOF'
+Usage: pi-sync [apply|--check]
+
+  apply (default)  Reapply the dotfiles-tracked Pi profile over ~/.pi/agent.
+  --check          Report drift between dotfiles and live (read-only).
+
+Environment:
+  DOTFILES_DIR     Path to the dotfiles repo. Defaults to "$HOME/dotfiles".
+  NO_COLOR=1       Disable ANSI colors.
+EOF
+}
+
+mode="apply"
+case "${1:-}" in
+    ""|apply)  mode="apply" ;;
+    --check)   mode="check" ;;
+    -h|--help) usage; exit 0 ;;
+    *) err "unknown argument: $1"; usage >&2; exit 2 ;;
+esac
+
+DOTFILES_DIR="${DOTFILES_DIR:-$HOME/dotfiles}"
+LIVE_ROOT="$HOME/.pi/agent"
+TRACKED_PREFIX="pi/.pi/agent"
+
+# A bare directory is not enough; the script needs `git ls-files` to work.
+if ! git -C "$DOTFILES_DIR" rev-parse --git-dir >/dev/null 2>&1; then
+    err "dotfiles repo not found at DOTFILES_DIR=$DOTFILES_DIR"
+    err "set DOTFILES_DIR to the path of your dotfiles checkout"
+    exit 2
+fi
+
+# Tracked enumeration honors .gitignore by construction.
+mapfile -t tracked < <(git -C "$DOTFILES_DIR" ls-files -- "$TRACKED_PREFIX")
+if [[ ${#tracked[@]} -eq 0 ]]; then
+    warn "no tracked files under $TRACKED_PREFIX in $DOTFILES_DIR"
+    exit 0
+fi
+
+drifted=()
+
+for relpath in "${tracked[@]}"; do
+    src="$DOTFILES_DIR/$relpath"
+    rel="${relpath#$TRACKED_PREFIX/}"
+    dst="$LIVE_ROOT/$rel"
+
+    if [[ ! -f "$src" ]]; then
+        warn "tracked path missing or non-regular in dotfiles, skipping: $relpath"
+        continue
+    fi
+
+    if [[ "$mode" == "check" ]]; then
+        if [[ ! -e "$dst" ]] || ! cmp -s "$src" "$dst"; then
+            drifted+=("$rel")
+        fi
+    else
+        mkdir -p "$(dirname "$dst")"
+        # Pre-remove so a symlink at $dst is replaced rather than dereferenced.
+        if [[ -L "$dst" || -e "$dst" ]]; then
+            rm -f "$dst"
+        fi
+        cp "$src" "$dst"
+    fi
+done
+
+if [[ "$mode" == "check" ]]; then
+    if [[ ${#drifted[@]} -eq 0 ]]; then
+        exit 0
+    fi
+    err "drift detected (${#drifted[@]} file(s)):"
+    for f in "${drifted[@]}"; do
+        printf '  %s\n' "$f" >&2
+    done
+    exit 1
+fi
+
+info "applied ${#tracked[@]} tracked file(s) to $LIVE_ROOT"

@@ -389,6 +389,27 @@ fi
 
 
 # ============================================
+# STEP 6.55: Reapply Pi profile over LazyPi
+# ============================================
+# LazyPi rewrites ~/.pi/agent/settings.json in place during installs and
+# upgrades, leaving timestamped *.lazypi.<ts>.bak files behind. This step
+# reapplies the dotfiles-tracked profile so the personal overlay survives.
+# Safe to run repeatedly; safe before LazyPi has ever run (it just writes
+# the tracked files into ~/.pi/agent/).
+step "Reapplying Pi profile..."
+
+if [[ -x "$DOTFILES_DIR/scripts/pi-sync" ]]; then
+    if "$DOTFILES_DIR/scripts/pi-sync" apply; then
+        info "Pi profile reapplied"
+    else
+        warn "pi-sync apply failed; continuing bootstrap"
+    fi
+else
+    warn "scripts/pi-sync not executable, skipping Pi profile reapply"
+fi
+
+
+# ============================================
 # STEP 6.6: Install zellij-attention plugin
 # ============================================
 step "Installing zellij-attention plugin..."
