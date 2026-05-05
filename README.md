@@ -108,7 +108,9 @@ LazyVim with added plugins (markview.nvim, diffview.nvim), Rust extras, and mark
 
 ## Pi Profile
 
-Pi customization is captured in dotfiles under `pi/.pi/agent/` and reapplied over the live `~/.pi/agent/` tree via `scripts/pi-sync`. Plain `stow` is not enough: LazyPi rewrites `settings.json` in place during installs and upgrades (the `*.lazypi.<ts>.bak` files in `~/.pi/agent/` are evidence), so the personal overlay needs an explicit reapply step to survive.
+Pi is installed separately (LazyPi handles its own bootstrap); this repo only captures the personal customization layer that has to survive across machines and across LazyPi upgrades.
+
+Personal customization lives in dotfiles under `pi/.pi/agent/` and is reapplied over the live `~/.pi/agent/` tree via `scripts/pi-sync`. Plain `stow` is not enough: LazyPi rewrites `settings.json` in place during installs and upgrades (the `*.lazypi.<ts>.bak` files in `~/.pi/agent/` are evidence), so the personal overlay needs an explicit reapply step to survive. `install.sh` does **not** invoke `pi-sync` — run it yourself after Pi is installed.
 
 ### Tracked
 
@@ -136,13 +138,14 @@ Pi customization is captured in dotfiles under `pi/.pi/agent/` and reapplied ove
 
 ### Onboard a new machine
 
-`install.sh` runs `pi-sync apply` after the stow loop, then `pi-doctor` for a smoke check. No manual step required:
+After running `install.sh` and installing Pi (separate process — LazyPi), apply the personal profile:
 
 ```bash
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/dapp-whisperer/dotfiles/main/install.sh)"
+~/dotfiles/scripts/pi-sync apply
+~/dotfiles/scripts/pi-doctor
 ```
 
-Private `git:` packages depend on local GitHub auth being set up first; bootstrap orders that step before `pi-sync` runs.
+Both are idempotent. The first installs the tracked overlay over the live `~/.pi/agent/`; the second runs an advisory smoke check. Private `git:` packages need local GitHub auth (`gh auth login` or an SSH key) configured before Pi launches.
 
 ### Reapply after a LazyPi upgrade
 
