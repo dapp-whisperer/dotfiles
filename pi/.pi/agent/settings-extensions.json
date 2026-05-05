@@ -1,0 +1,10 @@
+{
+	"powerbar": {
+		"left": "model,context-usage",
+		"right": "sub-hourly,sub-weekly",
+		"separator": " │ ",
+		"placement": "belowEditor",
+		"bar-style": "continuous",
+		"bar-width": "10"
+	}
+}

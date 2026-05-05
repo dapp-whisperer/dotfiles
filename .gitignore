@@ -61,3 +61,22 @@ tests/lib/
 
 # Sisyphus workflow state
 .sisyphus/
+
+# Pi profile (untracked runtime state)
+# Source of truth is pi/.pi/agent/{settings.json,settings-extensions.json,extensions/*.ts}
+pi/.pi/agent/auth.json
+pi/.pi/agent/sessions/
+pi/.pi/agent/cache/
+pi/.pi/agent/run-history.jsonl
+pi/.pi/agent/*.lazypi.*.bak
+pi/.pi/agent/settings.json.lazypi.*.bak
+# Package-installed and Pi-managed state (regenerated from `packages` array)
+pi/.pi/agent/agents/
+pi/.pi/agent/skills/
+pi/.pi/agent/themes/
+pi/.pi/agent/git/
+pi/.pi/agent/compound-engineering/
+pi/.pi/agent/AGENTS.md
+pi/.pi/agent/pi-cyber-ui.json
+# Extensions: track *.ts source files at the top level only; exclude package install dirs
+pi/.pi/agent/extensions/*/
